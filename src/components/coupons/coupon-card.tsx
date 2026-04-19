@@ -105,7 +105,12 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
 
       <CardContent className="flex flex-1 flex-col gap-4 p-5">
         <h3 className="font-display text-charcoal text-base font-bold leading-snug">
-          {coupon.title_ar}
+          <Link
+            href={`/coupons/${coupon.slug}`}
+            className="hover:text-brand-green transition-colors"
+          >
+            {coupon.title_ar}
+          </Link>
         </h3>
 
         {coupon.description_ar && (

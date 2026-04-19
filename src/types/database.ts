@@ -462,6 +462,7 @@ export type Database = {
           meta_description: string | null
           min_order: number | null
           reveal_count: number
+          slug: string
           starts_at: string | null
           status: Database["public"]["Enums"]["coupon_status"]
           store_id: string
@@ -493,6 +494,7 @@ export type Database = {
           meta_description?: string | null
           min_order?: number | null
           reveal_count?: number
+          slug: string
           starts_at?: string | null
           status?: Database["public"]["Enums"]["coupon_status"]
           store_id: string
@@ -524,6 +526,7 @@ export type Database = {
           meta_description?: string | null
           min_order?: number | null
           reveal_count?: number
+          slug?: string
           starts_at?: string | null
           status?: Database["public"]["Enums"]["coupon_status"]
           store_id?: string
@@ -543,39 +546,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      facebook_tokens: {
-        Row: {
-          access_token: string
-          created_at: string
-          expires_at: string | null
-          id: string
-          page_id: string | null
-          page_name: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          access_token: string
-          created_at?: string
-          expires_at?: string | null
-          id?: string
-          page_id?: string | null
-          page_name?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          access_token?: string
-          created_at?: string
-          expires_at?: string | null
-          id?: string
-          page_id?: string | null
-          page_name?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
       }
       newsletter_subscribers: {
         Row: {
