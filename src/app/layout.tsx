@@ -31,15 +31,15 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com"
   ),
   title: {
-    default: "الكوبوناوي — أكوبونات وعروض موثوقة من الأستاذ أبو عبدالله",
-    template: "%s | الكوبوناوي",
+    default: "كوبوناوي — أكوبونات وعروض موثوقة من الأستاذ أبو عبدالله",
+    template: "%s | كوبوناوي",
   },
   description:
     "كوبونات خصم وعروض مختارة بعناية للمتاجر الموثوقة في السعودية والخليج. جربها قبلك الأستاذ أبو عبدالله.",
   openGraph: {
     type: "website",
     locale: "ar_SA",
-    siteName: "الكوبوناوي",
+    siteName: "كوبوناوي",
   },
 };
 

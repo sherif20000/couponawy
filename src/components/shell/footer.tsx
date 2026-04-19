@@ -13,7 +13,7 @@ const FOOTER_SECTIONS = [
     ],
   },
   {
-    title: "عن الكوبوناوي",
+    title: "عن كوبوناوي",
     links: [
       { href: "/about", label: "من نحن" },
       { href: "/how-it-works", label: "كيف نعمل" },
@@ -68,7 +68,7 @@ export function Footer() {
 
         <div className="border-cream/10 mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 md:flex-row">
           <p className="font-accent text-cream/60 text-xs">
-            © {year} الكوبوناوي. جميع الحقوق محفوظة.
+            © {year} كوبوناوي. جميع الحقوق محفوظة.
           </p>
           <p className="font-accent text-cream/60 text-xs">
             صُنع بشغف في المملكة العربية السعودية

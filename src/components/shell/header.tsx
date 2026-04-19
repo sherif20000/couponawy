@@ -16,7 +16,7 @@ export function Header() {
     <header className="bg-cream/95 border-brand-gold/20 sticky top-0 z-40 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-cream/80">
       <Container size="xl" className="flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-8">
-          <Link href="/" aria-label="الكوبوناوي">
+          <Link href="/" aria-label="كوبوناوي">
             <Logo className="text-2xl" />
           </Link>
           <nav
