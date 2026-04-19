@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/*
+  Brand System — Direction ① الأصيل (Authentic)
+  Tailwind v4 CSS-first theme. Tokens under @theme become utilities automatically:
+  --color-brand-green  → bg-brand-green, text-brand-green, border-brand-green
+  --font-display       → font-display
+*/
+
+@theme {
+  /* Primary brand */
+  --color-brand-green: #006c35;
+  --color-brand-green-dark: #004a24;
+  --color-brand-green-light: #2e8b57;
+
+  /* Accent */
+  --color-brand-gold: #d4af37;
+  --color-brand-gold-light: #e8c568;
+  --color-brand-gold-dark: #b8860b;
+
+  /* Neutrals */
+  --color-cream: #faf6ed;
+  --color-cream-dark: #f4eddb;
+  --color-charcoal: #1a1a1a;
+  --color-warm-brown: #5c4b2e;
+  --color-warm-brown-light: #8b7355;
+
+  /* Functional */
+  --color-danger: #8b3a3a;
+  --color-success: #006c35;
+  --color-warning: #d4af37;
+
+  /* Typography — Arabic-first, loaded via next/font in layout.tsx */
+  --font-display: var(--font-noto-kufi), system-ui, sans-serif;
+  --font-body: var(--font-tajawal), system-ui, sans-serif;
+  --font-accent: var(--font-amiri), Georgia, serif;
+
+  /* Shadows */
+  --shadow-brand: 0 10px 30px rgba(0, 108, 53, 0.15);
+  --shadow-gold: 0 10px 30px rgba(212, 175, 55, 0.25);
+}
+
+html {
+  direction: rtl;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-cream);
+  color: var(--color-charcoal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-charcoal);
+}
