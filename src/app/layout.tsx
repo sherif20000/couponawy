@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Noto_Kufi_Arabic, Tajawal, Amiri } from "next/font/google";
+import { Toaster } from "sonner";
+import { Header } from "@/components/shell/header";
+import { Footer } from "@/components/shell/footer";
 import "./globals.css";
 
 const notoKufi = Noto_Kufi_Arabic({
@@ -52,7 +55,18 @@ export default function RootLayout({
       className={`${notoKufi.variable} ${tajawal.variable} ${amiri.variable} h-full antialiased`}
     >
       <body className="bg-cream text-charcoal font-body min-h-full flex flex-col">
-        {children}
+        <Header />
+        <div className="flex flex-1 flex-col">{children}</div>
+        <Footer />
+        <Toaster
+          position="top-center"
+          dir="rtl"
+          toastOptions={{
+            style: {
+              fontFamily: "var(--font-tajawal), system-ui, sans-serif",
+            },
+          }}
+        />
       </body>
     </html>
   );
