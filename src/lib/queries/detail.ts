@@ -12,6 +12,27 @@ export type CouponWithStore = Coupon & {
   > | null;
 };
 
+export type StoreListItem = Pick<
+  Store,
+  "id" | "slug" | "name_ar" | "name_en" | "logo_url" | "is_verified" | "is_featured"
+>;
+
+export async function getActiveStores(): Promise<StoreListItem[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("stores")
+    .select("id, slug, name_ar, name_en, logo_url, is_verified, is_featured")
+    .eq("status", "active")
+    .order("is_featured", { ascending: false })
+    .order("name_ar", { ascending: true });
+
+  if (error) {
+    console.error("[getActiveStores]", error);
+    return [];
+  }
+  return data ?? [];
+}
+
 export async function getStoreBySlug(slug: string): Promise<Store | null> {
   const supabase = await createClient();
   const { data, error } = await supabase

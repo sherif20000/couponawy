@@ -1,34 +1,34 @@
 @import "tailwindcss";
 
 /*
-  Brand System — Direction ① الأصيل (Authentic)
+  Brand System — Violet Bazaar (B)
   Tailwind v4 CSS-first theme. Tokens under @theme become utilities automatically:
   --color-brand-green  → bg-brand-green, text-brand-green, border-brand-green
   --font-display       → font-display
 */
 
 @theme {
-  /* Primary brand */
-  --color-brand-green: #006c35;
-  --color-brand-green-dark: #004a24;
-  --color-brand-green-light: #2e8b57;
+  /* Primary brand — deep violet */
+  --color-brand-green: #4a1d96;
+  --color-brand-green-dark: #3b1678;
+  --color-brand-green-light: #7c3aed;
 
-  /* Accent */
-  --color-brand-gold: #d4af37;
-  --color-brand-gold-light: #e8c568;
-  --color-brand-gold-dark: #b8860b;
+  /* Accent — vivid amber */
+  --color-brand-gold: #f59e0b;
+  --color-brand-gold-light: #fcd34d;
+  --color-brand-gold-dark: #d97706;
 
-  /* Neutrals */
-  --color-cream: #faf6ed;
-  --color-cream-dark: #f4eddb;
-  --color-charcoal: #1a1a1a;
-  --color-warm-brown: #5c4b2e;
-  --color-warm-brown-light: #8b7355;
+  /* Neutrals — lavender-tinted whites */
+  --color-cream: #f9f5ff;
+  --color-cream-dark: #f0e8ff;
+  --color-charcoal: #1a1a2e;
+  --color-warm-brown: #5b4b7a;
+  --color-warm-brown-light: #9c8cb5;
 
   /* Functional */
-  --color-danger: #8b3a3a;
-  --color-success: #006c35;
-  --color-warning: #d4af37;
+  --color-danger: #dc2626;
+  --color-success: #4a1d96;
+  --color-warning: #f59e0b;
 
   /* Typography — Arabic-first, loaded via next/font in layout.tsx */
   --font-display: var(--font-noto-kufi), system-ui, sans-serif;
@@ -36,8 +36,8 @@
   --font-accent: var(--font-amiri), Georgia, serif;
 
   /* Shadows */
-  --shadow-brand: 0 10px 30px rgba(0, 108, 53, 0.15);
-  --shadow-gold: 0 10px 30px rgba(212, 175, 55, 0.25);
+  --shadow-brand: 0 10px 30px rgba(74, 29, 150, 0.15);
+  --shadow-gold: 0 10px 30px rgba(245, 158, 11, 0.25);
 }
 
 html {
