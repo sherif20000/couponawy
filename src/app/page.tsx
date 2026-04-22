@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, BadgeCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, BadgeCheck, Sparkles, Flame } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,23 +12,28 @@ import {
   getFeaturedCoupons,
   getFeaturedStores,
   getFeaturedCategories,
+  getExpiringSoonCoupons,
 } from "@/lib/queries/homepage";
+import { getCategoryCouponCounts } from "@/lib/queries/categories";
 
 export const revalidate = 300;
 
 export default async function Home() {
-  const [coupons, stores, categories] = await Promise.all([
+  const [coupons, expiringSoon, stores, categories, categoryCounts] = await Promise.all([
     getFeaturedCoupons(8),
+    getExpiringSoonCoupons(4),
     getFeaturedStores(10),
     getFeaturedCategories(10),
+    getCategoryCouponCounts(),
   ]);
 
   return (
     <main className="flex flex-1 flex-col">
       <HeroSection couponCount={coupons.length} storeCount={stores.length} />
       <FeaturedCouponsSection coupons={coupons} />
+      {expiringSoon.length > 0 && <ExpiringSoonSection coupons={expiringSoon} />}
       <StoresSection stores={stores} />
-      <CategoriesSection categories={categories} />
+      <CategoriesSection categories={categories} categoryCounts={categoryCounts} />
     </main>
   );
 }
@@ -97,6 +102,15 @@ function HeroSection({
               <BadgeCheck className="text-brand-green h-4 w-4" aria-hidden />
               تحقّق يومي من الصلاحية
             </span>
+          </div>
+
+          {/* Freshness signal */}
+          <div className="font-accent text-warm-brown-light inline-flex items-center gap-2 text-xs">
+            <span className="relative flex h-2 w-2" aria-hidden>
+              <span className="bg-success absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" />
+              <span className="bg-success relative inline-flex h-2 w-2 rounded-full" />
+            </span>
+            يُحدَّث كل 5 دقائق
           </div>
         </div>
       </Container>
@@ -194,8 +208,10 @@ function StoresSection({
 
 function CategoriesSection({
   categories,
+  categoryCounts,
 }: {
   categories: Awaited<ReturnType<typeof getFeaturedCategories>>;
+  categoryCounts: Record<string, number>;
 }) {
   return (
     <section className="py-16">
@@ -209,10 +225,53 @@ function CategoriesSection({
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {categories.map((category) => (
-              <CategoryCard key={category.id} category={category} />
+              <CategoryCard
+                key={category.id}
+                category={category}
+                couponCount={categoryCounts[category.id]}
+              />
             ))}
           </div>
         )}
+      </Container>
+    </section>
+  );
+}
+
+function ExpiringSoonSection({
+  coupons,
+}: {
+  coupons: Awaited<ReturnType<typeof getExpiringSoonCoupons>>;
+}) {
+  return (
+    <section className="bg-danger/5 border-danger/15 border-y py-16">
+      <Container size="xl">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <div className="text-danger font-accent mb-1 inline-flex items-center gap-1.5 text-sm font-semibold">
+              <Flame className="h-4 w-4" aria-hidden />
+              تنتهي قريباً
+            </div>
+            <h2 className="font-display text-charcoal text-2xl font-extrabold md:text-3xl">
+              اغتنم الفرصة قبل فوات الأوان
+            </h2>
+            <p className="font-body text-warm-brown text-sm md:text-base">
+              هذه الكوبونات تنتهي خلال 7 أيام
+            </p>
+          </div>
+          <Link
+            href="/coupons"
+            className="font-body text-brand-green hover:text-brand-green-dark inline-flex items-center gap-1 text-sm font-semibold transition-colors"
+          >
+            كل الكوبونات
+            <ArrowLeft className="h-4 w-4" aria-hidden />
+          </Link>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {coupons.map((coupon) => (
+            <CouponCard key={coupon.id} coupon={coupon} />
+          ))}
+        </div>
       </Container>
     </section>
   );

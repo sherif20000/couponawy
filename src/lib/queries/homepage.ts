@@ -45,6 +45,27 @@ export async function getFeaturedStores(limit = 8): Promise<Store[]> {
   return data ?? [];
 }
 
+export async function getExpiringSoonCoupons(limit = 8): Promise<FeaturedCoupon[]> {
+  const supabase = await createClient();
+  const now = new Date().toISOString();
+  const sevenDays = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  const { data, error } = await supabase
+    .from("coupons")
+    .select(`*, store:stores ( id, slug, name_ar, logo_url )`)
+    .eq("status", "active")
+    .gte("expires_at", now)
+    .lte("expires_at", sevenDays)
+    .order("expires_at", { ascending: true })
+    .limit(limit);
+
+  if (error) {
+    console.error("[getExpiringSoonCoupons]", error);
+    return [];
+  }
+  return (data ?? []) as FeaturedCoupon[];
+}
+
 export async function getFeaturedCategories(limit = 10): Promise<Category[]> {
   const supabase = await createClient();
   const { data, error } = await supabase

@@ -2,7 +2,16 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Copy, Check, ExternalLink, Sparkles, Clock } from "lucide-react";
+import {
+  Copy,
+  Check,
+  ExternalLink,
+  Sparkles,
+  Clock,
+  Tag,
+  Truck,
+  Percent,
+} from "lucide-react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +25,8 @@ type CouponCardProps = {
   className?: string;
 };
 
+// ─── Helpers ────────────────────────────────────────────────────────────────
+
 function daysUntil(iso: string | null): number | null {
   if (!iso) return null;
   const diff = new Date(iso).getTime() - Date.now();
@@ -23,13 +34,108 @@ function daysUntil(iso: string | null): number | null {
   return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
 
+function formatExpiryDate(iso: string): string {
+  return new Intl.DateTimeFormat("ar-SA", {
+    month: "long",
+    day: "numeric",
+  }).format(new Date(iso));
+}
+
+// ─── Expiry indicator (always rendered) ─────────────────────────────────────
+
+function ExpiryIndicator({ expiresAt }: { expiresAt: string | null }) {
+  const days = daysUntil(expiresAt);
+
+  if (days === null) {
+    return (
+      <span className="text-warm-brown-light font-accent inline-flex items-center gap-1 text-xs">
+        <Clock className="h-3 w-3" aria-hidden />
+        لا تنتهي
+      </span>
+    );
+  }
+
+  if (days === 0) {
+    return (
+      <span className="text-danger font-accent inline-flex items-center gap-1 text-xs font-bold">
+        <Clock className="h-3 w-3" aria-hidden />
+        ينتهي اليوم
+      </span>
+    );
+  }
+
+  if (days <= 7) {
+    return (
+      <span className="text-danger font-accent inline-flex items-center gap-1 text-xs font-semibold">
+        <Clock className="h-3 w-3" aria-hidden />
+        {days === 1 ? "ينتهي غداً" : `ينتهي خلال ${days} أيام`}
+      </span>
+    );
+  }
+
+  if (days <= 30) {
+    return (
+      <span className="text-warning font-accent inline-flex items-center gap-1 text-xs font-medium">
+        <Clock className="h-3 w-3" aria-hidden />
+        {`ينتهي خلال ${days} يوماً`}
+      </span>
+    );
+  }
+
+  return (
+    <span className="text-warm-brown-light font-accent inline-flex items-center gap-1 text-xs">
+      <Clock className="h-3 w-3" aria-hidden />
+      {`ينتهي ${formatExpiryDate(expiresAt!)}`}
+    </span>
+  );
+}
+
+// ─── Coupon type tag ─────────────────────────────────────────────────────────
+
+type CouponKind = "code" | "deal" | "free_shipping";
+
+function resolveKind(discountType: string | null | undefined): CouponKind {
+  if (discountType === "free_shipping") return "free_shipping";
+  if (discountType === "bogo" || discountType === "other") return "deal";
+  return "code"; // percentage, fixed, or unknown
+}
+
+function CouponTypeTag({ kind }: { kind: CouponKind }) {
+  if (kind === "free_shipping") {
+    return (
+      <span className="font-accent inline-flex items-center gap-1 rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 ring-1 ring-emerald-200">
+        <Truck className="h-2.5 w-2.5" aria-hidden />
+        شحن مجاني
+      </span>
+    );
+  }
+
+  if (kind === "deal") {
+    return (
+      <span className="font-accent bg-brand-gold/10 text-brand-gold-dark ring-brand-gold/30 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ring-1">
+        <Tag className="h-2.5 w-2.5" aria-hidden />
+        عرض مباشر
+      </span>
+    );
+  }
+
+  return (
+    <span className="font-accent bg-brand-green/10 text-brand-green ring-brand-green/20 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ring-1">
+      <Percent className="h-2.5 w-2.5" aria-hidden />
+      كود خصم
+    </span>
+  );
+}
+
+// ─── Main component ──────────────────────────────────────────────────────────
+
 export function CouponCard({ coupon, className }: CouponCardProps) {
   const [revealed, setRevealed] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
 
-  const days = daysUntil(coupon.expires_at);
   const hasCode = coupon.discount_type !== "free_shipping";
+  const kind = resolveKind(coupon.discount_type);
 
   async function handleReveal() {
     if (loading) return;
@@ -70,39 +176,60 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
         className
       )}
     >
-      <div className="bg-brand-green/5 border-brand-gold/20 flex items-start justify-between gap-3 border-b p-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-cream ring-brand-gold/30 flex h-12 w-12 items-center justify-center rounded-full ring-2">
-            <span className="font-display text-brand-green text-sm font-bold">
-              {coupon.store?.name_ar?.slice(0, 2) ?? "؟"}
-            </span>
+      {/* ── Card header ─────────────────────────────────────────────── */}
+      <div className="bg-brand-green/5 border-brand-gold/20 border-b p-4">
+        <div className="flex items-start justify-between gap-3">
+          {/* Store info */}
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="bg-cream ring-brand-gold/30 flex h-11 w-11 shrink-0 items-center justify-center rounded-full ring-2">
+              {coupon.store?.logo_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={coupon.store.logo_url}
+                  alt={coupon.store.name_ar}
+                  className="h-9 w-9 rounded-full object-contain"
+                />
+              ) : (
+                <span className="font-display text-brand-green text-sm font-bold">
+                  {coupon.store?.name_ar?.slice(0, 2) ?? "؟"}
+                </span>
+              )}
+            </div>
+            <div className="flex min-w-0 flex-col gap-1">
+              {coupon.store ? (
+                <Link
+                  href={`/stores/${coupon.store.slug}`}
+                  className="font-display text-charcoal hover:text-brand-green truncate text-sm font-bold"
+                >
+                  {coupon.store.name_ar}
+                </Link>
+              ) : (
+                <span className="font-display text-charcoal text-sm font-bold">
+                  متجر
+                </span>
+              )}
+              <CouponTypeTag kind={kind} />
+            </div>
           </div>
-          <div className="flex flex-col">
-            {coupon.store ? (
-              <Link
-                href={`/stores/${coupon.store.slug}`}
-                className="font-display text-charcoal hover:text-brand-green text-sm font-bold"
-              >
-                {coupon.store.name_ar}
-              </Link>
-            ) : (
-              <span className="font-display text-charcoal text-sm font-bold">
-                متجر
+
+          {/* Discount badge + exclusive badge */}
+          <div className="flex shrink-0 flex-col items-end gap-1.5">
+            {coupon.discount_display && (
+              <span className="font-display bg-brand-gold text-cream rounded-xl px-3 py-1.5 text-sm font-extrabold leading-none shadow-sm">
+                {coupon.discount_display}
               </span>
             )}
-            <span className="text-warm-brown-light font-body text-xs">
-              {coupon.discount_display ?? "عرض حصري"}
-            </span>
+            {coupon.is_exclusive && (
+              <Badge variant="exclusive" className="shrink-0">
+                <Sparkles className="h-3 w-3" aria-hidden />
+                حصري
+              </Badge>
+            )}
           </div>
         </div>
-        {coupon.is_exclusive && (
-          <Badge variant="exclusive" className="shrink-0">
-            <Sparkles className="h-3 w-3" aria-hidden />
-            حصري
-          </Badge>
-        )}
       </div>
 
+      {/* ── Card body ───────────────────────────────────────────────── */}
       <CardContent className="flex flex-1 flex-col gap-4 p-5">
         <h3 className="font-display text-charcoal text-base font-bold leading-snug">
           <Link
@@ -120,16 +247,8 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
         )}
 
         <div className="mt-auto flex flex-col gap-3">
-          {days !== null && days <= 7 && (
-            <div className="text-danger font-accent inline-flex items-center gap-1.5 text-xs font-semibold">
-              <Clock className="h-3.5 w-3.5" aria-hidden />
-              {days === 0
-                ? "ينتهي اليوم"
-                : days === 1
-                  ? "ينتهي غداً"
-                  : `ينتهي خلال ${days} أيام`}
-            </div>
-          )}
+          {/* Expiry — always shown */}
+          <ExpiryIndicator expiresAt={coupon.expires_at} />
 
           {hasCode ? (
             revealed ? (
