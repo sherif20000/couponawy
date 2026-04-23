@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 import type { FeaturedCoupon } from "@/lib/queries/homepage";
 
@@ -17,20 +17,86 @@ export type StoreListItem = Pick<
   "id" | "slug" | "name_ar" | "name_en" | "logo_url" | "is_verified" | "is_featured"
 >;
 
-export async function getActiveStores(): Promise<StoreListItem[]> {
-  const supabase = await createClient();
+// Used only in generateStaticParams — runs at build time without a request context,
+// so we use the admin client (no cookies dependency) instead of the server client.
+export async function getAllStoreSlugsBuildTime(): Promise<{ slug: string }[]> {
+  const supabase = createAdminClient();
   const { data, error } = await supabase
+    .from("stores")
+    .select("slug")
+    .eq("status", "active");
+
+  if (error) {
+    console.error("[getAllStoreSlugsBuildTime]", error);
+    return [];
+  }
+  return data ?? [];
+}
+
+export async function getAllCouponSlugsBuildTime(): Promise<{ slug: string }[]> {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("coupons")
+    .select("slug")
+    .eq("status", "active");
+
+  if (error) {
+    console.error("[getAllCouponSlugsBuildTime]", error);
+    return [];
+  }
+  return data ?? [];
+}
+
+export async function getActiveStores(
+  countryCode?: string
+): Promise<StoreListItem[]> {
+  const supabase = await createClient();
+  let query = supabase
     .from("stores")
     .select("id, slug, name_ar, name_en, logo_url, is_verified, is_featured")
     .eq("status", "active")
     .order("is_featured", { ascending: false })
     .order("name_ar", { ascending: true });
 
+  // When a country is specified, show stores explicitly tagged for that country
+  // OR stores with no country assignment (global stores).
+  if (countryCode) {
+    query = query.or(`country_code.eq.${countryCode},country_code.is.null`);
+  }
+
+  const { data, error } = await query;
   if (error) {
     console.error("[getActiveStores]", error);
     return [];
   }
   return data ?? [];
+}
+
+export async function getActiveStoresPaginated(
+  page = 1,
+  perPage = 24,
+  countryCode?: string
+): Promise<{ stores: StoreListItem[]; total: number }> {
+  const supabase = await createClient();
+  const from = (page - 1) * perPage;
+
+  let query = supabase
+    .from("stores")
+    .select("id, slug, name_ar, name_en, logo_url, is_verified, is_featured", { count: "exact" })
+    .eq("status", "active")
+    .order("is_featured", { ascending: false })
+    .order("name_ar", { ascending: true });
+
+  if (countryCode) {
+    query = query.or(`country_code.eq.${countryCode},country_code.is.null`);
+  }
+
+  const { data, count, error } = await query.range(from, from + perPage - 1);
+  if (error) {
+    console.error("[getActiveStoresPaginated]", error);
+    return { stores: [], total: 0 };
+  }
+  return { stores: data ?? [], total: count ?? 0 };
 }
 
 export async function getStoreBySlug(slug: string): Promise<Store | null> {

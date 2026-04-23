@@ -67,15 +67,15 @@ export function CouponGridWithFilters({ coupons }: Props) {
               className={cn(
                 "font-accent inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-150",
                 isActive
-                  ? "bg-brand-green border-brand-green text-cream shadow-sm"
-                  : "bg-cream border-brand-gold/30 text-warm-brown hover:border-brand-green/40 hover:text-brand-green"
+                  ? "bg-brand-red border-brand-red text-cream shadow-sm"
+                  : "bg-cream border-brand-gold/30 text-warm-brown hover:border-brand-red/40 hover:text-brand-red"
               )}
             >
               {f.icon}
               {f.label}
               <span
                 className={cn(
-                  "rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none",
+                  "rounded-full px-1.5 py-0.5 text-xs font-bold leading-none",
                   isActive
                     ? "bg-white/20 text-cream"
                     : "bg-brand-gold/15 text-brand-gold-dark"

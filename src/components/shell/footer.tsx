@@ -35,7 +35,7 @@ const FOOTER_SECTIONS = [
 export function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="bg-brand-green-dark text-cream mt-16">
+    <footer className="bg-brand-red-dark text-cream mt-16">
       <Container size="xl" className="py-12">
         <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div className="flex flex-col gap-4">

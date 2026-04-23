@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كوبوناوي — معاينة الألوان</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  background: #f5f4f0;
+  padding: 40px 24px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  text-align: center;
+  font-size: 22px;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+.subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.theme-wrap {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  background: white;
+}
+
+.theme-label {
+  padding: 14px 18px 12px;
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-label .dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.theme-label .sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: #999;
+  font-family: 'Tajawal', sans-serif;
+}
+
+/* ─── MINI UI PREVIEW ─── */
+.ui {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Topbar */
+.topbar {
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.topbar .logo {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  color: white;
+}
+.topbar .nav {
+  display: flex;
+  gap: 10px;
+}
+.topbar .nav span {
+  font-size: 11px;
+  color: rgba(255,255,255,0.8);
+}
+
+/* Coupon card */
+.card {
+  border-radius: 12px;
+  border: 1px solid;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.store-logo {
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.card-meta { flex: 1; }
+.store-name {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: 3px;
+}
+.card-title {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.5;
+}
+.discount {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+}
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  width: 100%;
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  color: white;
+  letter-spacing: 0.01em;
+}
+
+/* ══════════════════════════════════════════
+   THEME A — Bold Red / Coral
+══════════════════════════════════════════ */
+.a .topbar { background: #d4163c; }
+.a .card { border-color: #fce4ea; background: #fff; }
+.a .store-logo { background: #fce4ea; }
+.a .badge { background: #fce4ea; color: #d4163c; }
+.a .discount { color: #d4163c; }
+.a .btn { background: #d4163c; }
+.a .btn:hover { background: #b01230; }
+.a .dot { background: #d4163c; }
+.a .topbar .logo span { color: #ffd4de; }
+
+/* ══════════════════════════════════════════
+   THEME B — Deep Teal / Turquoise
+══════════════════════════════════════════ */
+.b .topbar { background: #0d7377; }
+.b .card { border-color: #d4f0f1; background: #fff; }
+.b .store-logo { background: #d4f0f1; }
+.b .badge { background: #d4f0f1; color: #0d7377; }
+.b .discount { color: #0d7377; }
+.b .btn { background: #0d7377; }
+.b .dot { background: #0d7377; }
+
+/* ══════════════════════════════════════════
+   THEME C — Vivid Orange / Amber
+══════════════════════════════════════════ */
+.c .topbar { background: #e07b00; }
+.c .card { border-color: #fdefd4; background: #fff; }
+.c .store-logo { background: #fdefd4; }
+.c .badge { background: #fdefd4; color: #b36200; }
+.c .discount { color: #e07b00; }
+.c .btn { background: #e07b00; }
+.c .dot { background: #e07b00; }
+
+/* ══════════════════════════════════════════
+   THEME D — Rich Indigo / Cobalt
+══════════════════════════════════════════ */
+.d .topbar { background: #2c3e9e; }
+.d .card { border-color: #dde2f8; background: #fff; }
+.d .store-logo { background: #dde2f8; }
+.d .badge { background: #dde2f8; color: #2c3e9e; }
+.d .discount { color: #2c3e9e; }
+.d .btn { background: #2c3e9e; }
+.d .dot { background: #2c3e9e; }
+
+/* Bottom note */
+.note {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 13px;
+  color: #999;
+}
+</style>
+</head>
+<body>
+
+<h1>اختر لون كوبوناوي</h1>
+<p class="subtitle">كل خيار يعرض: الهيدر + كارت كوبون + نسبة الخصم + زر الكشف</p>
+
+<div class="grid">
+
+  <!-- A: Red/Coral -->
+  <div class="theme-wrap a">
+    <div class="theme-label">
+      <div class="dot"></div>
+      <div>
+        <div>أحمر / كورالي</div>
+        <div class="sub">Bold Red / Coral — طاقة، إلحاح، عروض</div>
+      </div>
+    </div>
+    <div class="ui">
+      <div class="topbar a">
+        <div class="logo">كوبوناوي</div>
+        <div class="nav">
+          <span>المتاجر</span>
+          <span>الأقسام</span>
+          <span>الكوبونات</span>
+        </div>
+      </div>
+      <div class="card a">
+        <div class="card-top">
+          <div class="store-logo a">🛒</div>
+          <div class="card-meta">
+            <div class="store-name">نون</div>
+            <div class="badge a">تسوق إلكتروني</div>
+          </div>
+          <div class="discount a">25%</div>
+        </div>
+        <div class="card-title">خصم 25% على جميع الإلكترونيات — لفترة محدودة</div>
+        <button class="btn a">اكشف الكود</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: Teal -->
+  <div class="theme-wrap b">
+    <div class="theme-label">
+      <div class="dot"></div>
+      <div>
+        <div>تيل / فيروزي</div>
+        <div class="sub">Deep Teal — عصري، موثوق، متميّز</div>
+      </div>
+    </div>
+    <div class="ui">
+      <div class="topbar b">
+        <div class="logo">كوبوناوي</div>
+        <div class="nav">
+          <span>المتاجر</span>
+          <span>الأقسام</span>
+          <span>الكوبونات</span>
+        </div>
+      </div>
+      <div class="card b">
+        <div class="card-top">
+          <div class="store-logo b">🛒</div>
+          <div class="card-meta">
+            <div class="store-name">نون</div>
+            <div class="badge b">تسوق إلكتروني</div>
+          </div>
+          <div class="discount b">25%</div>
+        </div>
+        <div class="card-title">خصم 25% على جميع الإلكترونيات — لفترة محدودة</div>
+        <button class="btn b">اكشف الكود</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: Orange/Amber -->
+  <div class="theme-wrap c">
+    <div class="theme-label">
+      <div class="dot"></div>
+      <div>
+        <div>برتقالي / عنبري</div>
+        <div class="sub">Vivid Orange — دافئ، احتفالي، توفير</div>
+      </div>
+    </div>
+    <div class="ui">
+      <div class="topbar c">
+        <div class="logo">كوبوناوي</div>
+        <div class="nav">
+          <span>المتاجر</span>
+          <span>الأقسام</span>
+          <span>الكوبونات</span>
+        </div>
+      </div>
+      <div class="card c">
+        <div class="card-top">
+          <div class="store-logo c">🛒</div>
+          <div class="card-meta">
+            <div class="store-name">نون</div>
+            <div class="badge c">تسوق إلكتروني</div>
+          </div>
+          <div class="discount c">25%</div>
+        </div>
+        <div class="card-title">خصم 25% على جميع الإلكترونيات — لفترة محدودة</div>
+        <button class="btn c">اكشف الكود</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- D: Indigo/Cobalt -->
+  <div class="theme-wrap d">
+    <div class="theme-label">
+      <div class="dot"></div>
+      <div>
+        <div>نيلي / كوبالت</div>
+        <div class="sub">Rich Indigo — جريء، فريد، لا يُنسى</div>
+      </div>
+    </div>
+    <div class="ui">
+      <div class="topbar d">
+        <div class="logo">كوبوناوي</div>
+        <div class="nav">
+          <span>المتاجر</span>
+          <span>الأقسام</span>
+          <span>الكوبونات</span>
+        </div>
+      </div>
+      <div class="card d">
+        <div class="card-top">
+          <div class="store-logo d">🛒</div>
+          <div class="card-meta">
+            <div class="store-name">نون</div>
+            <div class="badge d">تسوق إلكتروني</div>
+          </div>
+          <div class="discount d">25%</div>
+        </div>
+        <div class="card-title">خصم 25% على جميع الإلكترونيات — لفترة محدودة</div>
+        <button class="btn d">اكشف الكود</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="note">افتح هذا الملف في المتصفح: public/theme-preview.html</p>
+
+</body>
+</html>

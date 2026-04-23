@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { CategoryCard } from "@/components/categories/category-card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { getAllCategories, getCategoryCouponCounts } from "@/lib/queries/categories";
 
 export const revalidate = 300;
@@ -26,7 +27,7 @@ export default async function CategoriesPage() {
             aria-label="مسار التنقّل"
             className="text-warm-brown-light font-accent mb-4 flex items-center gap-2 text-xs"
           >
-            <Link href="/" className="hover:text-brand-green">
+            <Link href="/" className="hover:text-brand-red">
               الرئيسية
             </Link>
             <span>›</span>
@@ -44,9 +45,7 @@ export default async function CategoriesPage() {
       <section className="py-12 md:py-16">
         <Container size="xl">
           {categories.length === 0 ? (
-            <div className="border-brand-gold/30 bg-cream-dark/30 font-body text-warm-brown rounded-2xl border border-dashed p-12 text-center">
-              لا توجد أقسام بعد.
-            </div>
+            <EmptyState message="لا توجد أقسام بعد." />
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {categories.map((category) => (

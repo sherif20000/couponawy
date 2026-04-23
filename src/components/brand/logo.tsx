@@ -18,7 +18,7 @@ export function Logo({ className, variant = "full" }: LogoProps) {
       )}
       aria-label="كوبوناوي"
     >
-      <span className="text-brand-green text-2xl font-extrabold tracking-tight">
+      <span className="text-brand-red text-2xl font-extrabold tracking-tight">
         كوبوناوي
       </span>
       {variant === "full" && (

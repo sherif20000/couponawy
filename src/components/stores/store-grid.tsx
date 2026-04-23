@@ -30,7 +30,7 @@ export function StoreGrid({ stores }: StoreGridProps) {
           placeholder="ابحث عن متجر..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="border-brand-gold/30 font-body text-charcoal placeholder:text-warm-brown-light focus:border-brand-green focus:ring-brand-green/20 w-full rounded-xl border bg-white py-3 pr-11 pl-4 transition-all focus:outline-none focus:ring-2"
+          className="border-brand-gold/30 font-body text-charcoal placeholder:text-warm-brown-light focus:border-brand-red focus:ring-brand-red/20 w-full rounded-xl border bg-white py-3 pr-11 pl-4 transition-all focus:outline-none focus:ring-2"
         />
       </div>
 
@@ -49,10 +49,10 @@ export function StoreGrid({ stores }: StoreGridProps) {
               key={store.id}
               href={`/stores/${store.slug}`}
               className={cn(
-                "group border-brand-gold/20 bg-cream-dark/20 hover:border-brand-green/40 hover:shadow-brand flex flex-col items-center gap-3 rounded-2xl border p-5 text-center transition-all duration-200 hover:-translate-y-0.5"
+                "group border-brand-gold/20 bg-cream-dark/20 hover:border-brand-red/40 hover:shadow-brand flex flex-col items-center gap-3 rounded-2xl border p-5 text-center transition-all duration-200 hover:-translate-y-0.5"
               )}
             >
-              <div className="bg-cream ring-brand-gold/30 group-hover:ring-brand-green/40 flex h-16 w-16 items-center justify-center rounded-full ring-2 transition-all">
+              <div className="bg-cream ring-brand-gold/30 group-hover:ring-brand-red/40 flex h-16 w-16 items-center justify-center rounded-full ring-2 transition-all">
                 {store.logo_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -61,17 +61,17 @@ export function StoreGrid({ stores }: StoreGridProps) {
                     className="h-12 w-12 rounded-full object-contain"
                   />
                 ) : (
-                  <span className="font-display text-brand-green text-lg font-extrabold">
+                  <span className="font-display text-brand-red text-lg font-extrabold">
                     {store.name_ar.slice(0, 2)}
                   </span>
                 )}
               </div>
               <div className="flex flex-col items-center gap-1">
-                <span className="font-display text-charcoal group-hover:text-brand-green line-clamp-2 text-sm font-bold transition-colors">
+                <span className="font-display text-charcoal group-hover:text-brand-red line-clamp-2 text-sm font-bold transition-colors">
                   {store.name_ar}
                 </span>
                 {store.is_verified && (
-                  <span className="text-brand-green font-accent inline-flex items-center gap-1 text-[11px]">
+                  <span className="text-brand-red font-accent inline-flex items-center gap-1 text-[11px]">
                     <BadgeCheck className="h-3 w-3" aria-hidden />
                     موثّق
                   </span>

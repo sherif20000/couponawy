@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Couponawy — Palette Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: #EDEFF4;
+    padding: 40px 24px;
+    direction: rtl;
+  }
+
+  .page-title {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: #1a1a2e;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .page-sub {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 48px;
+  }
+
+  .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .theme-block {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+
+  /* ── LABEL BAR ── */
+  .theme-label {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    text-align: center;
+  }
+
+  /* ── HEADER STRIP ── */
+  .theme-header {
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .theme-header .logo {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+  .theme-header .nav-links {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ── HERO BANNER ── */
+  .theme-hero {
+    padding: 24px 24px 20px;
+    text-align: center;
+  }
+  .theme-hero .headline {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .theme-hero .sub {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-bottom: 16px;
+  }
+
+  /* ── COUPON CARD ── */
+  .coupon-card {
+    margin: 0 24px 24px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .coupon-card .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+  }
+  .card-header .store-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header .store-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+  }
+  .card-header .store-name {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .card-header .discount-label {
+    font-size: 12px;
+    opacity: 0.6;
+  }
+  .exclusive-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+
+  .coupon-card .card-body {
+    padding: 16px;
+  }
+  .card-body .coupon-title {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .card-body .expiry {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ── BUTTON ── */
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+  }
+
+  /* ── SWATCHES ── */
+  .swatches {
+    display: flex;
+    gap: 8px;
+    padding: 16px 24px 20px;
+  }
+  .swatch {
+    flex: 1;
+    height: 32px;
+    border-radius: 8px;
+  }
+  .swatch-label {
+    font-size: 10px;
+    text-align: center;
+    margin-top: 4px;
+    opacity: 0.55;
+    letter-spacing: 0.04em;
+  }
+  .swatch-group { flex: 1; }
+
+  /* ══════════════════════════════════════
+     OPTION A — Midnight Souk
+     Indigo + Electric Orange
+  ══════════════════════════════════════ */
+  .theme-a .theme-label { background: #1E1659; color: #F05A28; }
+  .theme-a .theme-header { background: #1E1659; }
+  .theme-a .theme-header .logo { color: #FFFFFF; }
+  .theme-a .theme-header .nav-links span { color: rgba(255,255,255,0.65); }
+  .theme-a .theme-hero { background: linear-gradient(135deg, #1E1659 0%, #2D2080 100%); }
+  .theme-a .theme-hero .headline { color: #FFFFFF; }
+  .theme-a .theme-hero .sub { color: rgba(255,255,255,0.65); }
+  .theme-a .theme-hero .btn-hero {
+    background: #F05A28; color: #fff;
+    border: none; border-radius: 12px;
+    padding: 12px 28px;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .theme-a .coupon-card { background: #FFFFFF; box-shadow: 0 2px 12px rgba(30,22,89,0.10); }
+  .theme-a .card-header { background: #F6F7FB; border-bottom-color: #E8E9F3; }
+  .theme-a .store-avatar { background: #E8E9F3; color: #1E1659; }
+  .theme-a .store-name { color: #1E1659; }
+  .theme-a .discount-label { color: #6B7280; }
+  .theme-a .exclusive-badge { background: #FFF3EE; color: #F05A28; }
+  .theme-a .coupon-title { color: #1E1659; }
+  .theme-a .expiry { color: #F05A28; }
+  .theme-a .btn-primary { background: #F05A28; color: #FFFFFF; }
+  .theme-a .btn-primary:hover { background: #D94C1F; }
+  .theme-a .swatches { background: #F6F7FB; }
+
+  /* ══════════════════════════════════════
+     OPTION B — Violet Bazaar
+     Deep Violet + Vivid Amber
+  ══════════════════════════════════════ */
+  .theme-b .theme-label { background: #4A1D96; color: #F59E0B; }
+  .theme-b .theme-header { background: #4A1D96; }
+  .theme-b .theme-header .logo { color: #FFFFFF; }
+  .theme-b .theme-header .nav-links span { color: rgba(255,255,255,0.65); }
+  .theme-b .theme-hero { background: linear-gradient(135deg, #4A1D96 0%, #6D28D9 100%); }
+  .theme-b .theme-hero .headline { color: #FFFFFF; }
+  .theme-b .theme-hero .sub { color: rgba(255,255,255,0.65); }
+  .theme-b .theme-hero .btn-hero {
+    background: #F59E0B; color: #1C1428;
+    border: none; border-radius: 12px;
+    padding: 12px 28px;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .theme-b .coupon-card { background: #FFFFFF; box-shadow: 0 2px 12px rgba(74,29,150,0.10); }
+  .theme-b .card-header { background: #F9F5FF; border-bottom-color: #EDE9FE; }
+  .theme-b .store-avatar { background: #EDE9FE; color: #4A1D96; }
+  .theme-b .store-name { color: #4A1D96; }
+  .theme-b .discount-label { color: #6B7280; }
+  .theme-b .exclusive-badge { background: #FFFBEB; color: #D97706; }
+  .theme-b .coupon-title { color: #1C1428; }
+  .theme-b .expiry { color: #D97706; }
+  .theme-b .btn-primary { background: #F59E0B; color: #1C1428; }
+  .theme-b .swatches { background: #F9F5FF; }
+
+  /* ══════════════════════════════════════
+     OPTION C — Saudi Red
+     Crimson + Ivory
+  ══════════════════════════════════════ */
+  .theme-c .theme-label { background: #C01833; color: #FAFAF8; }
+  .theme-c .theme-header { background: #C01833; }
+  .theme-c .theme-header .logo { color: #FFFFFF; }
+  .theme-c .theme-header .nav-links span { color: rgba(255,255,255,0.75); }
+  .theme-c .theme-hero { background: linear-gradient(135deg, #9B0E27 0%, #C01833 100%); }
+  .theme-c .theme-hero .headline { color: #FFFFFF; }
+  .theme-c .theme-hero .sub { color: rgba(255,255,255,0.7); }
+  .theme-c .theme-hero .btn-hero {
+    background: #FFFFFF; color: #C01833;
+    border: none; border-radius: 12px;
+    padding: 12px 28px;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .theme-c .coupon-card { background: #FFFFFF; box-shadow: 0 2px 12px rgba(192,24,51,0.10); }
+  .theme-c .card-header { background: #FEF2F4; border-bottom-color: #FCD7DC; }
+  .theme-c .store-avatar { background: #FCD7DC; color: #C01833; }
+  .theme-c .store-name { color: #C01833; }
+  .theme-c .discount-label { color: #6B7280; }
+  .theme-c .exclusive-badge { background: #FFF7ED; color: #C2410C; }
+  .theme-c .coupon-title { color: #1A1A1A; }
+  .theme-c .expiry { color: #C01833; }
+  .theme-c .btn-primary { background: #C01833; color: #FFFFFF; }
+  .theme-c .swatches { background: #FAFAF8; }
+
+  /* ══════════════════════════════════════
+     OPTION D — Teal Forward
+     Deep Teal + Warm Coral
+  ══════════════════════════════════════ */
+  .theme-d .theme-label { background: #0D6E6E; color: #F97316; }
+  .theme-d .theme-header { background: #0D6E6E; }
+  .theme-d .theme-header .logo { color: #FFFFFF; }
+  .theme-d .theme-header .nav-links span { color: rgba(255,255,255,0.7); }
+  .theme-d .theme-hero { background: linear-gradient(135deg, #085454 0%, #0D6E6E 100%); }
+  .theme-d .theme-hero .headline { color: #FFFFFF; }
+  .theme-d .theme-hero .sub { color: rgba(255,255,255,0.7); }
+  .theme-d .theme-hero .btn-hero {
+    background: #F97316; color: #FFFFFF;
+    border: none; border-radius: 12px;
+    padding: 12px 28px;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .theme-d .coupon-card { background: #FFFFFF; box-shadow: 0 2px 12px rgba(13,110,110,0.10); }
+  .theme-d .card-header { background: #F0FAFA; border-bottom-color: #CCEEEE; }
+  .theme-d .store-avatar { background: #CCEEEE; color: #0D6E6E; }
+  .theme-d .store-name { color: #0D6E6E; }
+  .theme-d .discount-label { color: #6B7280; }
+  .theme-d .exclusive-badge { background: #FFF7ED; color: #EA6A0B; }
+  .theme-d .coupon-title { color: #1A2E2E; }
+  .theme-d .expiry { color: #EA6A0B; }
+  .theme-d .btn-primary { background: #F97316; color: #FFFFFF; }
+  .theme-d .swatches { background: #F0FAFA; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">كوبوناوي — مقارنة الهويّة البصرية</h1>
+<p class="page-sub">اختر الاتجاه الذي يناسب الهوية</p>
+
+<div class="themes-grid">
+
+  <!-- ══ OPTION A ══ -->
+  <div class="theme-block theme-a">
+    <div class="theme-label">A — Midnight Souk · إنديغو + برتقالي</div>
+
+    <div class="theme-header">
+      <div class="logo">كوبوناوي</div>
+      <div class="nav-links">
+        <span>المتاجر</span>
+        <span>الفئات</span>
+        <span>الأحدث</span>
+      </div>
+    </div>
+
+    <div class="theme-hero">
+      <div class="headline">آلاف الكوبونات<br/>بضغطة واحدة</div>
+      <div class="sub">كوبونات مجرّبة ومحدّثة يومياً لأفضل المتاجر السعودية</div>
+      <button class="btn-hero">اكتشف الكوبونات</button>
+    </div>
+
+    <div class="coupon-card">
+      <div class="card-header">
+        <div class="store-info">
+          <div class="store-avatar">نم</div>
+          <div>
+            <div class="store-name">نمشي</div>
+            <div class="discount-label">خصم ٢٠٪ على الطلب الأول</div>
+          </div>
+        </div>
+        <div class="exclusive-badge">⚡ حصري</div>
+      </div>
+      <div class="card-body">
+        <div class="coupon-title">كود خصم نمشي ٢٠٪ على جميع منتجات الأزياء والإكسسوارات</div>
+        <div class="expiry">⏰ ينتهي خلال ٣ أيام</div>
+        <button class="btn-primary">
+          إظهار الكود والذهاب للمتجر
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="swatches">
+      <div class="swatch-group">
+        <div class="swatch" style="background:#1E1659"></div>
+        <div class="swatch-label">Primary</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#F05A28"></div>
+        <div class="swatch-label">Accent</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#F6F7FB; border:1px solid #ddd"></div>
+        <div class="swatch-label">BG</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#1E1659; opacity:0.08; border:1px solid #ddd"></div>
+        <div class="swatch-label">Surface</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ OPTION B ══ -->
+  <div class="theme-block theme-b">
+    <div class="theme-label">B — Violet Bazaar · بنفسجي + عنبر</div>
+
+    <div class="theme-header">
+      <div class="logo">كوبوناوي</div>
+      <div class="nav-links">
+        <span>المتاجر</span>
+        <span>الفئات</span>
+        <span>الأحدث</span>
+      </div>
+    </div>
+
+    <div class="theme-hero">
+      <div class="headline">آلاف الكوبونات<br/>بضغطة واحدة</div>
+      <div class="sub">كوبونات مجرّبة ومحدّثة يومياً لأفضل المتاجر السعودية</div>
+      <button class="btn-hero">اكتشف الكوبونات</button>
+    </div>
+
+    <div class="coupon-card">
+      <div class="card-header">
+        <div class="store-info">
+          <div class="store-avatar">نم</div>
+          <div>
+            <div class="store-name">نمشي</div>
+            <div class="discount-label">خصم ٢٠٪ على الطلب الأول</div>
+          </div>
+        </div>
+        <div class="exclusive-badge">⚡ حصري</div>
+      </div>
+      <div class="card-body">
+        <div class="coupon-title">كود خصم نمشي ٢٠٪ على جميع منتجات الأزياء والإكسسوارات</div>
+        <div class="expiry">⏰ ينتهي خلال ٣ أيام</div>
+        <button class="btn-primary">
+          إظهار الكود والذهاب للمتجر
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="swatches">
+      <div class="swatch-group">
+        <div class="swatch" style="background:#4A1D96"></div>
+        <div class="swatch-label">Primary</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#F59E0B"></div>
+        <div class="swatch-label">Accent</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#F9F5FF; border:1px solid #ddd"></div>
+        <div class="swatch-label">BG</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#EDE9FE; border:1px solid #ddd"></div>
+        <div class="swatch-label">Surface</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ OPTION C ══ -->
+  <div class="theme-block theme-c">
+    <div class="theme-label">C — Saudi Red · قرمزي + عاجي</div>
+
+    <div class="theme-header">
+      <div class="logo">كوبوناوي</div>
+      <div class="nav-links">
+        <span>المتاجر</span>
+        <span>الفئات</span>
+        <span>الأحدث</span>
+      </div>
+    </div>
+
+    <div class="theme-hero">
+      <div class="headline">آلاف الكوبونات<br/>بضغطة واحدة</div>
+      <div class="sub">كوبونات مجرّبة ومحدّثة يومياً لأفضل المتاجر السعودية</div>
+      <button class="btn-hero">اكتشف الكوبونات</button>
+    </div>
+
+    <div class="coupon-card">
+      <div class="card-header">
+        <div class="store-info">
+          <div class="store-avatar">نم</div>
+          <div>
+            <div class="store-name">نمشي</div>
+            <div class="discount-label">خصم ٢٠٪ على الطلب الأول</div>
+          </div>
+        </div>
+        <div class="exclusive-badge">⚡ حصري</div>
+      </div>
+      <div class="card-body">
+        <div class="coupon-title">كود خصم نمشي ٢٠٪ على جميع منتجات الأزياء والإكسسوارات</div>
+        <div class="expiry">⏰ ينتهي خلال ٣ أيام</div>
+        <button class="btn-primary">
+          إظهار الكود والذهاب للمتجر
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="swatches">
+      <div class="swatch-group">
+        <div class="swatch" style="background:#C01833"></div>
+        <div class="swatch-label">Primary</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#FAFAF8; border:1px solid #ddd"></div>
+        <div class="swatch-label">Accent</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#FAFAF8; border:1px solid #ddd"></div>
+        <div class="swatch-label">BG</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#FEF2F4; border:1px solid #ddd"></div>
+        <div class="swatch-label">Surface</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ OPTION D ══ -->
+  <div class="theme-block theme-d">
+    <div class="theme-label">D — Teal Forward · فيروزي + برتقالي دافئ</div>
+
+    <div class="theme-header">
+      <div class="logo">كوبوناوي</div>
+      <div class="nav-links">
+        <span>المتاجر</span>
+        <span>الفئات</span>
+        <span>الأحدث</span>
+      </div>
+    </div>
+
+    <div class="theme-hero">
+      <div class="headline">آلاف الكوبونات<br/>بضغطة واحدة</div>
+      <div class="sub">كوبونات مجرّبة ومحدّثة يومياً لأفضل المتاجر السعودية</div>
+      <button class="btn-hero">اكتشف الكوبونات</button>
+    </div>
+
+    <div class="coupon-card">
+      <div class="card-header">
+        <div class="store-info">
+          <div class="store-avatar">نم</div>
+          <div>
+            <div class="store-name">نمشي</div>
+            <div class="discount-label">خصم ٢٠٪ على الطلب الأول</div>
+          </div>
+        </div>
+        <div class="exclusive-badge">⚡ حصري</div>
+      </div>
+      <div class="card-body">
+        <div class="coupon-title">كود خصم نمشي ٢٠٪ على جميع منتجات الأزياء والإكسسوارات</div>
+        <div class="expiry">⏰ ينتهي خلال ٣ أيام</div>
+        <button class="btn-primary">
+          إظهار الكود والذهاب للمتجر
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="swatches">
+      <div class="swatch-group">
+        <div class="swatch" style="background:#0D6E6E"></div>
+        <div class="swatch-label">Primary</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#F97316"></div>
+        <div class="swatch-label">Accent</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#F7FAF9; border:1px solid #ddd"></div>
+        <div class="swatch-label">BG</div>
+      </div>
+      <div class="swatch-group">
+        <div class="swatch" style="background:#CCEEEE; border:1px solid #ddd"></div>
+        <div class="swatch-label">Surface</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

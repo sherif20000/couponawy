@@ -7,9 +7,9 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        green: "bg-brand-green text-cream",
+        primary: "bg-brand-red text-cream",
         gold: "bg-brand-gold text-charcoal",
-        outline: "border border-brand-green/30 bg-transparent text-brand-green",
+        outline: "border border-brand-red/30 bg-transparent text-brand-red",
         cream: "bg-cream-dark text-warm-brown",
         danger: "bg-danger text-cream",
         exclusive:
@@ -17,7 +17,7 @@ const badgeVariants = cva(
       },
     },
     defaultVariants: {
-      variant: "green",
+      variant: "primary",
     },
   }
 );

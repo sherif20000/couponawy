@@ -139,3 +139,106 @@ export async function getActiveCoupons(): Promise<FeaturedCoupon[]> {
   }
   return (data ?? []) as FeaturedCoupon[];
 }
+
+/**
+ * Resolves the set of active coupon IDs that should be visible for a given country.
+ *
+ * Logic:
+ *   - Coupons with NO entries in coupon_countries → global, visible everywhere.
+ *   - Coupons with entries in coupon_countries → visible only in those countries.
+ *
+ * Returns `null` when no countryCode is supplied (caller should show all coupons).
+ */
+export async function getVisibleCouponIds(
+  countryCode: string
+): Promise<string[] | null> {
+  const supabase = await createClient();
+
+  // Fetch all active coupon IDs
+  const { data: activeCoupons, error: aErr } = await supabase
+    .from("coupons")
+    .select("id")
+    .eq("status", "active");
+
+  if (aErr) {
+    console.error("[getVisibleCouponIds] coupons", aErr);
+    return null;
+  }
+
+  const allActiveIds = (activeCoupons ?? []).map((c) => c.id);
+  if (allActiveIds.length === 0) return [];
+
+  // Fetch all coupon_countries rows for those coupons
+  const { data: rows, error: rErr } = await supabase
+    .from("coupon_countries")
+    .select("coupon_id, country_code")
+    .in("coupon_id", allActiveIds);
+
+  if (rErr) {
+    console.error("[getVisibleCouponIds] coupon_countries", rErr);
+    return null;
+  }
+
+  // Build a set: coupon_ids that have ANY country restriction
+  const restrictedIds = new Set((rows ?? []).map((r) => r.coupon_id));
+  // Build a set: coupon_ids restricted specifically for the requested country
+  const countryIds = new Set(
+    (rows ?? [])
+      .filter((r) => r.country_code === countryCode)
+      .map((r) => r.coupon_id)
+  );
+
+  // Keep coupons that are either: unrestricted (global) OR restricted for this country
+  return allActiveIds.filter(
+    (id) => !restrictedIds.has(id) || countryIds.has(id)
+  );
+}
+
+export async function getActiveCouponsPaginated(
+  page = 1,
+  perPage = 24,
+  countryCode?: string
+): Promise<{ coupons: FeaturedCoupon[]; total: number }> {
+  const supabase = await createClient();
+  const from = (page - 1) * perPage;
+
+  // When a country filter is active, resolve the visible IDs first.
+  if (countryCode) {
+    const visibleIds = await getVisibleCouponIds(countryCode);
+    // If the helper errored out, fall through to the unfiltered query so the
+    // page doesn't break. An error was already logged inside the helper.
+    if (visibleIds !== null) {
+      if (visibleIds.length === 0) return { coupons: [], total: 0 };
+
+      const { data, count, error } = await supabase
+        .from("coupons")
+        .select(`*, store:stores ( id, slug, name_ar, logo_url )`, { count: "exact" })
+        .eq("status", "active")
+        .in("id", visibleIds)
+        .order("is_featured", { ascending: false })
+        .order("display_order", { ascending: true })
+        .range(from, from + perPage - 1);
+
+      if (error) {
+        console.error("[getActiveCouponsPaginated] filtered", error);
+        return { coupons: [], total: 0 };
+      }
+      return { coupons: (data ?? []) as FeaturedCoupon[], total: count ?? 0 };
+    }
+  }
+
+  // Unfiltered (no country or helper error)
+  const { data, count, error } = await supabase
+    .from("coupons")
+    .select(`*, store:stores ( id, slug, name_ar, logo_url )`, { count: "exact" })
+    .eq("status", "active")
+    .order("is_featured", { ascending: false })
+    .order("display_order", { ascending: true })
+    .range(from, from + perPage - 1);
+
+  if (error) {
+    console.error("[getActiveCouponsPaginated]", error);
+    return { coupons: [], total: 0 };
+  }
+  return { coupons: (data ?? []) as FeaturedCoupon[], total: count ?? 0 };
+}

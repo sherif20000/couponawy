@@ -2,9 +2,12 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { StoreGrid } from "@/components/stores/store-grid";
-import { getActiveStores } from "@/lib/queries/detail";
+import { getActiveStoresPaginated } from "@/lib/queries/detail";
+import { getPreferredCountry } from "@/lib/utils/country";
 
-export const revalidate = 300;
+// Country preference is cookie-driven, so this page renders dynamically
+// per request. Individual store detail pages retain their own ISR.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "جميع المتاجر | كوبوناوي",
@@ -12,8 +15,19 @@ export const metadata: Metadata = {
     "تصفّح جميع المتاجر السعودية على كوبوناوي واحصل على أحدث كوبونات الخصم المجرّبة.",
 };
 
-export default async function StoresPage() {
-  const stores = await getActiveStores();
+const PER_PAGE = 24;
+
+interface Props {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function StoresPage({ searchParams }: Props) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+
+  const countryCode = await getPreferredCountry();
+  const { stores, total } = await getActiveStoresPaginated(page, PER_PAGE, countryCode);
+  const totalPages = Math.ceil(total / PER_PAGE);
 
   return (
     <main className="flex flex-1 flex-col">
@@ -23,7 +37,7 @@ export default async function StoresPage() {
             aria-label="مسار التنقّل"
             className="text-warm-brown-light font-accent mb-4 flex items-center gap-2 text-xs"
           >
-            <Link href="/" className="hover:text-brand-green">
+            <Link href="/" className="hover:text-brand-red">
               الرئيسية
             </Link>
             <span>›</span>
@@ -33,7 +47,7 @@ export default async function StoresPage() {
             جميع المتاجر
           </h1>
           <p className="font-body text-warm-brown mt-2 text-base">
-            {stores.length} متجر · كوبونات مجرّبة ومحدّثة يومياً
+            {total.toLocaleString("ar-EG")} متجر · كوبونات مجرّبة ومحدّثة يومياً
           </p>
         </Container>
       </section>
@@ -41,6 +55,30 @@ export default async function StoresPage() {
       <section className="py-12 md:py-16">
         <Container size="xl">
           <StoreGrid stores={stores} />
+
+          {totalPages > 1 && (
+            <div className="mt-10 flex items-center justify-center gap-3">
+              {page > 1 && (
+                <Link
+                  href={`/stores?page=${page - 1}`}
+                  className="font-body bg-white border border-charcoal/10 text-charcoal hover:border-brand-red hover:text-brand-red rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                >
+                  السابق
+                </Link>
+              )}
+              <span className="font-body text-warm-brown text-sm">
+                صفحة {page.toLocaleString("ar-EG")} من {totalPages.toLocaleString("ar-EG")}
+              </span>
+              {page < totalPages && (
+                <Link
+                  href={`/stores?page=${page + 1}`}
+                  className="font-body bg-white border border-charcoal/10 text-charcoal hover:border-brand-red hover:text-brand-red rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+                >
+                  التالي
+                </Link>
+              )}
+            </div>
+          )}
         </Container>
       </section>
     </main>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 
 type CouponRevealHeroProps = {
   couponId: string;
+  storeId: string;
   destinationUrl: string;
   hasCode: boolean;
   storeName: string;
@@ -15,6 +16,7 @@ type CouponRevealHeroProps = {
 
 export function CouponRevealHero({
   couponId,
+  storeId,
   destinationUrl,
   hasCode,
   storeName,
@@ -34,7 +36,8 @@ export function CouponRevealHero({
       if (error) throw error;
       if (!data) throw new Error("لا يوجد كود لهذا الكوبون");
       setRevealed(data);
-      window.open(destinationUrl, "_blank", "noopener,noreferrer");
+      // window.open is intentionally NOT called here —
+      // user copies the code first, then taps the separate store button.
     } catch (err) {
       console.error("[reveal_coupon]", err);
       toast.error("تعذّر إظهار الكود، جرّب مرة أخرى");
@@ -52,6 +55,19 @@ export function CouponRevealHero({
   }
 
   function handleGoToStore() {
+    // Fire-and-forget: track the click without blocking navigation
+    const supabase = createClient();
+    supabase.rpc("track_click", {
+      p_coupon_id: couponId || null,
+      p_store_id: storeId || null,
+      p_country_code:
+        document.cookie
+          .split("; ")
+          .find((c) => c.startsWith("preferred_country="))
+          ?.split("=")[1] ?? null,
+      p_referrer: document.referrer || null,
+      p_user_agent: navigator.userAgent || null,
+    });
     window.open(destinationUrl, "_blank", "noopener,noreferrer");
   }
 
@@ -71,28 +87,43 @@ export function CouponRevealHero({
 
   if (revealed) {
     return (
-      <button
-        onClick={handleCopy}
-        className="border-brand-gold bg-brand-gold/10 hover:bg-brand-gold/20 group flex w-full items-center justify-between gap-3 rounded-2xl border-2 border-dashed p-5 transition-colors sm:w-auto sm:min-w-[340px]"
-        aria-label="نسخ الكود"
-      >
-        <span className="font-display text-brand-green-dark text-2xl font-extrabold tracking-wider md:text-3xl">
-          {revealed}
+      <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center animate-reveal-pop">
+        {/* Screen-reader announcement */}
+        <span className="sr-only" aria-live="polite" aria-atomic="true">
+          كود الخصم هو {revealed}
         </span>
-        <span className="text-warm-brown font-accent inline-flex items-center gap-1.5 text-sm">
-          {copied ? (
-            <>
-              <Check className="h-4 w-4" aria-hidden />
-              تم النسخ
-            </>
-          ) : (
-            <>
-              <Copy className="h-4 w-4" aria-hidden />
-              انسخ الكود
-            </>
-          )}
-        </span>
-      </button>
+        <button
+          onClick={handleCopy}
+          className="border-brand-gold bg-brand-gold/10 hover:bg-brand-gold/20 group flex w-full items-center justify-between gap-3 rounded-2xl border-2 border-dashed p-5 transition-colors sm:min-w-[300px]"
+          aria-label="نسخ الكود"
+        >
+          <span className="font-display text-brand-red-dark text-2xl font-extrabold tracking-wider md:text-3xl">
+            {revealed}
+          </span>
+          <span className="text-warm-brown font-accent inline-flex items-center gap-1.5 text-sm">
+            {copied ? (
+              <>
+                <Check className="h-4 w-4" aria-hidden />
+                تم النسخ
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4" aria-hidden />
+                انسخ الكود
+              </>
+            )}
+          </span>
+        </button>
+        <Button
+          variant="gold"
+          size="lg"
+          onClick={handleGoToStore}
+          className="w-full sm:w-auto"
+        >
+          اذهب للمتجر الآن
+          <ExternalLink className="h-5 w-5" aria-hidden />
+        </Button>
+      </div>
     );
   }
 

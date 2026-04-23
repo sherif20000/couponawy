@@ -440,6 +440,54 @@ export type Database = {
           },
         ]
       }
+      contact_messages: {
+        Row: {
+          id: string
+          name: string | null
+          subject: string | null
+          message: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name?: string | null
+          subject?: string | null
+          message: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string | null
+          subject?: string | null
+          message?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      coupon_reports: {
+        Row: {
+          id: string
+          issue_type: string
+          coupon_url: string | null
+          note: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          issue_type: string
+          coupon_url?: string | null
+          note?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          issue_type?: string
+          coupon_url?: string | null
+          note?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           click_count: number
@@ -972,6 +1020,16 @@ export type Database = {
           p_user_agent?: string
         }
         Returns: string
+      }
+      track_click: {
+        Args: {
+          p_coupon_id?: string | null
+          p_store_id?: string | null
+          p_country_code?: string | null
+          p_referrer?: string | null
+          p_user_agent?: string | null
+        }
+        Returns: void
       }
     }
     Enums: {

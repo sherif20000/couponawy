@@ -103,7 +103,7 @@ function resolveKind(discountType: string | null | undefined): CouponKind {
 function CouponTypeTag({ kind }: { kind: CouponKind }) {
   if (kind === "free_shipping") {
     return (
-      <span className="font-accent inline-flex items-center gap-1 rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 ring-1 ring-emerald-200">
+      <span className="font-accent inline-flex items-center gap-1 rounded-md bg-emerald-50 px-1.5 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
         <Truck className="h-2.5 w-2.5" aria-hidden />
         شحن مجاني
       </span>
@@ -112,7 +112,7 @@ function CouponTypeTag({ kind }: { kind: CouponKind }) {
 
   if (kind === "deal") {
     return (
-      <span className="font-accent bg-brand-gold/10 text-brand-gold-dark ring-brand-gold/30 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ring-1">
+      <span className="font-accent bg-brand-gold/10 text-brand-gold-dark ring-brand-gold/30 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-semibold ring-1">
         <Tag className="h-2.5 w-2.5" aria-hidden />
         عرض مباشر
       </span>
@@ -120,7 +120,7 @@ function CouponTypeTag({ kind }: { kind: CouponKind }) {
   }
 
   return (
-    <span className="font-accent bg-brand-green/10 text-brand-green ring-brand-green/20 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold ring-1">
+    <span className="font-accent bg-brand-red/10 text-brand-red ring-brand-red/20 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-semibold ring-1">
       <Percent className="h-2.5 w-2.5" aria-hidden />
       كود خصم
     </span>
@@ -148,7 +148,8 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
       if (error) throw error;
       if (!data) throw new Error("لا يوجد كود لهذا الكوبون");
       setRevealed(data);
-      window.open(coupon.destination_url, "_blank", "noopener,noreferrer");
+      // window.open is intentionally NOT called here —
+      // user copies the code first, then taps the separate store button.
     } catch (err) {
       console.error("[reveal_coupon]", err);
       toast.error("تعذّر إظهار الكود، جرّب مرة أخرى");
@@ -165,7 +166,20 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  async function handleGoToStore() {
+  function handleGoToStore() {
+    // Fire-and-forget: track the click without blocking navigation
+    const supabase = createClient();
+    supabase.rpc("track_click", {
+      p_coupon_id: coupon.id || null,
+      p_store_id: coupon.store?.id || null,
+      p_country_code:
+        document.cookie
+          .split("; ")
+          .find((c) => c.startsWith("preferred_country="))
+          ?.split("=")[1] ?? null,
+      p_referrer: document.referrer || null,
+      p_user_agent: navigator.userAgent || null,
+    });
     window.open(coupon.destination_url, "_blank", "noopener,noreferrer");
   }
 
@@ -177,7 +191,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
       )}
     >
       {/* ── Card header ─────────────────────────────────────────────── */}
-      <div className="bg-brand-green/5 border-brand-gold/20 border-b p-4">
+      <div className="bg-brand-red/5 border-brand-gold/20 border-b p-4">
         <div className="flex items-start justify-between gap-3">
           {/* Store info */}
           <div className="flex min-w-0 items-center gap-3">
@@ -190,7 +204,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
                   className="h-9 w-9 rounded-full object-contain"
                 />
               ) : (
-                <span className="font-display text-brand-green text-sm font-bold">
+                <span className="font-display text-brand-red text-sm font-bold">
                   {coupon.store?.name_ar?.slice(0, 2) ?? "؟"}
                 </span>
               )}
@@ -199,7 +213,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
               {coupon.store ? (
                 <Link
                   href={`/stores/${coupon.store.slug}`}
-                  className="font-display text-charcoal hover:text-brand-green truncate text-sm font-bold"
+                  className="font-display text-charcoal hover:text-brand-red truncate text-sm font-bold"
                 >
                   {coupon.store.name_ar}
                 </Link>
@@ -234,7 +248,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
         <h3 className="font-display text-charcoal text-base font-bold leading-snug">
           <Link
             href={`/coupons/${coupon.slug}`}
-            className="hover:text-brand-green transition-colors"
+            className="hover:text-brand-red transition-colors"
           >
             {coupon.title_ar}
           </Link>
@@ -246,34 +260,53 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
           </p>
         )}
 
+        {/* Screen-reader live region — announces the code when revealed */}
+        <span className="sr-only" aria-live="polite" aria-atomic="true">
+          {revealed ? `كود الخصم هو ${revealed}` : ""}
+        </span>
+
         <div className="mt-auto flex flex-col gap-3">
           {/* Expiry — always shown */}
           <ExpiryIndicator expiresAt={coupon.expires_at} />
 
           {hasCode ? (
             revealed ? (
-              <button
-                onClick={handleCopy}
-                className="border-brand-gold bg-brand-gold/10 hover:bg-brand-gold/20 group/code relative flex items-center justify-between gap-2 rounded-xl border-2 border-dashed p-3 transition-colors"
-                aria-label="نسخ الكود"
-              >
-                <span className="font-display text-brand-green-dark text-lg font-extrabold tracking-wider">
-                  {revealed}
-                </span>
-                <span className="text-warm-brown font-accent inline-flex items-center gap-1 text-xs">
-                  {copied ? (
-                    <>
-                      <Check className="h-3.5 w-3.5" aria-hidden />
-                      تم النسخ
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-3.5 w-3.5" aria-hidden />
-                      انسخ
-                    </>
+              <div className="flex flex-col gap-2 animate-reveal-pop">
+                <button
+                  onClick={handleCopy}
+                  className={cn(
+                    "border-brand-gold bg-brand-gold/10 hover:bg-brand-gold/20 group/code relative flex items-center justify-between gap-2 rounded-xl border-2 border-dashed p-3 transition-colors",
+                    copied && "animate-gold-flash"
                   )}
-                </span>
-              </button>
+                  aria-label="نسخ الكود"
+                >
+                  <span className="font-display text-brand-red-dark text-lg font-extrabold tracking-wider">
+                    {revealed}
+                  </span>
+                  <span className="text-warm-brown font-accent inline-flex items-center gap-1 text-xs">
+                    {copied ? (
+                      <>
+                        <Check className="h-3.5 w-3.5" aria-hidden />
+                        تم النسخ
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3.5 w-3.5" aria-hidden />
+                        انسخ
+                      </>
+                    )}
+                  </span>
+                </button>
+                <Button
+                  variant="gold"
+                  size="md"
+                  onClick={handleGoToStore}
+                  className="w-full"
+                >
+                  اذهب للمتجر الآن
+                  <ExternalLink className="h-4 w-4" aria-hidden />
+                </Button>
+              </div>
             ) : (
               <Button
                 variant="primary"
@@ -283,7 +316,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
                 className="w-full"
               >
                 {loading ? "جاري الإظهار..." : "إظهار الكود"}
-                <ExternalLink className="h-4 w-4" aria-hidden />
+                <Tag className="h-4 w-4" aria-hidden />
               </Button>
             )
           ) : (

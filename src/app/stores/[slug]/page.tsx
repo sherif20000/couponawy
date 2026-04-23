@@ -5,13 +5,20 @@ import { ExternalLink, BadgeCheck, Star, ArrowLeft } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CouponCard } from "@/components/coupons/coupon-card";
+import { CouponGridWithFilters } from "@/components/coupons/coupon-grid-with-filters";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   getStoreBySlug,
   getCouponsForStore,
+  getAllStoreSlugsBuildTime,
 } from "@/lib/queries/detail";
 
 export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const slugs = await getAllStoreSlugsBuildTime();
+  return slugs.map(({ slug }) => ({ slug }));
+}
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -29,9 +36,15 @@ export async function generateMetadata({
     store.short_description_ar ??
     `أحدث كوبونات ${store.name_ar} وأكواد خصم مجرّبة ومحدّثة يومياً من كوبوناوي.`;
 
+  const BASE_URL_META =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
+
   return {
     title,
     description,
+    alternates: {
+      canonical: `${BASE_URL_META}/stores/${slug}`,
+    },
     openGraph: {
       title,
       description,
@@ -39,6 +52,9 @@ export async function generateMetadata({
     },
   };
 }
+
+const BASE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 export default async function StorePage({ params }: PageProps) {
   const { slug } = await params;
@@ -48,19 +64,48 @@ export default async function StorePage({ params }: PageProps) {
   const coupons = await getCouponsForStore(store.id);
   const activeCount = coupons.length;
 
+  const storeJsonLd: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: store.name_ar,
+    url: store.website_url,
+    ...(store.logo_url ? { logo: store.logo_url } : {}),
+    ...(store.short_description_ar
+      ? { description: store.short_description_ar }
+      : {}),
+    ...(store.rating != null
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: store.rating,
+            ...(store.review_count != null
+              ? { reviewCount: store.review_count }
+              : { reviewCount: 1 }),
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }
+      : {}),
+    sameAs: [`${BASE_URL}/stores/${store.slug}`],
+  };
+
   return (
     <main className="flex flex-1 flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(storeJsonLd) }}
+      />
       <section className="bg-gradient-to-b from-cream-dark/60 to-cream border-brand-gold/20 border-b">
         <Container size="xl" className="py-10 md:py-14">
           <nav
             aria-label="مسار التنقّل"
             className="text-warm-brown-light font-accent mb-6 flex items-center gap-2 text-xs"
           >
-            <Link href="/" className="hover:text-brand-green">
+            <Link href="/" className="hover:text-brand-red">
               الرئيسية
             </Link>
             <span>›</span>
-            <Link href="/stores" className="hover:text-brand-green">
+            <Link href="/stores" className="hover:text-brand-red">
               المتاجر
             </Link>
             <span>›</span>
@@ -77,7 +122,7 @@ export default async function StorePage({ params }: PageProps) {
                   className="h-20 w-20 rounded-xl object-contain md:h-24 md:w-24"
                 />
               ) : (
-                <span className="font-display text-brand-green text-3xl font-extrabold">
+                <span className="font-display text-brand-red text-3xl font-extrabold">
                   {store.name_ar.slice(0, 2)}
                 </span>
               )}
@@ -104,7 +149,7 @@ export default async function StorePage({ params }: PageProps) {
 
               <div className="text-warm-brown-light font-accent flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
                 <span className="inline-flex items-center gap-2">
-                  <BadgeCheck className="text-brand-green h-4 w-4" aria-hidden />
+                  <BadgeCheck className="text-brand-red h-4 w-4" aria-hidden />
                   {activeCount} كوبون نشط
                 </span>
                 {store.rating != null && (
@@ -148,7 +193,7 @@ export default async function StorePage({ params }: PageProps) {
             </h2>
             <Link
               href="/stores"
-              className="font-body text-brand-green hover:text-brand-green-dark inline-flex items-center gap-1 text-sm font-semibold"
+              className="font-body text-brand-red hover:text-brand-red-dark inline-flex items-center gap-1 text-sm font-semibold"
             >
               كل المتاجر
               <ArrowLeft className="h-4 w-4" aria-hidden />
@@ -156,16 +201,12 @@ export default async function StorePage({ params }: PageProps) {
           </div>
 
           {coupons.length === 0 ? (
-            <div className="border-brand-gold/30 bg-cream-dark/30 text-warm-brown font-body rounded-2xl border border-dashed p-12 text-center">
-              لا توجد كوبونات نشطة لهذا المتجر حالياً. تابعنا للحصول على أحدث
-              العروض.
-            </div>
+            <EmptyState
+              message="لا توجد كوبونات نشطة لهذا المتجر حالياً. تابعنا للحصول على أحدث العروض."
+              cta={{ href: "/stores", label: "تصفّح المتاجر الأخرى" }}
+            />
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {coupons.map((coupon) => (
-                <CouponCard key={coupon.id} coupon={coupon} />
-              ))}
-            </div>
+            <CouponGridWithFilters coupons={coupons} />
           )}
         </Container>
       </section>

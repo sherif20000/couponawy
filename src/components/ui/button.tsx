@@ -9,12 +9,12 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-brand-green text-cream shadow-brand hover:bg-brand-green-dark active:scale-[0.98]",
+          "bg-brand-red text-cream shadow-brand hover:bg-brand-red-dark active:scale-[0.98]",
         gold: "bg-brand-gold text-charcoal shadow-gold hover:bg-brand-gold-dark hover:text-cream active:scale-[0.98]",
         outline:
-          "border border-brand-green/40 bg-transparent text-brand-green hover:bg-brand-green/5",
-        ghost: "bg-transparent text-charcoal hover:bg-cream-dark",
-        link: "text-brand-green underline-offset-4 hover:underline",
+          "border border-brand-red/40 bg-transparent text-brand-red hover:bg-brand-red/5 active:scale-[0.97]",
+        ghost: "bg-transparent text-charcoal hover:bg-cream-dark active:scale-[0.97]",
+        link: "text-brand-red underline-offset-4 hover:underline",
       },
       size: {
         sm: "h-9 px-4 text-sm",
