@@ -25,7 +25,7 @@ export default function CategoriesLoading() {
             {Array.from({ length: 15 }).map((_, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-warm-brown/8 bg-white p-5 flex flex-col items-center gap-3"
+                className="rounded-2xl border border-warm-brown/8 bg-cream p-5 flex flex-col items-center gap-3"
               >
                 <Skeleton className="h-10 w-10 rounded-full" />
                 <Skeleton className="h-4 w-20" />

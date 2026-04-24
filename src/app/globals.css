@@ -1,47 +1,46 @@
 @import "tailwindcss";
 
 /*
-  Brand System — Couponawy
+  Brand System — Couponawy · Bold Bazaar Theme
   Tailwind v4 CSS-first theme. Tokens under @theme become utilities automatically:
   --color-brand-red  → bg-brand-red, text-brand-red, border-brand-red
   --font-display       → font-display
 
-  Palette: Bold crimson-coral (primary) + warm amber/gold (accent) + warm cream (surface)
-  Feel: Bold, deal-hungry, energetic — urgency without aggression. Arabic savings seekers.
-  Note: Token named "brand-red" for backward compat — value is intentionally red/coral.
+  Palette: Pure saturated red (primary) + electric yellow (accent) + near-white (surface)
+  Feel: High-energy bold bazaar — red + yellow = urgency + value. Arabic savings seekers.
 */
 
 @theme {
-  /* Primary brand — bold crimson-coral (energy, urgency, deals) */
-  --color-brand-red:       oklch(52% 0.23 22);
-  --color-brand-red-dark:  oklch(43% 0.23 22);
-  --color-brand-red-light: oklch(94% 0.06 22);
+  /* Primary brand — pure saturated red (energy, urgency, deals) */
+  --color-brand-red:       oklch(49% 0.25 26);
+  --color-brand-red-dark:  oklch(41% 0.25 26);
+  --color-brand-red-light: oklch(96% 0.05 26);
 
-  /* Accent — warm amber/gold (value, treasure, celebration) */
-  --color-brand-gold:        oklch(72% 0.17 75);
-  --color-brand-gold-light:  oklch(88% 0.10 85);
-  --color-brand-gold-dark:   oklch(56% 0.17 68);
+  /* Accent — electric yellow (boldness, value, action) */
+  --color-brand-gold:        oklch(86% 0.19 94);
+  --color-brand-gold-light:  oklch(94% 0.10 94);
+  --color-brand-gold-dark:   oklch(72% 0.17 88);
 
-  /* Neutrals — warm, golden-tinted (never cold gray, never lavender) */
-  --color-cream:             oklch(98% 0.012 90);
-  --color-cream-dark:        oklch(94% 0.018 90);
-  --color-charcoal:          oklch(22% 0.012 80);
-  --color-warm-brown:        oklch(48% 0.015 75);
-  --color-warm-brown-light:  oklch(65% 0.012 75);
+  /* Neutrals — clean near-white (max contrast against red) */
+  --color-cream:             oklch(99% 0.004 90);
+  --color-cream-dark:        oklch(96% 0.005 90);
+  --color-charcoal:          oklch(14% 0.010 80);
+  --color-warm-brown:        oklch(45% 0.012 75);
+  --color-warm-brown-light:  oklch(62% 0.010 75);
 
   /* Functional / semantic */
-  --color-danger:  oklch(52% 0.23 22);
+  --color-danger:  oklch(49% 0.25 26);
   --color-success: oklch(50% 0.19 145);
-  --color-warning: oklch(72% 0.17 75);
+  --color-warning: oklch(86% 0.19 94);
 
-  /* Typography — Arabic-first, loaded via next/font in layout.tsx */
-  --font-display: var(--font-noto-kufi), system-ui, sans-serif;
-  --font-body:    var(--font-tajawal),   system-ui, sans-serif;
-  --font-accent:  var(--font-amiri),     Georgia,   serif;
+  /* Typography — Cairo: bold, wide, energetic Arabic. One family for display + body */
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body:    var(--font-cairo), system-ui, sans-serif;
+  --font-accent:  var(--font-cairo), system-ui, sans-serif;
 
   /* Shadows */
-  --shadow-brand: 0 10px 30px oklch(52% 0.23 22 / 0.15);
-  --shadow-gold:  0 10px 30px oklch(72% 0.17 75 / 0.25);
+  --shadow-brand: 0 10px 30px oklch(49% 0.25 26 / 0.20);
+  --shadow-gold:  0 10px 30px oklch(86% 0.19 94 / 0.30);
 
   /* Animations — ease-out-expo for confident, natural deceleration */
   --animate-fade-up:    fade-up    0.5s  cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -51,6 +50,8 @@
   /* Delight animations */
   --animate-gold-flash:  gold-flash  0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-icon-bounce: icon-bounce 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* Ticker — infinite RTL scroll for urgency strip */
+  --animate-ticker-rtl: ticker-rtl 30s linear infinite;
 }
 
 /* ─── Keyframes ────────────────────────────────────────────────────────────── */
@@ -104,6 +105,17 @@
   100% { transform: scale(1)    rotate(0deg); }
 }
 
+/* Ticker: seamless RTL scroll — two copies, animate left by 50% for a perfect loop */
+@keyframes ticker-rtl {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Direct class — ensures the animation works even if @theme utility generation lags */
+.animate-ticker-rtl {
+  animation: ticker-rtl 30s linear infinite;
+}
+
 /* ─── Grid stagger helper ──────────────────────────────────────────────────── */
 /* Add .stagger-children to a grid/flex container; each child gets animate-fade-up */
 
@@ -115,6 +127,17 @@
 .stagger-children > *:nth-child(6)  { animation-delay: 250ms; }
 .stagger-children > *:nth-child(7)  { animation-delay: 300ms; }
 .stagger-children > *:nth-child(8)  { animation-delay: 350ms; }
+
+/* ─── Scrollbar utility ────────────────────────────────────────────────────── */
+/* Hide scrollbar while keeping scroll functionality (for category strip, carousels) */
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 
 html {
   direction: rtl;

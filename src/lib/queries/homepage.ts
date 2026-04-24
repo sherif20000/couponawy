@@ -161,6 +161,7 @@ export async function getTrendingCoupons(limit = 8, countryCode?: string): Promi
 
 export async function getFeaturedCategories(limit = 10): Promise<Category[]> {
   const supabase = await createClient();
+  // First try: fetch only explicitly featured categories
   const { data, error } = await supabase
     .from("categories")
     .select("*")
@@ -172,5 +173,22 @@ export async function getFeaturedCategories(limit = 10): Promise<Category[]> {
     console.error("[getFeaturedCategories]", error);
     return [];
   }
-  return data ?? [];
+
+  // Fallback: if no featured categories are set, return first N categories
+  // so the category strip always renders on the homepage
+  if (!data || data.length === 0) {
+    const { data: fallback, error: fallbackError } = await supabase
+      .from("categories")
+      .select("*")
+      .order("display_order", { ascending: true })
+      .limit(limit);
+
+    if (fallbackError) {
+      console.error("[getFeaturedCategories fallback]", fallbackError);
+      return [];
+    }
+    return fallback ?? [];
+  }
+
+  return data;
 }

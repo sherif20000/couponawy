@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
-  title: "الوظائف | كوبوناوي",
+  title: "الوظائف",
   description:
     "انضم إلى فريق كوبوناوي — وظائف مفتوحة ومستقبل رائع في مجال التقنية والتجارة.",
 };

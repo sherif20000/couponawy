@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
-  title: "سياسة الخصوصية | كوبوناوي",
+  title: "سياسة الخصوصية",
   description: "سياسة الخصوصية لمنصة كوبوناوي — كيف نجمع بياناتك ونحميها.",
 };
 

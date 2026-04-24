@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = await getCategoryBySlug(slug);
   if (!category) return {};
   return {
-    title: category.seo_title ?? `${category.name_ar} | كوبوناوي`,
+    title: category.seo_title ?? category.name_ar,
     description:
       category.seo_description ??
       `اعثر على أفضل كوبونات ${category.name_ar} المجرّبة والمحدّثة يومياً على كوبوناوي.`,
@@ -82,31 +82,31 @@ export default async function CategoryPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
         />
       )}
-      <section className="from-cream-dark/60 to-cream border-brand-gold/20 border-b bg-gradient-to-b">
-        <Container size="xl" className="py-10 md:py-14">
+      <section className="bg-brand-red py-10 md:py-14">
+        <Container size="xl">
           <nav
             aria-label="مسار التنقّل"
-            className="text-warm-brown-light font-accent mb-4 flex items-center gap-2 text-xs"
+            className="font-accent mb-4 flex items-center gap-2 text-xs text-white/60"
           >
-            <Link href="/" className="hover:text-brand-red">
+            <Link href="/" className="hover:text-white transition-colors">
               الرئيسية
             </Link>
-            <span>›</span>
-            <Link href="/categories" className="hover:text-brand-red">
+            <span className="text-white/30">›</span>
+            <Link href="/categories" className="hover:text-white transition-colors">
               الأقسام
             </Link>
-            <span>›</span>
-            <span className="text-charcoal">{category.name_ar}</span>
+            <span className="text-white/30">›</span>
+            <span className="text-white">{category.name_ar}</span>
           </nav>
-          <h1 className="font-display text-charcoal text-3xl font-extrabold md:text-4xl">
+          <h1 className="font-display text-white text-3xl font-extrabold md:text-4xl">
             كوبونات {category.name_ar}
           </h1>
           {category.description_ar && (
-            <p className="font-body text-warm-brown mt-2 text-base">
+            <p className="font-body text-white/70 mt-2 text-base">
               {category.description_ar}
             </p>
           )}
-          <p className="font-body text-warm-brown-light mt-2 text-sm">
+          <p className="font-body text-white/50 mt-2 text-sm">
             {coupons.length} كوبون نشط
           </p>
         </Container>

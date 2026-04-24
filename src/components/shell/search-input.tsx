@@ -36,16 +36,16 @@ export function SearchInput() {
     <form
       onSubmit={handleSubmit}
       role="search"
-      className="border-brand-gold/30 bg-cream-dark/40 hidden items-center gap-2 rounded-full border px-4 py-2 focus-within:border-brand-red/50 focus-within:bg-cream transition-colors md:flex"
+      className="hidden items-center gap-2 rounded-full border border-white/25 bg-white/15 px-4 py-2 transition-colors focus-within:border-white/50 focus-within:bg-white/22 md:flex"
     >
-      <Search className="text-warm-brown-light h-4 w-4 shrink-0" aria-hidden />
+      <Search className="h-4 w-4 shrink-0 text-white/70" aria-hidden />
       <input
         ref={inputRef}
         type="search"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="ابحث عن متجر أو كوبون..."
-        className="font-body text-charcoal placeholder:text-warm-brown-light w-56 bg-transparent text-sm outline-none"
+        className="font-body w-56 bg-transparent text-sm text-white outline-none placeholder:text-white/55"
         aria-label="بحث"
       />
     </form>

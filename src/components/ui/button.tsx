@@ -12,7 +12,7 @@ const buttonVariants = cva(
           "bg-brand-red text-cream shadow-brand hover:bg-brand-red-dark active:scale-[0.98]",
         gold: "bg-brand-gold text-charcoal shadow-gold hover:bg-brand-gold-dark hover:text-cream active:scale-[0.98]",
         outline:
-          "border border-brand-red/40 bg-transparent text-brand-red hover:bg-brand-red/5 active:scale-[0.97]",
+          "border border-brand-red/40 bg-transparent text-brand-red hover:bg-cream-dark active:scale-[0.97]",
         ghost: "bg-transparent text-charcoal hover:bg-cream-dark active:scale-[0.97]",
         link: "text-brand-red underline-offset-4 hover:underline",
       },

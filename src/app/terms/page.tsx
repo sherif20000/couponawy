@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
-  title: "الشروط والأحكام | كوبوناوي",
+  title: "الشروط والأحكام",
   description: "شروط وأحكام استخدام منصة كوبوناوي.",
 };
 

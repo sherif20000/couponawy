@@ -493,6 +493,7 @@ export type Database = {
           click_count: number
           code: string | null
           conversion_count: number
+          country_code: string | null
           created_at: string
           description_ar: string | null
           description_en: string | null
@@ -525,6 +526,7 @@ export type Database = {
           click_count?: number
           code?: string | null
           conversion_count?: number
+          country_code?: string | null
           created_at?: string
           description_ar?: string | null
           description_en?: string | null
@@ -557,6 +559,7 @@ export type Database = {
           click_count?: number
           code?: string | null
           conversion_count?: number
+          country_code?: string | null
           created_at?: string
           description_ar?: string | null
           description_en?: string | null
@@ -787,6 +790,7 @@ export type Database = {
         Row: {
           affiliate_network_id: string | null
           affiliate_params: Json | null
+          country_code: string | null
           cover_url: string | null
           created_at: string
           description_ar: string | null
@@ -814,6 +818,7 @@ export type Database = {
         Insert: {
           affiliate_network_id?: string | null
           affiliate_params?: Json | null
+          country_code?: string | null
           cover_url?: string | null
           created_at?: string
           description_ar?: string | null
@@ -841,6 +846,7 @@ export type Database = {
         Update: {
           affiliate_network_id?: string | null
           affiliate_params?: Json | null
+          country_code?: string | null
           cover_url?: string | null
           created_at?: string
           description_ar?: string | null

@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/container";
 import { ContactForm } from "./contact-form";
 
 export const metadata: Metadata = {
-  title: "تواصل معنا | كوبوناوي",
+  title: "تواصل معنا",
   description:
     "تواصل مع فريق كوبوناوي لأي استفسار أو اقتراح — نرد في أقرب وقت.",
 };

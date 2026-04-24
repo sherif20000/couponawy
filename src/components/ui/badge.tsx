@@ -14,6 +14,8 @@ const badgeVariants = cva(
         danger: "bg-danger text-cream",
         exclusive:
           "bg-brand-gold-dark text-cream shadow-gold",
+        inverted:
+          "border border-white/30 bg-transparent text-white",
       },
     },
     defaultVariants: {

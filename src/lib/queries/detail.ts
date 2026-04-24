@@ -75,7 +75,8 @@ export async function getActiveStores(
 export async function getActiveStoresPaginated(
   page = 1,
   perPage = 24,
-  countryCode?: string
+  countryCode?: string,
+  searchQuery?: string
 ): Promise<{ stores: StoreListItem[]; total: number }> {
   const supabase = await createClient();
   const from = (page - 1) * perPage;
@@ -89,6 +90,18 @@ export async function getActiveStoresPaginated(
 
   if (countryCode) {
     query = query.or(`country_code.eq.${countryCode},country_code.is.null`);
+  }
+
+  // Server-side search across Arabic name, English name, and slug.
+  // Escape PostgREST reserved chars (,) and wildcard chars (%, _) in user input,
+  // then use ilike for case-insensitive partial match.
+  const trimmed = searchQuery?.trim();
+  if (trimmed) {
+    const escaped = trimmed.replace(/[,%_]/g, (c) => `\\${c}`);
+    const pattern = `%${escaped}%`;
+    query = query.or(
+      `name_ar.ilike.${pattern},name_en.ilike.${pattern},slug.ilike.${pattern}`
+    );
   }
 
   const { data, count, error } = await query.range(from, from + perPage - 1);

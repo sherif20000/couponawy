@@ -12,9 +12,9 @@ type PageProps = {
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const { q } = await searchParams;
-  if (!q) return { title: "البحث | كوبوناوي" };
+  if (!q) return { title: "البحث" };
   return {
-    title: `نتائج البحث عن "${q}" | كوبوناوي`,
+    title: `نتائج البحث عن "${q}"`,
     description: `نتائج البحث عن ${q} — كوبونات ومتاجر مجرّبة على كوبوناوي.`,
   };
 }
@@ -32,32 +32,32 @@ export default async function SearchPage({ searchParams }: PageProps) {
   return (
     <main className="flex flex-1 flex-col">
       {/* Header */}
-      <section className="from-cream-dark/60 to-cream border-brand-gold/20 border-b bg-gradient-to-b">
-        <Container size="xl" className="py-10 md:py-14">
+      <section className="bg-brand-red py-10 md:py-14">
+        <Container size="xl">
           <nav
             aria-label="مسار التنقّل"
-            className="text-warm-brown-light font-accent mb-4 flex items-center gap-2 text-xs"
+            className="font-accent mb-4 flex items-center gap-2 text-xs text-white/60"
           >
-            <Link href="/" className="hover:text-brand-red">
+            <Link href="/" className="hover:text-white transition-colors">
               الرئيسية
             </Link>
-            <span>›</span>
-            <span className="text-charcoal">البحث</span>
+            <span className="text-white/30">›</span>
+            <span className="text-white">البحث</span>
           </nav>
 
           <div className="flex flex-col gap-2">
-            <h1 className="font-display text-charcoal text-3xl font-extrabold md:text-4xl">
+            <h1 className="font-display text-white text-3xl font-extrabold md:text-4xl">
               {query ? (
                 <>
                   نتائج البحث عن{" "}
-                  <span className="text-brand-red">&quot;{query}&quot;</span>
+                  <span className="text-brand-gold">&quot;{query}&quot;</span>
                 </>
               ) : (
                 "البحث"
               )}
             </h1>
             {query && (
-              <p className="font-body text-warm-brown text-base">
+              <p className="font-body text-white/70 text-base">
                 {totalResults > 0
                   ? `${totalResults} نتيجة`
                   : "لم نجد نتائج مطابقة"}

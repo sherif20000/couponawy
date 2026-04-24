@@ -49,7 +49,7 @@ export async function generateMetadata({
   if (!coupon) return { title: "الكوبون غير موجود" };
 
   const storeName = coupon.store?.name_ar ?? "المتجر";
-  const title = `${coupon.title_ar} — ${storeName} | كوبوناوي`;
+  const title = `${coupon.title_ar} — ${storeName}`;
   const description =
     coupon.meta_description ??
     coupon.description_ar ??
@@ -130,34 +130,69 @@ export default async function CouponPage({ params }: PageProps) {
   const isExpired = coupon.status === "expired" || (coupon.expires_at != null && new Date(coupon.expires_at) < new Date());
   const couponJsonLd = buildCouponJsonLd(coupon);
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
+      ...(coupon.store
+        ? [
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: storeName,
+              item: `${BASE_URL}/stores/${coupon.store.slug}`,
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: coupon.title_ar,
+              item: `${BASE_URL}/coupons/${coupon.slug}`,
+            },
+          ]
+        : [
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: coupon.title_ar,
+              item: `${BASE_URL}/coupons/${coupon.slug}`,
+            },
+          ]),
+    ],
+  };
+
   return (
     <main className="flex flex-1 flex-col">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(couponJsonLd) }}
       />
-      <section className="bg-gradient-to-b from-cream-dark/60 to-cream border-brand-gold/20 border-b">
-        <Container size="lg" className="py-10 md:py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <section className="bg-brand-red py-10 md:py-14">
+        <Container size="lg">
           <nav
             aria-label="مسار التنقّل"
-            className="text-warm-brown-light font-accent mb-6 flex items-center gap-2 text-xs"
+            className="font-accent mb-6 flex items-center gap-2 text-xs text-white/60"
           >
-            <Link href="/" className="hover:text-brand-red">
+            <Link href="/" className="hover:text-white transition-colors">
               الرئيسية
             </Link>
-            <span>›</span>
+            <span className="text-white/30">›</span>
             {coupon.store && (
               <>
                 <Link
                   href={`/stores/${coupon.store.slug}`}
-                  className="hover:text-brand-red"
+                  className="hover:text-white transition-colors"
                 >
                   {storeName}
                 </Link>
-                <span>›</span>
+                <span className="text-white/30">›</span>
               </>
             )}
-            <span className="text-charcoal line-clamp-1">
+            <span className="text-white line-clamp-1">
               {coupon.title_ar}
             </span>
           </nav>
@@ -166,7 +201,7 @@ export default async function CouponPage({ params }: PageProps) {
             {coupon.store && (
               <Link
                 href={`/stores/${coupon.store.slug}`}
-                className="bg-cream ring-brand-gold/40 hover:ring-brand-red/50 flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl ring-2 transition-all md:h-24 md:w-24"
+                className="bg-white ring-white/30 hover:ring-white/60 flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl ring-2 transition-all md:h-24 md:w-24"
                 aria-label={storeName}
               >
                 {coupon.store.logo_url ? (
@@ -189,7 +224,7 @@ export default async function CouponPage({ params }: PageProps) {
                 {coupon.store && (
                   <Link
                     href={`/stores/${coupon.store.slug}`}
-                    className="font-display text-brand-red hover:text-brand-red-dark text-sm font-bold"
+                    className="font-display text-brand-gold hover:text-brand-gold-light text-sm font-bold transition-colors"
                   >
                     {storeName}
                   </Link>
@@ -201,32 +236,32 @@ export default async function CouponPage({ params }: PageProps) {
                   </Badge>
                 )}
                 {coupon.discount_display && (
-                  <Badge variant="outline">
+                  <Badge variant="inverted">
                     <Tag className="h-3 w-3" aria-hidden />
                     {coupon.discount_display}
                   </Badge>
                 )}
               </div>
 
-              <h1 className="font-display text-charcoal text-2xl font-extrabold leading-[1.4] md:text-4xl">
+              <h1 className="font-display text-white text-2xl font-extrabold leading-[1.4] md:text-4xl">
                 {coupon.title_ar}
               </h1>
 
               {coupon.description_ar && (
-                <p className="font-body text-warm-brown max-w-2xl text-base leading-loose md:text-lg">
+                <p className="font-body text-white/70 max-w-2xl text-base leading-loose md:text-lg">
                   {coupon.description_ar}
                 </p>
               )}
 
-              <div className="text-warm-brown-light font-accent flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+              <div className="font-accent flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/60">
                 <span
                   className={`inline-flex items-center gap-1.5 ${
                     days === null
                       ? ""
                       : days === 0 || days <= 7
-                        ? "text-danger font-semibold"
+                        ? "text-brand-gold font-semibold"
                         : days <= 30
-                          ? "text-warning font-medium"
+                          ? "text-brand-gold/80 font-medium"
                           : ""
                   }`}
                 >
@@ -247,13 +282,13 @@ export default async function CouponPage({ params }: PageProps) {
                 </span>
                 {verifiedOn && (
                   <span className="inline-flex items-center gap-1.5">
-                    <BadgeCheck className="text-brand-red h-4 w-4" aria-hidden />
+                    <BadgeCheck className="text-brand-gold h-4 w-4" aria-hidden />
                     آخر تحقّق: {verifiedOn}
                   </span>
                 )}
                 {coupon.success_rate != null && (
                   <span className="inline-flex items-center gap-1.5">
-                    <BadgeCheck className="text-brand-red h-4 w-4" aria-hidden />
+                    <BadgeCheck className="text-brand-gold h-4 w-4" aria-hidden />
                     نسبة نجاح {Math.round(coupon.success_rate * 100)}%
                   </span>
                 )}
@@ -261,13 +296,13 @@ export default async function CouponPage({ params }: PageProps) {
 
               <div className="mt-2">
                 {isExpired ? (
-                  <div className="flex items-start gap-3 rounded-2xl border border-danger/20 bg-danger/5 px-5 py-4">
-                    <AlertCircle className="text-danger mt-0.5 h-5 w-5 shrink-0" aria-hidden />
+                  <div className="flex items-start gap-3 rounded-2xl border border-white/20 bg-white/10 px-5 py-4">
+                    <AlertCircle className="text-white mt-0.5 h-5 w-5 shrink-0" aria-hidden />
                     <div>
-                      <p className="font-body text-danger text-sm font-semibold">
+                      <p className="font-body text-white text-sm font-semibold">
                         انتهت صلاحية هذا الكوبون
                       </p>
-                      <p className="font-body text-warm-brown mt-0.5 text-xs">
+                      <p className="font-body text-white/70 mt-0.5 text-xs">
                         {related.length > 0
                           ? `تصفّح كوبونات ${storeName} الأخرى أدناه للعثور على عرض نشط.`
                           : "جرّب البحث عن كوبونات أخرى من نفس المتجر."}
@@ -291,7 +326,7 @@ export default async function CouponPage({ params }: PageProps) {
                   href={`https://wa.me/?text=${encodeURIComponent(`وجدت عرضاً رائعاً من ${storeName} على كوبوناوي! ${BASE_URL}/coupons/${coupon.slug}`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-body text-warm-brown hover:text-charcoal inline-flex items-center gap-1.5 text-xs transition-colors"
+                  className="font-body text-white/60 hover:text-white inline-flex items-center gap-1.5 text-xs transition-colors"
                   aria-label="مشاركة على واتساب"
                 >
                   {/* WhatsApp icon */}
@@ -309,7 +344,7 @@ export default async function CouponPage({ params }: PageProps) {
 
                 <Link
                   href={`/report-coupon?url=${encodeURIComponent(`${BASE_URL}/coupons/${coupon.slug}`)}`}
-                  className="font-body text-warm-brown-light hover:text-warm-brown inline-flex items-center gap-1.5 text-xs transition-colors"
+                  className="font-body text-white/40 hover:text-white/70 inline-flex items-center gap-1.5 text-xs transition-colors"
                 >
                   <Flag className="h-3.5 w-3.5" aria-hidden />
                   الإبلاغ عن مشكلة
@@ -429,7 +464,7 @@ export default async function CouponPage({ params }: PageProps) {
                 </Link>
               )}
             </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="stagger-children grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {related.map((c) => (
                 <CouponCard key={c.id} coupon={c} />
               ))}

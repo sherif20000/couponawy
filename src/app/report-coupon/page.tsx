@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/container";
 import { ReportForm } from "./report-form";
 
 export const metadata: Metadata = {
-  title: "الإبلاغ عن كوبون | كوبوناوي",
+  title: "الإبلاغ عن كوبون",
   description:
     "لاحظت كوبوناً منتهياً أو لا يعمل؟ أبلغنا وسنتحقق منه ونصلحه في أقرب وقت.",
 };

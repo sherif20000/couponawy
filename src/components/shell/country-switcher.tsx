@@ -69,7 +69,7 @@ export function CountrySwitcher({ countries, currentCode }: Props) {
         aria-expanded={open}
         aria-label="اختيار الدولة"
         disabled={pending}
-        className="border-brand-gold/30 bg-cream-dark/40 text-charcoal hover:border-brand-red/40 inline-flex items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-semibold transition-colors disabled:opacity-60"
+        className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-3 py-2 text-sm font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/22 disabled:opacity-60"
       >
         {current.flag_emoji ? (
           <span aria-hidden className="text-base leading-none">

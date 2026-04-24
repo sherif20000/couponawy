@@ -9,7 +9,7 @@ import { getExclusiveCoupons } from "@/lib/queries/homepage";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "العروض الحصرية | كوبوناوي",
+  title: "العروض الحصرية",
   description:
     "كوبونات وعروض حصرية لا تجدها في أي مكان آخر — منتقاة ومجرّبة من كوبوناوي.",
 };
@@ -19,28 +19,28 @@ export default async function ExclusivePage() {
 
   return (
     <main className="flex flex-1 flex-col">
-      <section className="from-cream-dark/60 to-cream border-brand-gold/20 border-b bg-gradient-to-b">
-        <Container size="xl" className="py-10 md:py-14">
+      <section className="bg-brand-red py-10 md:py-14">
+        <Container size="xl">
           <nav
             aria-label="مسار التنقّل"
-            className="text-warm-brown-light font-accent mb-4 flex items-center gap-2 text-xs"
+            className="font-accent mb-4 flex items-center gap-2 text-xs text-white/60"
           >
-            <Link href="/" className="hover:text-brand-red transition-colors">
+            <Link href="/" className="hover:text-white transition-colors">
               الرئيسية
             </Link>
-            <span>›</span>
-            <span className="text-charcoal">العروض الحصرية</span>
+            <span className="text-white/30">›</span>
+            <span className="text-white">العروض الحصرية</span>
           </nav>
 
           <div className="flex items-center gap-3">
-            <span className="bg-brand-red/10 text-brand-red flex h-10 w-10 shrink-0 items-center justify-center rounded-xl">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-gold/20 text-brand-gold">
               <Sparkles className="h-5 w-5" strokeWidth={1.5} aria-hidden />
             </span>
             <div>
-              <h1 className="font-display text-charcoal text-3xl font-extrabold md:text-4xl">
+              <h1 className="font-display text-white text-3xl font-extrabold md:text-4xl">
                 العروض الحصرية
               </h1>
-              <p className="font-body text-warm-brown mt-1 text-base">
+              <p className="font-body text-white/70 mt-1 text-base">
                 {coupons.length > 0
                   ? `${coupons.length} عرض حصري · لا تجدها في أي مكان آخر`
                   : "كوبونات حصرية لا تجدها في أي مكان آخر"}

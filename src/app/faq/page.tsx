@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
-  title: "الأسئلة الشائعة | كوبوناوي",
+  title: "الأسئلة الشائعة",
   description:
     "إجابات على أكثر الأسئلة شيوعاً حول كوبوناوي وكيفية استخدام الكوبونات.",
 };

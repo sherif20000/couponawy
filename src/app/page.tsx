@@ -1,7 +1,7 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import {
   ArrowLeft,
-  BadgeCheck,
   Sparkles,
   Flame,
   TrendingUp,
@@ -19,9 +19,6 @@ import {
 } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Logo } from "@/components/brand/logo";
-import { Mascot } from "@/components/brand/mascot";
 import { CouponCard } from "@/components/coupons/coupon-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
@@ -37,6 +34,31 @@ import { getPreferredCountry } from "@/lib/utils/country";
 
 // force-dynamic so the country cookie is read per-request for personalised results
 export const dynamic = "force-dynamic";
+
+const BASE_URL_META =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "كوبوناوي — كوبونات وعروض موثوقة من الأستاذ أبو عبدالله",
+  },
+  description:
+    "كوبونات خصم وعروض مختارة بعناية للمتاجر الموثوقة في السعودية والخليج. جربها قبلك الأستاذ أبو عبدالله.",
+  alternates: {
+    canonical: BASE_URL_META,
+    languages: {
+      "ar-SA": BASE_URL_META,
+      ar: BASE_URL_META,
+    },
+  },
+  openGraph: {
+    title: "كوبوناوي — كوبونات وعروض موثوقة",
+    description:
+      "كوبونات خصم وعروض مختارة بعناية للمتاجر الموثوقة في السعودية والخليج.",
+    url: BASE_URL_META,
+    type: "website",
+  },
+};
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
@@ -79,7 +101,8 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
-      <HeroSection couponCount={coupons.length} storeCount={stores.length} />
+      <HeroSection />
+      {categories.length > 0 && <CategoryFilterStrip categories={categories} />}
       <FeaturedCouponsSection coupons={coupons} />
       {expiringSoon.length > 0 && <ExpiringSoonSection coupons={expiringSoon} />}
       {trendingFiltered.length > 0 && <TrendingCouponsSection coupons={trendingFiltered} />}
@@ -89,100 +112,103 @@ export default async function Home() {
   );
 }
 
-function HeroSection({
-  couponCount,
-  storeCount,
-}: {
-  couponCount: number;
-  storeCount: number;
-}) {
+function HeroSection() {
   return (
-    <section className="bg-gradient-to-b from-cream-dark/60 to-cream relative overflow-hidden py-16 md:py-24">
+    <section
+      aria-labelledby="hero-heading"
+      className="relative overflow-hidden py-20 md:py-28"
+      style={{
+        background:
+          "radial-gradient(ellipse at 70% 50%, oklch(41% 0.25 26) 0%, oklch(8% 0.005 26) 70%)",
+      }}
+    >
+      {/* Subtle noise texture for depth */}
       <div
-        aria-hidden
-        className="absolute inset-0 opacity-[0.05]"
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 20% 10%, var(--color-brand-red) 0, transparent 40%), radial-gradient(circle at 80% 80%, var(--color-brand-gold) 0, transparent 40%)",
+            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
         }}
+        aria-hidden
       />
-      <Container size="lg" className="relative z-10">
-        <div className="flex flex-col items-center gap-8 text-center">
-          <Badge variant="outline" className="!text-sm animate-fade-up" style={{ animationDelay: "0ms" }}>
-            <Sparkles className="h-3.5 w-3.5" aria-hidden />
-            جربها قبلك الأستاذ أبو عبدالله
-          </Badge>
 
-          {/* Value proposition leads — mascot/logo follow as brand decoration */}
+      <Container size="xl" className="relative z-10">
+        <div className="flex max-w-2xl flex-col gap-7">
+
+          {/* Trust badge */}
+          <div
+            className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold text-white/80 animate-fade-up"
+            style={{ animationDelay: "0ms" }}
+          >
+            <Sparkles className="h-3.5 w-3.5 text-brand-gold" aria-hidden />
+            جربها قبلك الأستاذ أبو عبدالله
+          </div>
+
+          {/* Headline */}
           <h1
-            className="font-display text-charcoal max-w-3xl text-3xl font-extrabold leading-[1.4] md:text-5xl animate-fade-up"
+            id="hero-heading"
+            className="font-display text-4xl font-black leading-[1.3] text-white animate-fade-up md:text-5xl lg:text-6xl"
             style={{ animationDelay: "75ms" }}
           >
-            كوبونات خصم <span className="text-brand-red">موثوقة</span> من
-            أفضل المتاجر في السعودية
+            كوبونات خصم{" "}
+            <span className="text-brand-gold">موثوقة</span>
+            {" "}من أفضل متاجر
+            <br className="hidden md:block" />
+            {" "}السعودية والخليج
           </h1>
 
+          {/* Sub-headline */}
           <p
-            className="font-body text-warm-brown max-w-2xl text-lg leading-loose animate-fade-up"
+            className="font-body max-w-md text-base leading-loose text-white/65 animate-fade-up"
             style={{ animationDelay: "150ms" }}
           >
             وفّر على كل طلب مع أكواد خصم مجرّبة ومحدّثة يومياً من نون، شي إن،
             أمازون، نهدي، جاهز والمزيد.
           </p>
 
+          {/* Single CTA */}
           <div
-            className="flex flex-col items-center gap-3 sm:flex-row animate-fade-up"
+            className="animate-fade-up"
             style={{ animationDelay: "225ms" }}
           >
-            <Button asChild variant="primary" size="lg">
+            <Button asChild variant="gold" size="lg">
               <Link href="#featured-coupons">
-                تصفح العروض
+                تصفح العروض الآن
                 <ArrowLeft className="h-5 w-5" aria-hidden />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/stores">جميع المتاجر</Link>
-            </Button>
           </div>
 
-          {/* Brand mark — decorative, below the CTA */}
+          {/* ── Trust bar — slim social-proof strip, no boxes ───────── */}
           <div
-            className="flex flex-col items-center gap-3 pt-2 animate-fade-up"
+            className="flex flex-wrap items-center border-t border-white/10 pt-5 animate-fade-up"
             style={{ animationDelay: "300ms" }}
           >
-            <Mascot size="md" />
-            <Logo className="text-3xl md:text-4xl" />
+            {(
+              [
+                { number: "+٢٤٠٠", label: "كوبون فعّال" },
+                { number: "+١٢٠", label: "متجر موثّق" },
+                { number: "٧٠٪", label: "أقصى توفير" },
+                { number: "يومي", label: "تحديث مستمر" },
+              ] as const
+            ).map((stat, i, arr) => (
+              <span
+                key={stat.label}
+                className="font-body inline-flex items-baseline gap-1.5 px-4 text-sm text-white/55 first:ps-0 last:pe-0"
+                style={
+                  i < arr.length - 1
+                    ? { borderInlineEndWidth: "1px", borderInlineEndColor: "oklch(100% 0 0 / 0.15)" }
+                    : undefined
+                }
+              >
+                <span className="font-display font-black text-brand-gold">
+                  {stat.number}
+                </span>
+                {stat.label}
+              </span>
+            ))}
           </div>
 
-          <div
-            className="text-warm-brown-light font-accent flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm animate-fade-up"
-            style={{ animationDelay: "375ms" }}
-          >
-            <span className="inline-flex items-center gap-2">
-              <BadgeCheck className="text-brand-red h-4 w-4" aria-hidden />
-              {couponCount}+ كوبون نشط
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <BadgeCheck className="text-brand-red h-4 w-4" aria-hidden />
-              {storeCount}+ متجر موثّق
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <BadgeCheck className="text-brand-red h-4 w-4" aria-hidden />
-              تحقّق يومي من الصلاحية
-            </span>
-          </div>
-
-          {/* Freshness signal */}
-          <div
-            className="font-accent text-warm-brown-light inline-flex items-center gap-2 text-xs animate-fade-up"
-            style={{ animationDelay: "450ms" }}
-          >
-            <span className="relative flex h-2 w-2" aria-hidden>
-              <span className="bg-success absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" />
-              <span className="bg-success relative inline-flex h-2 w-2 rounded-full" />
-            </span>
-            يُحدَّث كل 5 دقائق
-          </div>
         </div>
       </Container>
     </section>
@@ -229,7 +255,7 @@ function FeaturedCouponsSection({
   coupons: Awaited<ReturnType<typeof getFeaturedCoupons>>;
 }) {
   return (
-    <section id="featured-coupons" className="py-16">
+    <section id="featured-coupons" className="scroll-mt-32 py-16">
       <Container size="xl">
         <SectionHeader
           title="أفضل الكوبونات هذا الأسبوع"
@@ -275,13 +301,13 @@ function StoresSection({
                 className="group flex flex-col items-center gap-2"
                 title={store.name_ar}
               >
-                <div className="bg-cream ring-brand-gold/20 group-hover:ring-brand-red/40 flex h-14 w-14 shrink-0 items-center justify-center rounded-full ring-2 shadow-sm transition-all duration-200 group-hover:shadow-md md:h-16 md:w-16">
+                <div className="bg-cream ring-brand-gold/20 group-hover:ring-brand-red/40 flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full ring-2 shadow-sm transition-all duration-200 group-hover:shadow-md md:h-16 md:w-16">
                   {store.logo_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={store.logo_url}
                       alt={store.name_ar}
-                      className="h-10 w-10 rounded-full object-contain md:h-12 md:w-12"
+                      className="h-10 w-10 object-contain md:h-12 md:w-12"
                     />
                   ) : (
                     <span className="font-display text-brand-red text-sm font-extrabold">
@@ -350,7 +376,7 @@ function CategoriesSection({
                     {category.name_ar}
                   </span>
                   {count !== undefined && count > 0 && (
-                    <span className="font-accent bg-brand-gold/15 text-brand-gold-dark group-hover:bg-cream/20 group-hover:text-cream rounded-full px-1.5 py-0.5 text-xs font-bold leading-none transition-colors">
+                    <span className="font-accent bg-brand-gold/15 text-charcoal group-hover:bg-cream/20 group-hover:text-cream rounded-full px-1.5 py-0.5 text-xs font-bold leading-none transition-colors">
                       {count}
                     </span>
                   )}
@@ -361,6 +387,42 @@ function CategoriesSection({
         )}
       </Container>
     </section>
+  );
+}
+
+// ─── Category filter strip ───────────────────────────────────────────────────
+// Horizontal scrollable pill row that lives between the hero and featured grid.
+// "الكل" is always active-styled; remaining pills link to category pages.
+
+function CategoryFilterStrip({
+  categories,
+}: {
+  categories: Awaited<ReturnType<typeof getFeaturedCategories>>;
+}) {
+  return (
+    <nav aria-label="تصفية الكوبونات حسب القسم" className="sticky top-16 z-40 border-b border-brand-gold/15 bg-cream">
+      <Container size="xl">
+        <div className="scrollbar-hide flex items-center gap-2 overflow-x-auto py-3">
+          {/* "All" pill — always rendered first, styled as active */}
+          <Link
+            href="/coupons"
+            className="font-display shrink-0 rounded-full bg-brand-red px-5 py-2 text-sm font-bold text-white shadow-sm transition-colors hover:bg-brand-red-dark"
+          >
+            الكل
+          </Link>
+          {/* Category pills */}
+          {categories.map((category) => (
+            <Link
+              key={category.id}
+              href={`/categories/${category.slug}`}
+              className="font-display shrink-0 rounded-full border border-brand-gold/25 bg-cream px-5 py-2 text-sm font-semibold text-charcoal transition-colors hover:border-brand-red hover:bg-brand-red hover:text-white"
+            >
+              {category.name_ar}
+            </Link>
+          ))}
+        </div>
+      </Container>
+    </nav>
   );
 }
 
@@ -409,7 +471,7 @@ function ExpiringSoonSection({
   coupons: Awaited<ReturnType<typeof getExpiringSoonCoupons>>;
 }) {
   return (
-    <section className="bg-danger/5 border-danger/15 border-y py-16">
+    <section className="border-warm-brown/10 border-y py-16">
       <Container size="xl">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="flex flex-col gap-1">
@@ -432,9 +494,9 @@ function ExpiringSoonSection({
             <ArrowLeft className="h-4 w-4" aria-hidden />
           </Link>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 stagger-children">
           {coupons.map((coupon) => (
-            <CouponCard key={coupon.id} coupon={coupon} />
+            <CouponCard key={coupon.id} coupon={coupon} className="animate-fade-up" />
           ))}
         </div>
       </Container>

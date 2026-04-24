@@ -19,39 +19,83 @@ export async function Header() {
     getPreferredCountry(),
   ]);
 
+  const tickerItems = [
+    { icon: "🔥", text: "عروض تصل لـ ٧٠٪" },
+    { icon: "⚡", text: "كوبونات جديدة كل يوم" },
+    { icon: "✅", text: "أكثر من ٢٤٠٠ كوبون فعّال" },
+    { icon: "🏪", text: "١٢٠+ متجر موثّق" },
+    { icon: "💰", text: "وفّر على كل طلب" },
+  ];
+
   return (
-    <header className="bg-cream/95 border-brand-gold/20 sticky top-0 z-40 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-cream/80">
-      <Container size="xl" className="flex h-16 items-center justify-between gap-4">
-        <div className="flex items-center gap-8">
-          <Link href="/" aria-label="كوبوناوي">
-            <Logo className="text-2xl" />
-          </Link>
-          <nav
-            aria-label="التنقّل الأساسي"
-            className="hidden items-center gap-6 md:flex"
-          >
-            {NAV_LINKS.map((link) => (
+    <div className="sticky top-0 z-40 w-full">
+      {/* Ticker strip — scrolling urgency marquee */}
+      <div
+        className="overflow-hidden py-1.5"
+        style={{ background: "oklch(8% 0.005 26)" }}
+        aria-hidden
+      >
+        {/* Two identical copies side-by-side; animation shifts left by 50% = seamless loop */}
+        <div className="animate-ticker-rtl inline-flex whitespace-nowrap">
+          {[0, 1].map((copy) => (
+            <span
+              key={copy}
+              className="inline-flex items-center gap-0"
+            >
+              {tickerItems.map((item, i) => (
+                <span key={i} className="inline-flex items-center">
+                  <span className="font-body text-brand-gold text-xs font-semibold tracking-wide px-5">
+                    {item.icon}&nbsp;{item.text}
+                  </span>
+                  <span className="text-brand-gold/30 text-xs select-none">·</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Main nav — solid brand red */}
+      <header className="bg-brand-red w-full shadow-brand">
+        <Container size="xl" className="flex h-16 items-center justify-between gap-4">
+          <div className="flex items-center gap-8">
+            <Link href="/" aria-label="كوبوناوي">
+              <Logo className="text-2xl" inverted />
+            </Link>
+            <nav
+              aria-label="التنقّل الأساسي"
+              className="hidden items-center gap-6 md:flex"
+            >
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="font-body text-white/85 hover:text-white text-sm font-semibold transition-colors duration-150"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              {/* Primary CTA — solid white pill, distinct from glass utility controls */}
               <Link
-                key={link.href}
-                href={link.href}
-                className="font-body text-warm-brown hover:text-brand-red text-sm font-semibold transition-colors"
+                href="/coupons"
+                className="font-display bg-white text-brand-red rounded-full px-4 py-1.5 text-sm font-bold transition-colors hover:bg-cream"
               >
-                {link.label}
+                جميع الكوبونات
               </Link>
-            ))}
-          </nav>
-        </div>
+            </nav>
+          </div>
 
-        <div className="flex items-center gap-2">
-          <SearchInput />
+          <div className="flex items-center gap-2">
+            <SearchInput />
 
-          {countries.length > 0 && (
-            <CountrySwitcher countries={countries} currentCode={currentCode} />
-          )}
+            {countries.length > 0 && (
+              <CountrySwitcher countries={countries} currentCode={currentCode} />
+            )}
 
-          <MobileMenuDrawer countries={countries} currentCode={currentCode} />
-        </div>
-      </Container>
-    </header>
+            <MobileMenuDrawer countries={countries} currentCode={currentCode} />
+          </div>
+        </Container>
+      </header>
+    </div>
   );
 }

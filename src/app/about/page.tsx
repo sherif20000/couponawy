@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
-  title: "من نحن | كوبوناوي",
+  title: "من نحن",
   description:
     "تعرّف على كوبوناوي — المنصة الأمينة لكوبونات الخصم في السعودية والخليج.",
 };

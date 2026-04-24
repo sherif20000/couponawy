@@ -7,10 +7,15 @@ import { getAllCategories, getCategoryCouponCounts } from "@/lib/queries/categor
 
 export const revalidate = 300;
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
+
 export const metadata: Metadata = {
-  title: "جميع الأقسام | كوبوناوي",
+  title: "جميع الأقسام",
   description:
     "تصفّح أقسام التسوّق على كوبوناوي واعثر على كوبونات الخصم المناسبة لاحتياجك.",
+  alternates: {
+    canonical: `${BASE_URL}/categories`,
+  },
 };
 
 export default async function CategoriesPage() {
@@ -19,24 +24,37 @@ export default async function CategoriesPage() {
     getCategoryCouponCounts(),
   ]);
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "الأقسام", item: `${BASE_URL}/categories` },
+    ],
+  };
+
   return (
     <main className="flex flex-1 flex-col">
-      <section className="from-cream-dark/60 to-cream border-brand-gold/20 border-b bg-gradient-to-b">
-        <Container size="xl" className="py-10 md:py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <section className="bg-brand-red py-10 md:py-14">
+        <Container size="xl">
           <nav
             aria-label="مسار التنقّل"
-            className="text-warm-brown-light font-accent mb-4 flex items-center gap-2 text-xs"
+            className="font-accent mb-4 flex items-center gap-2 text-xs text-white/60"
           >
-            <Link href="/" className="hover:text-brand-red">
+            <Link href="/" className="hover:text-white transition-colors">
               الرئيسية
             </Link>
-            <span>›</span>
-            <span className="text-charcoal">الأقسام</span>
+            <span className="text-white/30">›</span>
+            <span className="text-white">الأقسام</span>
           </nav>
-          <h1 className="font-display text-charcoal text-3xl font-extrabold md:text-4xl">
+          <h1 className="font-display text-white text-3xl font-extrabold md:text-4xl">
             جميع الأقسام
           </h1>
-          <p className="font-body text-warm-brown mt-2 text-base">
+          <p className="font-body text-white/70 mt-2 text-base">
             {categories.length} قسم · اعثر على العرض المناسب لاحتياجك
           </p>
         </Container>

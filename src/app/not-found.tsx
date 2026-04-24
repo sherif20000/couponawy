@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
-  title: "الصفحة غير موجودة | كوبوناوي",
+  title: "الصفحة غير موجودة",
   description: "الصفحة التي تبحث عنها غير موجودة. تصفّح المتاجر والكوبونات على كوبوناوي.",
 };
 

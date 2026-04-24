@@ -119,7 +119,7 @@ export function MobileMenuDrawer({ countries = [], currentCode = "SA" }: Props) 
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="border-brand-gold/30 bg-cream-dark/40 text-charcoal hover:border-brand-red/40 inline-flex h-11 w-11 items-center justify-center rounded-full border transition-colors md:hidden"
+        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/15 text-white transition-colors hover:border-white/40 hover:bg-white/22 md:hidden"
         aria-label="فتح القائمة"
         aria-expanded={open}
         aria-controls="mobile-nav"

@@ -1,38 +1,27 @@
 import type { Metadata } from "next";
-import { Noto_Kufi_Arabic, Tajawal, Amiri } from "next/font/google";
+import { Cairo } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/shell/header";
 import { Footer } from "@/components/shell/footer";
 import "./globals.css";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
-const notoKufi = Noto_Kufi_Arabic({
+const cairo = Cairo({
   subsets: ["arabic", "latin"],
   weight: ["400", "600", "700", "800", "900"],
-  variable: "--font-noto-kufi",
+  variable: "--font-cairo",
   display: "swap",
 });
 
-const tajawal = Tajawal({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "500", "700", "900"],
-  variable: "--font-tajawal",
-  display: "swap",
-});
-
-const amiri = Amiri({
-  subsets: ["arabic", "latin"],
-  weight: ["400", "700"],
-  variable: "--font-amiri",
-  display: "swap",
-});
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com"
-  ),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "كوبوناوي — كوبونات وعروض موثوقة من الأستاذ أبو عبدالله",
     template: "%s | كوبوناوي",
@@ -43,6 +32,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ar_SA",
     siteName: "كوبوناوي",
+  },
+  alternates: {
+    canonical: SITE_URL,
+    languages: {
+      "ar-SA": SITE_URL,
+      ar: SITE_URL,
+    },
   },
 };
 
@@ -55,7 +51,7 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
-      className={`${notoKufi.variable} ${tajawal.variable} ${amiri.variable} h-full antialiased`}
+      className={`${cairo.variable} h-full antialiased`}
     >
       <body className="bg-cream text-charcoal font-body min-h-full flex flex-col">
         {/* Google Analytics — only loads when NEXT_PUBLIC_GA_ID is set */}
@@ -90,10 +86,12 @@ export default function RootLayout({
           dir="rtl"
           toastOptions={{
             style: {
-              fontFamily: "var(--font-tajawal), system-ui, sans-serif",
+              fontFamily: "var(--font-cairo), system-ui, sans-serif",
             },
           }}
         />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

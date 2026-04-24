@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { BadgeCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,6 +14,8 @@ type StoreCardProps = {
 };
 
 export function StoreCard({ store, className }: StoreCardProps) {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <Link
       href={`/stores/${store.slug}`}
@@ -19,13 +24,14 @@ export function StoreCard({ store, className }: StoreCardProps) {
         className
       )}
     >
-      <div className="bg-cream ring-brand-gold/30 group-hover:ring-brand-red/40 flex h-16 w-16 items-center justify-center rounded-full ring-2 transition-all">
-        {store.logo_url ? (
+      <div className="bg-cream ring-brand-gold/30 group-hover:ring-brand-red/40 flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full ring-2 transition-all">
+        {store.logo_url && !imgError ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={store.logo_url}
             alt={store.name_ar}
-            className="h-12 w-12 rounded-full object-contain"
+            className="h-12 w-12 object-contain"
+            onError={() => setImgError(true)}
           />
         ) : (
           <span className="font-display text-brand-red text-lg font-extrabold">
