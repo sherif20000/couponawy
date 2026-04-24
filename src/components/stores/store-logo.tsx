@@ -36,7 +36,7 @@ export function StoreLogo({ logoUrl, nameAr, size = "md" }: StoreLogoProps) {
         className={imgClass}
         onError={() => setImgError(true)}
         onLoad={(e) => {
-          if ((e.target as HTMLImageElement).naturalWidth === 0) setImgError(true);
+          if ((e.target as HTMLImageElement).naturalWidth <= 1) setImgError(true);
         }}
       />
     );

@@ -205,7 +205,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
                   className="h-9 w-9 object-contain"
                   onError={() => setLogoError(true)}
                   onLoad={(e) => {
-                    if ((e.target as HTMLImageElement).naturalWidth === 0)
+                    if ((e.target as HTMLImageElement).naturalWidth <= 1)
                       setLogoError(true);
                   }}
                 />
