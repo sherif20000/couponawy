@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { AdminTopbar } from "@/components/admin/topbar";
+import { DeleteButton } from "@/components/admin/delete-button";
 import { getContactMessages } from "@/lib/queries/admin";
+import { deleteMessage } from "./actions";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 
@@ -35,6 +37,7 @@ export default async function AdminInboxPage({ searchParams }: Props) {
                 <th className="text-right px-4 py-3 font-medium">الموضوع</th>
                 <th className="text-right px-4 py-3 font-medium">الرسالة</th>
                 <th className="text-right px-4 py-3 font-medium">التاريخ</th>
+                <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
@@ -49,8 +52,8 @@ export default async function AdminInboxPage({ searchParams }: Props) {
                   <td className="px-4 py-3 text-charcoal max-w-[180px]">
                     <span className="truncate block">{m.subject}</span>
                   </td>
-                  <td className="px-4 py-3 text-warm-brown/80 max-w-[320px]">
-                    <span className="line-clamp-2 text-xs">{m.message}</span>
+                  <td className="px-4 py-3 text-warm-brown/80 max-w-[360px]">
+                    <span className="text-xs whitespace-pre-wrap break-words">{m.message}</span>
                   </td>
                   <td
                     className="px-4 py-3 text-warm-brown/50 text-xs whitespace-nowrap"
@@ -61,12 +64,21 @@ export default async function AdminInboxPage({ searchParams }: Props) {
                       locale: ar,
                     })}
                   </td>
+                  <td className="px-4 py-3">
+                    <DeleteButton
+                      action={async () => {
+                        "use server";
+                        await deleteMessage(m.id);
+                      }}
+                      confirmMessage={`هل أنت متأكد من حذف رسالة "${m.name ?? "مجهول"}"؟`}
+                    />
+                  </td>
                 </tr>
               ))}
               {messages.length === 0 && (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="px-4 py-12 text-center text-warm-brown/40"
                   >
                     لا توجد رسائل بعد

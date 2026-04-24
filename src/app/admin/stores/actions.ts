@@ -14,10 +14,19 @@ export async function createStore(formData: FormData) {
     (formData.get("slug") as string) || slugify(name_en || name_ar);
   const logo_url = (formData.get("logo_url") as string) || null;
   const website_url = (formData.get("website_url") as string) || "https://example.com";
+  const short_description_ar = (formData.get("short_description_ar") as string) || null;
   const description_ar = (formData.get("description_ar") as string) || null;
   const status = (formData.get("status") as "active" | "paused" | "archived") || "active";
   const is_featured = formData.get("is_featured") === "true";
+  const is_verified = formData.get("is_verified") === "true";
   const display_order = parseInt(formData.get("display_order") as string) || 0;
+  const meta_title = (formData.get("meta_title") as string) || null;
+  const meta_description = (formData.get("meta_description") as string) || null;
+  const og_image = (formData.get("og_image") as string) || null;
+  const ratingRaw = formData.get("rating") as string;
+  const rating = ratingRaw ? parseFloat(ratingRaw) : null;
+  const reviewCountRaw = formData.get("review_count") as string;
+  const review_count = reviewCountRaw ? parseInt(reviewCountRaw) : null;
 
   const { error } = await supabase.from("stores").insert({
     name_ar,
@@ -25,10 +34,17 @@ export async function createStore(formData: FormData) {
     slug,
     logo_url,
     website_url,
+    short_description_ar,
     description_ar,
     status,
     is_featured,
+    is_verified,
     display_order,
+    meta_title,
+    meta_description,
+    og_image,
+    rating,
+    review_count,
   });
 
   if (error) {
@@ -50,10 +66,19 @@ export async function updateStore(id: string, formData: FormData) {
     (formData.get("slug") as string) || slugify(name_en || name_ar);
   const logo_url = (formData.get("logo_url") as string) || null;
   const website_url = (formData.get("website_url") as string) || undefined;
+  const short_description_ar = (formData.get("short_description_ar") as string) || null;
   const description_ar = (formData.get("description_ar") as string) || null;
   const status = (formData.get("status") as "active" | "paused" | "archived") || "active";
   const is_featured = formData.get("is_featured") === "true";
+  const is_verified = formData.get("is_verified") === "true";
   const display_order = parseInt(formData.get("display_order") as string) || 0;
+  const meta_title = (formData.get("meta_title") as string) || null;
+  const meta_description = (formData.get("meta_description") as string) || null;
+  const og_image = (formData.get("og_image") as string) || null;
+  const ratingRaw = formData.get("rating") as string;
+  const rating = ratingRaw ? parseFloat(ratingRaw) : null;
+  const reviewCountRaw = formData.get("review_count") as string;
+  const review_count = reviewCountRaw ? parseInt(reviewCountRaw) : null;
 
   const { error } = await supabase
     .from("stores")
@@ -63,10 +88,17 @@ export async function updateStore(id: string, formData: FormData) {
       slug,
       logo_url,
       website_url,
+      short_description_ar,
       description_ar,
       status,
       is_featured,
+      is_verified,
       display_order,
+      meta_title,
+      meta_description,
+      og_image,
+      rating,
+      review_count,
     })
     .eq("id", id);
 

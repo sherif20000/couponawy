@@ -4,6 +4,7 @@ import {
   getRecentCoupons,
   getTopStores,
 } from "@/lib/queries/admin";
+import { StoreLogo } from "@/components/stores/store-logo";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 
@@ -169,17 +170,13 @@ export default async function DashboardPage() {
                   key={store.id}
                   className="flex items-center gap-3 px-4 py-3"
                 >
-                  {store.logo_url ? (
-                    <img
-                      src={store.logo_url}
-                      alt={store.name_ar}
-                      className="w-8 h-8 rounded-lg object-contain bg-cream"
+                  <div className="w-8 h-8 rounded-lg bg-cream flex items-center justify-center overflow-hidden shrink-0">
+                    <StoreLogo
+                      logoUrl={store.logo_url}
+                      nameAr={store.name_ar}
+                      size="sm"
                     />
-                  ) : (
-                    <div className="w-8 h-8 rounded-lg bg-brand-red/10 flex items-center justify-center text-brand-red font-bold text-sm">
-                      {store.name_ar[0]}
-                    </div>
-                  )}
+                  </div>
                   <span className="text-sm font-medium text-charcoal">
                     {store.name_ar}
                   </span>

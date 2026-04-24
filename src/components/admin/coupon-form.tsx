@@ -22,6 +22,7 @@ interface Coupon {
   description_ar: string | null;
   status: string;
   is_featured: boolean;
+  is_exclusive: boolean;
   expires_at: string | null;
   display_order: number;
 }
@@ -243,16 +244,30 @@ export function CouponForm({ coupon, stores, action, submitLabel }: Props) {
         />
       </div>
 
-      {/* Is Featured */}
-      <div>
-        <select
-          name="is_featured"
-          defaultValue={coupon?.is_featured ? "true" : "false"}
-          className="h-10 px-3 rounded-lg border border-charcoal/15 bg-white text-charcoal text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent"
-        >
-          <option value="false">غير مميز</option>
-          <option value="true">كوبون مميز</option>
-        </select>
+      {/* Flags row */}
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex items-center gap-3">
+          <select
+            name="is_featured"
+            defaultValue={coupon?.is_featured ? "true" : "false"}
+            className="h-10 px-3 rounded-lg border border-charcoal/15 bg-white text-charcoal text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent"
+          >
+            <option value="false">غير مميز</option>
+            <option value="true">كوبون مميز</option>
+          </select>
+          <p className="text-sm text-warm-brown/60">يظهر في الصفحة الرئيسية</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <select
+            name="is_exclusive"
+            defaultValue={coupon?.is_exclusive ? "true" : "false"}
+            className="h-10 px-3 rounded-lg border border-charcoal/15 bg-white text-charcoal text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent"
+          >
+            <option value="false">غير حصري</option>
+            <option value="true">حصري</option>
+          </select>
+          <p className="text-sm text-warm-brown/60">يُظهر شارة "حصري" على الكارد</p>
+        </div>
       </div>
 
       {/* Actions */}

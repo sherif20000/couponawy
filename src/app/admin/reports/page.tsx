@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { AdminTopbar } from "@/components/admin/topbar";
+import { DeleteButton } from "@/components/admin/delete-button";
 import { getCouponReports } from "@/lib/queries/admin";
+import { deleteReport } from "./actions";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 
@@ -49,6 +51,7 @@ export default async function AdminReportsPage({ searchParams }: Props) {
                 <th className="text-right px-4 py-3 font-medium">الكوبون / الرابط</th>
                 <th className="text-right px-4 py-3 font-medium">ملاحظة</th>
                 <th className="text-right px-4 py-3 font-medium">التاريخ</th>
+                <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
@@ -68,13 +71,16 @@ export default async function AdminReportsPage({ searchParams }: Props) {
                   </td>
                   <td className="px-4 py-3 text-warm-brown/80 max-w-[220px]">
                     {r.coupon_url ? (
-                      <span
-                        className="truncate block text-xs font-mono"
+                      <a
+                        href={r.coupon_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="truncate block text-xs font-mono text-brand-red hover:underline"
                         dir="ltr"
                         title={r.coupon_url}
                       >
                         {r.coupon_url}
-                      </span>
+                      </a>
                     ) : (
                       <span className="text-warm-brown/30">—</span>
                     )}
@@ -95,12 +101,21 @@ export default async function AdminReportsPage({ searchParams }: Props) {
                       locale: ar,
                     })}
                   </td>
+                  <td className="px-4 py-3">
+                    <DeleteButton
+                      action={async () => {
+                        "use server";
+                        await deleteReport(r.id);
+                      }}
+                      confirmMessage="هل أنت متأكد من حذف هذا البلاغ؟"
+                    />
+                  </td>
                 </tr>
               ))}
               {reports.length === 0 && (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="px-4 py-12 text-center text-warm-brown/40"
                   >
                     لا توجد تقارير بعد

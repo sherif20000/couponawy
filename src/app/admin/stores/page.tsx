@@ -4,6 +4,7 @@ import { DeleteButton } from "@/components/admin/delete-button";
 import { getAdminStores } from "@/lib/queries/admin";
 import { deleteStore } from "./actions";
 import { Plus, Pencil } from "lucide-react";
+import { StoreLogo } from "@/components/stores/store-logo";
 
 interface Props {
   searchParams: Promise<{ page?: string; search?: string }>;
@@ -80,17 +81,13 @@ export default async function StoresPage({ searchParams }: Props) {
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      {store.logo_url ? (
-                        <img
-                          src={store.logo_url}
-                          alt={store.name_ar}
-                          className="w-8 h-8 rounded-lg object-contain bg-cream border border-charcoal/8"
+                      <div className="w-8 h-8 rounded-lg bg-cream border border-charcoal/8 flex items-center justify-center overflow-hidden shrink-0">
+                        <StoreLogo
+                          logoUrl={store.logo_url}
+                          nameAr={store.name_ar}
+                          size="sm"
                         />
-                      ) : (
-                        <div className="w-8 h-8 rounded-lg bg-brand-red/10 flex items-center justify-center text-brand-red font-bold text-xs">
-                          {store.name_ar[0]}
-                        </div>
-                      )}
+                      </div>
                       <div>
                         <p className="font-medium text-charcoal">{store.name_ar}</p>
                         {store.name_en && (

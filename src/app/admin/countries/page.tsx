@@ -2,7 +2,8 @@ import Link from "next/link";
 import { AdminTopbar } from "@/components/admin/topbar";
 import { getAdminCountries } from "@/lib/queries/admin";
 import { toggleCountryStatus, createCountry, deleteCountry } from "./actions";
-import { Pencil, Trash2 } from "lucide-react";
+import { DeleteButton } from "@/components/admin/delete-button";
+import { Pencil } from "lucide-react";
 import type { Database } from "@/types/database";
 
 type CountryStatus = Database["public"]["Enums"]["country_status"];
@@ -202,19 +203,13 @@ export default async function CountriesPage() {
                   >
                     <Pencil size={14} />
                   </Link>
-                  <form
+                  <DeleteButton
                     action={async () => {
                       "use server";
                       await deleteCountry(country.code);
                     }}
-                  >
-                    <button
-                      type="submit"
-                      className="p-1.5 rounded-lg text-warm-brown/40 hover:bg-red-50 hover:text-red-600 transition-colors"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </form>
+                    confirmMessage={`هل أنت متأكد من حذف "${country.name_ar}"؟`}
+                  />
                 </div>
               </div>
             ))}

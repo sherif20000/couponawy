@@ -27,6 +27,7 @@ export async function createCoupon(formData: FormData) {
   const description_ar = (formData.get("description_ar") as string) || null;
   const status = ((formData.get("status") as string) || "draft") as CouponStatus;
   const is_featured = formData.get("is_featured") === "true";
+  const is_exclusive = formData.get("is_exclusive") === "true";
   const expires_at = (formData.get("expires_at") as string) || null;
   const display_order = parseInt(formData.get("display_order") as string) || 0;
 
@@ -43,6 +44,7 @@ export async function createCoupon(formData: FormData) {
     description_ar,
     status,
     is_featured,
+    is_exclusive,
     expires_at: expires_at || null,
     display_order,
   });
@@ -75,6 +77,7 @@ export async function updateCoupon(id: string, formData: FormData) {
   const description_ar = (formData.get("description_ar") as string) || null;
   const status = ((formData.get("status") as string) || "draft") as CouponStatus;
   const is_featured = formData.get("is_featured") === "true";
+  const is_exclusive = formData.get("is_exclusive") === "true";
   const expires_at = (formData.get("expires_at") as string) || null;
   const display_order = parseInt(formData.get("display_order") as string) || 0;
 
@@ -93,6 +96,7 @@ export async function updateCoupon(id: string, formData: FormData) {
       description_ar,
       status,
       is_featured,
+      is_exclusive,
       expires_at: expires_at || null,
       display_order,
     })
