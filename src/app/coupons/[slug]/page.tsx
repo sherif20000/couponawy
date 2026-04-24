@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { StoreLogo } from "@/components/stores/store-logo";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Clock, BadgeCheck, Sparkles, Tag, ArrowLeft, AlertCircle, Flag } from "lucide-react";
@@ -204,18 +205,11 @@ export default async function CouponPage({ params }: PageProps) {
                 className="bg-white ring-white/30 hover:ring-white/60 flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl ring-2 transition-all md:h-24 md:w-24"
                 aria-label={storeName}
               >
-                {coupon.store.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={coupon.store.logo_url}
-                    alt={storeName}
-                    className="h-16 w-16 rounded-xl object-contain md:h-20 md:w-20"
-                  />
-                ) : (
-                  <span className="font-display text-brand-red text-2xl font-extrabold">
-                    {storeName.slice(0, 2)}
-                  </span>
-                )}
+                <StoreLogo
+                  logoUrl={coupon.store.logo_url}
+                  nameAr={storeName}
+                  size="lg"
+                />
               </Link>
             )}
 

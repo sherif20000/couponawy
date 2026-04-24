@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { StoreLogo } from "@/components/stores/store-logo";
 import {
   ArrowLeft,
   Sparkles,
@@ -302,18 +303,11 @@ function StoresSection({
                 title={store.name_ar}
               >
                 <div className="bg-cream ring-brand-gold/20 group-hover:ring-brand-red/40 flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full ring-2 shadow-sm transition-all duration-200 group-hover:shadow-md md:h-16 md:w-16">
-                  {store.logo_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={store.logo_url}
-                      alt={store.name_ar}
-                      className="h-10 w-10 object-contain md:h-12 md:w-12"
-                    />
-                  ) : (
-                    <span className="font-display text-brand-red text-sm font-extrabold">
-                      {store.name_ar.slice(0, 2)}
-                    </span>
-                  )}
+                  <StoreLogo
+                    logoUrl={store.logo_url}
+                    nameAr={store.name_ar}
+                    size="md"
+                  />
                 </div>
                 <span className="font-body text-warm-brown group-hover:text-brand-red w-16 truncate text-center text-[11px] transition-colors">
                   {store.name_ar}
