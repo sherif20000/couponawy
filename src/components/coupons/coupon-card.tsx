@@ -133,6 +133,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
   const [revealed, setRevealed] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
+  const [logoError, setLogoError] = React.useState(false);
 
   const hasCode = coupon.discount_type !== "free_shipping";
   const kind = resolveKind(coupon.discount_type);
@@ -191,17 +192,22 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
       )}
     >
       {/* ── Card header ─────────────────────────────────────────────── */}
-      <div className="bg-brand-red/5 border-brand-gold/20 border-b p-4">
+      <div className="border-brand-gold/20 border-b p-4">
         <div className="flex items-start justify-between gap-3">
           {/* Store info */}
           <div className="flex min-w-0 items-center gap-3">
-            <div className="bg-cream ring-brand-gold/30 flex h-11 w-11 shrink-0 items-center justify-center rounded-full ring-2">
-              {coupon.store?.logo_url ? (
+            <div className="bg-cream ring-brand-gold/30 flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full ring-2">
+              {coupon.store?.logo_url && !logoError ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={coupon.store.logo_url}
                   alt={coupon.store.name_ar}
-                  className="h-9 w-9 rounded-full object-contain"
+                  className="h-9 w-9 object-contain"
+                  onError={() => setLogoError(true)}
+                  onLoad={(e) => {
+                    if ((e.target as HTMLImageElement).naturalWidth === 0)
+                      setLogoError(true);
+                  }}
                 />
               ) : (
                 <span className="font-display text-brand-red text-sm font-bold">
@@ -229,7 +235,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
           {/* Discount badge + exclusive badge */}
           <div className="flex shrink-0 flex-col items-end gap-1.5">
             {coupon.discount_display && (
-              <span className="font-display bg-brand-gold text-cream rounded-xl px-3 py-1.5 text-sm font-extrabold leading-none shadow-sm">
+              <span className="font-display bg-brand-gold text-charcoal rounded-xl px-3 py-1.5 text-sm font-extrabold leading-none shadow-sm">
                 {coupon.discount_display}
               </span>
             )}

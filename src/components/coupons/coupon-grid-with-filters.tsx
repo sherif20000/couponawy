@@ -94,7 +94,18 @@ export function CouponGridWithFilters({ coupons }: Props) {
           لا توجد كوبونات في هذا التصنيف حالياً.
         </div>
       ) : (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div
+          className={cn(
+            "stagger-children grid gap-5",
+            filtered.length === 1
+              ? "max-w-sm"
+              : filtered.length === 2
+                ? "sm:grid-cols-2"
+                : filtered.length === 3
+                  ? "sm:grid-cols-2 lg:grid-cols-3"
+                  : "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          )}
+        >
           {filtered.map((coupon) => (
             <CouponCard key={coupon.id} coupon={coupon} />
           ))}
