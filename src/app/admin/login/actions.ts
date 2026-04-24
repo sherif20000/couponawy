@@ -2,19 +2,14 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export async function sendMagicLink(formData: FormData) {
+export async function signIn(formData: FormData) {
   const email = formData.get("email") as string;
-  if (!email) return;
+  const password = formData.get("password") as string;
+  if (!email || !password) redirect("/admin/login?error=missing_fields");
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
-      shouldCreateUser: false,
-    },
-  });
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-  if (error) redirect("/admin/login?error=send_failed");
-  redirect("/admin/login?sent=1");
+  if (error) redirect("/admin/login?error=invalid_credentials");
+  redirect("/admin");
 }
