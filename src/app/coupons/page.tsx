@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
+import { Section } from "@/components/shell/section";
+import { PageHero } from "@/components/shell/page-hero";
 import { CouponGridWithFilters } from "@/components/coupons/coupon-grid-with-filters";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getActiveCouponsPaginated } from "@/lib/queries/categories";
@@ -50,57 +51,45 @@ export default async function CouponsPage({ searchParams }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <section className="bg-brand-red py-10 md:py-14">
-        <Container size="xl">
-          <nav
-            aria-label="مسار التنقّل"
-            className="font-accent mb-4 flex items-center gap-2 text-xs text-white/60"
-          >
-            <Link href="/" className="hover:text-white transition-colors">
-              الرئيسية
-            </Link>
-            <span className="text-white/30">›</span>
-            <span className="text-white">الكوبونات</span>
-          </nav>
-          <h1 className="font-display text-white text-3xl font-extrabold md:text-4xl">
-            جميع الكوبونات
-          </h1>
-          <p className="font-body text-white/70 mt-2 text-base">
-            {total.toLocaleString("ar-EG")} كوبون · مجرّبة ومحدّثة يومياً
-          </p>
-        </Container>
-      </section>
+      <PageHero
+        variant="subtle"
+        breadcrumbs={[
+          { href: "/", label: "الرئيسية" },
+          { label: "الكوبونات" },
+        ]}
+        title="جميع الكوبونات"
+        subtitle={`${total.toLocaleString("ar-EG")} كوبون · مجرّبة ومحدّثة يومياً`}
+      />
 
-      <section className="py-12 md:py-16">
-        <Container size="xl">
-          {coupons.length === 0 ? (
-            <EmptyState
-              message="لا توجد كوبونات نشطة حالياً."
-              cta={{ href: "/stores", label: "تصفّح المتاجر" }}
-            />
-          ) : (
-            <CouponGridWithFilters coupons={coupons} />
-          )}
+      <Section spacing="lg">
+        {coupons.length === 0 ? (
+          <EmptyState
+            message="لا توجد كوبونات نشطة حالياً."
+            cta={{ href: "/stores", label: "تصفّح المتاجر" }}
+          />
+        ) : (
+          <CouponGridWithFilters coupons={coupons} />
+        )}
 
-          {totalPages > 1 && (
-            <div className="mt-10 flex items-center justify-center gap-3">
-              {page > 1 && (
-                <Button asChild variant="primary" size="sm">
-                  <Link href={`/coupons?page=${page - 1}`}>السابق</Link>
-                </Button>
-              )}
-              <span className="font-body text-warm-brown text-sm">
-                صفحة {page.toLocaleString("ar-EG")} من {totalPages.toLocaleString("ar-EG")}
-              </span>
-              {page < totalPages && (
-                <Button asChild variant="primary" size="sm">
-                  <Link href={`/coupons?page=${page + 1}`}>التالي</Link>
-                </Button>
-              )}
-            </div>
-          )}
-        </Container>
-      </section>
+        {totalPages > 1 && (
+          <div className="mt-10 flex items-center justify-center gap-3">
+            {page > 1 && (
+              <Button asChild variant="primary" size="sm">
+                <Link href={`/coupons?page=${page - 1}`}>السابق</Link>
+              </Button>
+            )}
+            <span className="font-body text-warm-brown text-sm">
+              صفحة {page.toLocaleString("ar-EG")} من{" "}
+              {totalPages.toLocaleString("ar-EG")}
+            </span>
+            {page < totalPages && (
+              <Button asChild variant="primary" size="sm">
+                <Link href={`/coupons?page=${page + 1}`}>التالي</Link>
+              </Button>
+            )}
+          </div>
+        )}
+      </Section>
     </main>
   );
 }

@@ -29,25 +29,22 @@ export async function Header() {
 
   return (
     <div className="sticky top-0 z-40 w-full">
-      {/* Ticker strip — scrolling urgency marquee */}
+      {/* Ticker strip — slim, urgent, near-black bg so the brand-red main bar pops below it */}
       <div
-        className="overflow-hidden py-1.5"
+        className="overflow-hidden py-1"
         style={{ background: "oklch(8% 0.005 26)" }}
         aria-hidden
       >
         {/* Two identical copies side-by-side; animation shifts left by 50% = seamless loop */}
         <div className="animate-ticker-rtl inline-flex whitespace-nowrap">
           {[0, 1].map((copy) => (
-            <span
-              key={copy}
-              className="inline-flex items-center gap-0"
-            >
+            <span key={copy} className="inline-flex items-center gap-0">
               {tickerItems.map((item, i) => (
                 <span key={i} className="inline-flex items-center">
-                  <span className="font-body text-brand-gold text-xs font-semibold tracking-wide px-5">
+                  <span className="font-body text-brand-gold px-5 text-[13px] font-bold tracking-wide">
                     {item.icon}&nbsp;{item.text}
                   </span>
-                  <span className="text-brand-gold/30 text-xs select-none">·</span>
+                  <span className="text-brand-gold/30 select-none text-xs">·</span>
                 </span>
               ))}
             </span>

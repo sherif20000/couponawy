@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Search, ArrowLeft } from "lucide-react";
-import { Container } from "@/components/ui/container";
+import { Section } from "@/components/shell/section";
+import { PageHero } from "@/components/shell/page-hero";
 import { CouponCard } from "@/components/coupons/coupon-card";
 import { StoreCard } from "@/components/stores/store-card";
 import { searchCoupons, searchStores } from "@/lib/queries/search";
@@ -31,44 +32,32 @@ export default async function SearchPage({ searchParams }: PageProps) {
 
   return (
     <main className="flex flex-1 flex-col">
-      {/* Header */}
-      <section className="bg-brand-red py-10 md:py-14">
-        <Container size="xl">
-          <nav
-            aria-label="مسار التنقّل"
-            className="font-accent mb-4 flex items-center gap-2 text-xs text-white/60"
-          >
-            <Link href="/" className="hover:text-white transition-colors">
-              الرئيسية
-            </Link>
-            <span className="text-white/30">›</span>
-            <span className="text-white">البحث</span>
-          </nav>
+      <PageHero
+        variant="subtle"
+        breadcrumbs={[
+          { href: "/", label: "الرئيسية" },
+          { label: "البحث" },
+        ]}
+        title={
+          query ? (
+            <>
+              نتائج البحث عن{" "}
+              <span className="text-brand-gold">&quot;{query}&quot;</span>
+            </>
+          ) : (
+            "البحث"
+          )
+        }
+        subtitle={
+          query
+            ? totalResults > 0
+              ? `${totalResults} نتيجة`
+              : "لم نجد نتائج مطابقة"
+            : undefined
+        }
+      />
 
-          <div className="flex flex-col gap-2">
-            <h1 className="font-display text-white text-3xl font-extrabold md:text-4xl">
-              {query ? (
-                <>
-                  نتائج البحث عن{" "}
-                  <span className="text-brand-gold">&quot;{query}&quot;</span>
-                </>
-              ) : (
-                "البحث"
-              )}
-            </h1>
-            {query && (
-              <p className="font-body text-white/70 text-base">
-                {totalResults > 0
-                  ? `${totalResults} نتيجة`
-                  : "لم نجد نتائج مطابقة"}
-              </p>
-            )}
-          </div>
-        </Container>
-      </section>
-
-      <section className="py-12 md:py-16">
-        <Container size="xl">
+      <Section spacing="lg">
           {/* Empty query — prompt to search */}
           {!query && (
             <div className="border-brand-gold/30 bg-cream-dark/30 font-body text-warm-brown flex flex-col items-center gap-4 rounded-2xl border border-dashed p-16 text-center">
@@ -150,8 +139,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               )}
             </div>
           )}
-        </Container>
-      </section>
+      </Section>
     </main>
   );
 }
