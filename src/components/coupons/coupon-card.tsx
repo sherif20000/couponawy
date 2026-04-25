@@ -202,10 +202,12 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
                 <img
                   src={coupon.store.logo_url}
                   alt={coupon.store.name_ar}
-                  className="h-9 w-9 object-contain"
+                  className="max-h-9 max-w-9 object-contain"
                   onError={() => setLogoError(true)}
                   onLoad={(e) => {
-                    if ((e.target as HTMLImageElement).naturalWidth <= 1)
+                    // < 32 catches both Clearbit's old 1×1 silent failure AND
+                    // Google S2's 16×16 generic-globe placeholder for unknown domains.
+                    if ((e.target as HTMLImageElement).naturalWidth < 32)
                       setLogoError(true);
                   }}
                 />

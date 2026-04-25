@@ -13,12 +13,16 @@ type StoreLogoProps = {
 export function StoreLogo({ logoUrl, nameAr, size = "md" }: StoreLogoProps) {
   const [imgError, setImgError] = useState(false);
 
+  // Use max-w/max-h instead of forced w/h: favicons are 48–192px native.
+  // Forcing them to 80–96px upscales tiny favicons and creates the blurry
+  // "pixelated" look. With max-*, large favicons fill the box (downscaled =
+  // sharp) and small ones display at native size centered (no upscale blur).
   const imgClass =
     size === "sm"
-      ? "h-9 w-9 object-contain"
+      ? "max-h-9 max-w-9 object-contain"
       : size === "lg"
-        ? "h-20 w-20 object-contain md:h-24 md:w-24"
-        : "h-12 w-12 object-contain";
+        ? "max-h-20 max-w-20 object-contain md:max-h-24 md:max-w-24"
+        : "max-h-12 max-w-12 object-contain";
 
   const fallbackClass =
     size === "sm"
@@ -36,7 +40,9 @@ export function StoreLogo({ logoUrl, nameAr, size = "md" }: StoreLogoProps) {
         className={imgClass}
         onError={() => setImgError(true)}
         onLoad={(e) => {
-          if ((e.target as HTMLImageElement).naturalWidth <= 1) setImgError(true);
+          // < 32 catches both Clearbit's old 1×1 silent failure AND
+          // Google S2's 16×16 generic-globe placeholder for unknown domains.
+          if ((e.target as HTMLImageElement).naturalWidth < 32) setImgError(true);
         }}
       />
     );
