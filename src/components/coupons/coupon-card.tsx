@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { buildOutboundUrl } from "@/lib/utils/outbound-url";
 import type { FeaturedCoupon } from "@/lib/queries/homepage";
 
 type CouponCardProps = {
@@ -181,7 +182,13 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
       p_referrer: document.referrer || null,
       p_user_agent: navigator.userAgent || null,
     });
-    window.open(coupon.destination_url, "_blank", "noopener,noreferrer");
+    // Append couponawy UTM params for merchant-side attribution.
+    const tracked = buildOutboundUrl(coupon.destination_url, {
+      surface: "card",
+      couponSlug: coupon.slug,
+      storeSlug: coupon.store?.slug ?? null,
+    });
+    window.open(tracked, "_blank", "noopener,noreferrer");
   }
 
   return (

@@ -5,6 +5,7 @@ import { Copy, Check, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { buildOutboundUrl } from "@/lib/utils/outbound-url";
 
 type CouponRevealHeroProps = {
   couponId: string;
@@ -12,6 +13,9 @@ type CouponRevealHeroProps = {
   destinationUrl: string;
   hasCode: boolean;
   storeName: string;
+  /** Optional slugs for UTM attribution. Falls back to "general" if missing. */
+  couponSlug?: string;
+  storeSlug?: string;
 };
 
 export function CouponRevealHero({
@@ -20,6 +24,8 @@ export function CouponRevealHero({
   destinationUrl,
   hasCode,
   storeName,
+  couponSlug,
+  storeSlug,
 }: CouponRevealHeroProps) {
   const [revealed, setRevealed] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
@@ -68,7 +74,14 @@ export function CouponRevealHero({
       p_referrer: document.referrer || null,
       p_user_agent: navigator.userAgent || null,
     });
-    window.open(destinationUrl, "_blank", "noopener,noreferrer");
+    // Append couponawy UTM params before opening — lets the merchant attribute
+    // the traffic back to us in their analytics.
+    const tracked = buildOutboundUrl(destinationUrl, {
+      surface: "detail",
+      couponSlug,
+      storeSlug,
+    });
+    window.open(tracked, "_blank", "noopener,noreferrer");
   }
 
   if (!hasCode) {

@@ -4,16 +4,23 @@ import {
   getAllCouponSlugsBuildTime,
 } from "@/lib/queries/detail";
 import { getAllCategorySlugsBuildTime } from "@/lib/queries/categories";
+import {
+  getAllArticleSlugsBuildTime,
+  getAllGuideSlugsBuildTime,
+} from "@/lib/queries/posts";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [storeSlugs, couponSlugs, categorySlugs] = await Promise.all([
-    getAllStoreSlugsBuildTime(),
-    getAllCouponSlugsBuildTime(),
-    getAllCategorySlugsBuildTime(),
-  ]);
+  const [storeSlugs, couponSlugs, categorySlugs, articleSlugs, guideSlugs] =
+    await Promise.all([
+      getAllStoreSlugsBuildTime(),
+      getAllCouponSlugsBuildTime(),
+      getAllCategorySlugsBuildTime(),
+      getAllArticleSlugsBuildTime(),
+      getAllGuideSlugsBuildTime(),
+    ]);
 
   const now = new Date();
 
@@ -39,6 +46,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${BASE_URL}/categories`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/blog`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/guides`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.7,
@@ -91,12 +110,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "yearly",
       priority: 0.4,
     },
-    {
-      url: `${BASE_URL}/careers`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.4,
-    },
+    // /careers removed — page is being trimmed in this cleanup pass
     {
       url: `${BASE_URL}/privacy`,
       lastModified: now,
@@ -137,10 +151,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
+  // Blog articles
+  const articleRoutes: MetadataRoute.Sitemap = articleSlugs.map(({ slug }) => ({
+    url: `${BASE_URL}/blog/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  // Buying guides
+  const guideRoutes: MetadataRoute.Sitemap = guideSlugs.map(({ slug }) => ({
+    url: `${BASE_URL}/guides/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
   return [
     ...staticRoutes,
     ...storeRoutes,
     ...couponRoutes,
     ...categoryRoutes,
+    ...articleRoutes,
+    ...guideRoutes,
   ];
 }

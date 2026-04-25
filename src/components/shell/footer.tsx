@@ -17,8 +17,9 @@ const FOOTER_SECTIONS = [
     links: [
       { href: "/about", label: "من نحن" },
       { href: "/how-it-works", label: "كيف نعمل" },
+      { href: "/blog", label: "المدونة" },
+      { href: "/guides", label: "الدلائل" },
       { href: "/contact", label: "تواصل معنا" },
-      { href: "/careers", label: "الوظائف" },
     ],
   },
   {

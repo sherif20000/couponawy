@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { Container } from "@/components/ui/container";
+import { Section } from "@/components/shell/section";
+import { PageHero } from "@/components/shell/page-hero";
 
 export const metadata: Metadata = {
   title: "الشروط والأحكام",
@@ -12,29 +12,17 @@ const LAST_UPDATED = "٢٣ أبريل ٢٠٢٥";
 export default function TermsPage() {
   return (
     <main className="flex flex-1 flex-col">
-      <section className="from-cream-dark/60 to-cream border-brand-gold/20 border-b bg-gradient-to-b">
-        <Container size="md" className="py-10 md:py-14">
-          <nav
-            aria-label="مسار التنقّل"
-            className="text-warm-brown-light font-accent mb-4 flex items-center gap-2 text-xs"
-          >
-            <Link href="/" className="hover:text-brand-red transition-colors">
-              الرئيسية
-            </Link>
-            <span>›</span>
-            <span className="text-charcoal">الشروط والأحكام</span>
-          </nav>
-          <h1 className="font-display text-charcoal text-3xl font-extrabold md:text-4xl">
-            الشروط والأحكام
-          </h1>
-          <p className="font-body text-warm-brown mt-2 text-sm">
-            آخر تحديث: {LAST_UPDATED}
-          </p>
-        </Container>
-      </section>
+      <PageHero
+        variant="subtle"
+        breadcrumbs={[
+          { href: "/", label: "الرئيسية" },
+          { label: "الشروط والأحكام" },
+        ]}
+        title="الشروط والأحكام"
+        subtitle={`آخر تحديث: ${LAST_UPDATED}`}
+      />
 
-      <section className="py-12 md:py-16">
-        <Container size="md">
+      <Section size="md" spacing="lg">
           <div className="font-body text-warm-brown space-y-8 text-sm leading-relaxed max-w-2xl">
 
             <p>
@@ -156,9 +144,8 @@ export default function TermsPage() {
               </p>
             </div>
 
-          </div>
-        </Container>
-      </section>
+        </div>
+      </Section>
     </main>
   );
 }

@@ -11,6 +11,8 @@ const NAV_LINKS = [
   { href: "/stores", label: "المتاجر" },
   { href: "/categories", label: "الأقسام" },
   { href: "/coupons", label: "الكوبونات" },
+  { href: "/blog", label: "المدونة" },
+  { href: "/guides", label: "الدلائل" },
 ];
 
 export async function Header() {

@@ -20,6 +20,10 @@ const cairo = Cairo({
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
+// Default OG card — used by any route that doesn't override openGraph.images.
+// /api/og generates a Cairo-set 1200×630 brand-red card on the edge.
+const DEFAULT_OG_IMAGE = `${SITE_URL}/api/og?title=${encodeURIComponent("كوبونات وعروض موثوقة")}&subtitle=${encodeURIComponent("من أكبر المتاجر السعودية والخليجية")}`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -32,6 +36,18 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ar_SA",
     siteName: "كوبوناوي",
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "كوبوناوي — كوبونات وعروض موثوقة",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [DEFAULT_OG_IMAGE],
   },
   alternates: {
     canonical: SITE_URL,

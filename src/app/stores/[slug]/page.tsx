@@ -13,6 +13,7 @@ import { CouponGridWithFilters } from "@/components/coupons/coupon-grid-with-fil
 import { EmptyState } from "@/components/ui/empty-state";
 import { StoreLogo } from "@/components/stores/store-logo";
 import { storeFaq } from "@/lib/content/store-templates";
+import { buildOutboundUrl } from "@/lib/utils/outbound-url";
 import { toArabicNumerals, pluralizeCoupon } from "@/lib/utils";
 import {
   getStoreBySlug,
@@ -46,6 +47,12 @@ export async function generateMetadata({
   const BASE_URL_META =
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
+  // If admin uploaded a custom og_image we use it. Otherwise generate one on the
+  // edge via /api/og?title=…&store=…&type=store.
+  const ogImage =
+    store.og_image ??
+    `${BASE_URL_META}/api/og?title=${encodeURIComponent(`كوبونات ${store.name_ar}`)}&subtitle=${encodeURIComponent(store.short_description_ar ?? "كوبونات وعروض مجرّبة")}&type=store`;
+
   return {
     title,
     description,
@@ -55,8 +62,9 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      images: store.og_image ? [{ url: store.og_image }] : undefined,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
+    twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
 
@@ -194,7 +202,10 @@ export default async function StorePage({ params }: PageProps) {
         <div className="pt-2">
           <Button asChild variant="gold" size="md">
             <a
-              href={store.website_url}
+              href={buildOutboundUrl(store.website_url, {
+                surface: "store_hero",
+                storeSlug: store.slug,
+              })}
               target="_blank"
               rel="noopener noreferrer sponsored"
             >
