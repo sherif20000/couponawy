@@ -38,7 +38,7 @@ export default async function AdminReportsPage({ searchParams }: Props) {
           <p className="text-sm text-warm-brown">
             إجمالي التقارير:{" "}
             <span className="font-bold text-charcoal">
-              {total.toLocaleString("ar-EG")}
+              {total.toLocaleString("en-US")}
             </span>
           </p>
         </div>

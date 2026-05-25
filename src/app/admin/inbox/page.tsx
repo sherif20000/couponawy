@@ -24,7 +24,7 @@ export default async function AdminInboxPage({ searchParams }: Props) {
           <p className="text-sm text-warm-brown">
             إجمالي الرسائل:{" "}
             <span className="font-bold text-charcoal">
-              {total.toLocaleString("ar-EG")}
+              {total.toLocaleString("en-US")}
             </span>
           </p>
         </div>

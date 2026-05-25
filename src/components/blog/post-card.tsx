@@ -17,7 +17,7 @@ type PostCardProps = {
 // Formats an ISO timestamp as "12 أبريل 2026" in Arabic SA locale.
 function formatPublishedDate(iso: string | null): string {
   if (!iso) return "";
-  return new Intl.DateTimeFormat("ar-SA", {
+  return new Intl.DateTimeFormat("ar-SA-u-nu-latn", {
     day: "numeric",
     month: "long",
     year: "numeric",

@@ -35,7 +35,7 @@ function daysUntil(iso: string | null): number | null {
 function formatDate(iso: string | null): string | null {
   if (!iso) return null;
   try {
-    return new Intl.DateTimeFormat("ar-SA", {
+    return new Intl.DateTimeFormat("ar-SA-u-nu-latn", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -117,7 +117,7 @@ function buildCouponJsonLd(
   }
 
   if (coupon.discount_type === "percentage" && coupon.discount_value != null) {
-    ld.description = `خصم ${coupon.discount_value}٪ ${ld.description}`;
+    ld.description = `خصم ${coupon.discount_value}% ${ld.description}`;
   } else if (coupon.discount_type === "fixed" && coupon.discount_value != null) {
     ld.description = `خصم ${coupon.discount_value} ريال ${ld.description}`;
   }
@@ -356,7 +356,7 @@ export default async function CouponPage({ params }: PageProps) {
                 <ol className="font-body text-warm-brown flex flex-col gap-3 text-base leading-relaxed">
                   <li className="flex gap-3">
                     <span className="bg-brand-red/10 text-brand-red font-display flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold">
-                      ١
+                      1
                     </span>
                     <span>
                       اضغط على &quot;إظهار الكود&quot; لعرض كود الخصم ونسخه.
@@ -364,7 +364,7 @@ export default async function CouponPage({ params }: PageProps) {
                   </li>
                   <li className="flex gap-3">
                     <span className="bg-brand-red/10 text-brand-red font-display flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold">
-                      ٢
+                      2
                     </span>
                     <span>
                       انتقل إلى موقع {storeName} وأضف المنتجات إلى السلة كالمعتاد.
@@ -372,7 +372,7 @@ export default async function CouponPage({ params }: PageProps) {
                   </li>
                   <li className="flex gap-3">
                     <span className="bg-brand-red/10 text-brand-red font-display flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold">
-                      ٣
+                      3
                     </span>
                     <span>
                       الصق الكود في خانة &quot;كوبون الخصم&quot; عند إتمام الدفع
