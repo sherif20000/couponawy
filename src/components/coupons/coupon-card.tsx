@@ -12,6 +12,7 @@ import {
   Truck,
   Percent,
   BadgeCheck,
+  Flame,
 } from "lucide-react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
@@ -23,6 +24,14 @@ import type { FeaturedCoupon } from "@/lib/queries/homepage";
 type CouponCardProps = {
   coupon: FeaturedCoupon;
   className?: string;
+  /**
+   * Visual variant for the card.
+   * - "featured" (default): standard layout
+   * - "trending": adds a small flame + reveal-count pill above the title so
+   *   the card visually signals popularity (per design audit — Trending was
+   *   indistinguishable from Featured before this).
+   */
+  variant?: "featured" | "trending";
 };
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -158,7 +167,7 @@ function CouponTypeTag({ kind }: { kind: CouponKind }) {
 // than "a strip of distinct deals". The spec was explicit on this — see
 // "Bold doesn't mean loud" in design principles.
 
-export function CouponCard({ coupon, className }: CouponCardProps) {
+export function CouponCard({ coupon, className, variant = "featured" }: CouponCardProps) {
   const [revealed, setRevealed] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
@@ -166,6 +175,8 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
 
   const hasCode = coupon.discount_type !== "free_shipping";
   const kind = resolveKind(coupon.discount_type);
+  const showTrendingPill =
+    variant === "trending" && typeof coupon.reveal_count === "number" && coupon.reveal_count > 0;
 
   // last_verified_at lives on the row but the generated Database type isn't
   // refreshed yet — defensive read avoids a build error.
@@ -283,6 +294,19 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
             <CouponTypeTag kind={kind} />
           </div>
         </div>
+
+        {/* ── Trending signal (only on cards with variant="trending") ─
+            Inserts a small flame + reveal-count line above the title so the
+            card communicates popularity even at a glance — solves the
+            "Trending looks identical to Featured" issue from the audit. */}
+        {showTrendingPill && (
+          <div className="text-brand-red font-accent inline-flex w-fit items-center gap-1.5 text-xs font-bold">
+            <Flame className="h-3.5 w-3.5" aria-hidden />
+            <span>
+              {coupon.reveal_count?.toLocaleString("ar-EG")} استخدام هذا الشهر
+            </span>
+          </div>
+        )}
 
         {/* ── Title ───────────────────────────────────────────────── */}
         <h3 className="font-display text-charcoal text-base font-bold leading-snug">
