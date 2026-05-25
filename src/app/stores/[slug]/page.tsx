@@ -90,11 +90,19 @@ export default async function StorePage({ params }: PageProps) {
 
   const faqItems = storeFaq(templateInput);
 
+  // Switched from `Organization` → `Store` (more specific, ranks better for
+  // KSA "كوبونات {store}" queries). areaServed + currenciesAccepted +
+  // paymentAccepted give Google enough to power local-intent rich results.
+  // `inLanguage` ties this entity to the Arabic site for hreflang sanity.
   const storeJsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "Store",
     name: store.name_ar,
     url: store.website_url,
+    inLanguage: "ar-SA",
+    areaServed: ["SA", "AE", "KW", "BH", "OM", "QA"],
+    currenciesAccepted: ["SAR", "AED", "KWD", "BHD", "OMR", "QAR"],
+    paymentAccepted: "Credit Card, Debit Card, Apple Pay, Mada, Tabby, Tamara, Cash on Delivery",
     ...(store.logo_url ? { logo: store.logo_url } : {}),
     ...(store.short_description_ar
       ? { description: store.short_description_ar }
@@ -113,6 +121,20 @@ export default async function StorePage({ params }: PageProps) {
         }
       : {}),
     sameAs: [`${BASE_URL}/stores/${store.slug}`],
+  };
+
+  // ItemList of the store's active coupons — same pattern category pages use.
+  // Cap at 30 so the JSON-LD stays a reasonable size; Google reads enough to
+  // understand "this page lists N offers" without us shipping the full set.
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: coupons.slice(0, 30).map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      url: `${BASE_URL}/coupons/${c.slug}`,
+      name: c.title_ar,
+    })),
   };
 
   const breadcrumbJsonLd = {
@@ -137,6 +159,10 @@ export default async function StorePage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(storeJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
       <script
         type="application/ld+json"

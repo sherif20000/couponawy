@@ -108,6 +108,10 @@ export function StoreForm({ store, action, submitLabel }: Props) {
               <img
                 src={store.logo_url}
                 alt=""
+                width={40}
+                height={40}
+                loading="lazy"
+                decoding="async"
                 className="h-10 w-10 rounded-lg border border-charcoal/15 object-contain bg-white shrink-0"
               />
             )}

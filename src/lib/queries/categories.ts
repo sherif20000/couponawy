@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 import type { FeaturedCoupon } from "@/lib/queries/homepage";
@@ -6,13 +7,15 @@ type Category = Database["public"]["Tables"]["categories"]["Row"];
 
 export type { Category };
 
-// Used only in generateStaticParams — runs at build time without a request context,
-// so we use the admin client (no cookies dependency) instead of the server client.
-export async function getAllCategorySlugsBuildTime(): Promise<{ slug: string }[]> {
+// Used by generateStaticParams() AND sitemap.ts. `updated_at` lets the sitemap
+// emit per-row <lastmod>; generateStaticParams ignores the extra field.
+export async function getAllCategorySlugsBuildTime(): Promise<
+  { slug: string; updated_at: string | null }[]
+> {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("categories")
-    .select("slug")
+    .select("slug, updated_at")
     .order("display_order", { ascending: true });
 
   if (error) {
@@ -144,24 +147,27 @@ export async function getActiveCoupons(): Promise<FeaturedCoupon[]> {
  *
  * Returns `null` on RPC error (caller treats this as "show all, don't filter").
  */
-export async function getVisibleCouponIds(
-  countryCode: string
-): Promise<string[] | null> {
-  const supabase = await createClient();
+// React `cache()` so the homepage and shell, which each call this with the
+// same country code, only hit Supabase once per request. Without cache() the
+// homepage was calling getVisibleCouponIds 3 separate times per render.
+export const getVisibleCouponIds = cache(
+  async (countryCode: string): Promise<string[] | null> => {
+    const supabase = await createClient();
 
-  const { data, error } = await supabase.rpc("get_visible_coupon_ids", {
-    p_country_code: countryCode,
-  });
+    const { data, error } = await supabase.rpc("get_visible_coupon_ids", {
+      p_country_code: countryCode,
+    });
 
-  if (error) {
-    console.error("[getVisibleCouponIds]", error);
-    return null;
+    if (error) {
+      console.error("[getVisibleCouponIds]", error);
+      return null;
+    }
+
+    // RPC returns `uuid[]` which arrives as `string[]`. Coalesce to [] so
+    // downstream `.in()` calls treat empty as "no matches", not null.
+    return (data as string[] | null) ?? [];
   }
-
-  // RPC returns `uuid[]` which arrives as `string[]`. Coalesce to an array so
-  // downstream `.in()` calls see [] (treated as "no matches") instead of null.
-  return (data as string[] | null) ?? [];
-}
+);
 
 export async function getActiveCouponsPaginated(
   page = 1,

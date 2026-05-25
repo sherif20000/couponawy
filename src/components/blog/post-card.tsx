@@ -51,12 +51,18 @@ export function PostCard({ post, basePath, tag, className }: PostCardProps) {
       <Link href={href} className="flex flex-1 flex-col">
         {/* Cover */}
         {post.featured_image_url ? (
+          // Card covers are below the fold on every list page — keep lazy.
+          // width/height pin the 16:10 aspect so the grid doesn't reflow as
+          // images stream in.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={post.featured_image_url}
             alt={post.title_ar}
-            className="aspect-[16/10] w-full object-cover"
+            width={800}
+            height={500}
             loading="lazy"
+            decoding="async"
+            className="aspect-[16/10] w-full object-cover"
           />
         ) : (
           <div
