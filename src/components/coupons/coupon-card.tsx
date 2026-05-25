@@ -41,12 +41,16 @@ function formatExpiryDate(iso: string): string {
   }).format(new Date(iso));
 }
 
-// Returns the freshness state for the green "verified" pill. Uses updated_at
-// as a Sprint-1 proxy; Sprint 3 replaces this with a real last_verified_at
-// column populated by the nightly scrape + manual admin verify-queue.
-function freshnessState(updatedAt: string | null): "today" | "week" | "old" | null {
-  if (!updatedAt) return null;
-  const ageHours = (Date.now() - new Date(updatedAt).getTime()) / (1000 * 60 * 60);
+// Returns the freshness state for the green "verified" pill. Prefers the
+// dedicated last_verified_at column (populated by the nightly scrape and the
+// admin verify-queue); falls back to updated_at for legacy/import rows.
+function freshnessState(
+  lastVerifiedAt: string | null,
+  updatedAt: string | null
+): "today" | "week" | "old" | null {
+  const ref = lastVerifiedAt ?? updatedAt;
+  if (!ref) return null;
+  const ageHours = (Date.now() - new Date(ref).getTime()) / (1000 * 60 * 60);
   if (ageHours <= 24) return "today";
   if (ageHours <= 24 * 7) return "week";
   return "old";
@@ -86,7 +90,7 @@ function ExpiryIndicator({ expiresAt }: { expiresAt: string | null }) {
 
   if (days <= 30) {
     return (
-      <span className="text-warning font-accent inline-flex items-center gap-1 text-xs font-medium">
+      <span className="text-warm-brown font-accent inline-flex items-center gap-1 text-xs font-medium">
         <Clock className="h-3 w-3" aria-hidden />
         {`ينتهي خلال ${days} يوماً`}
       </span>
@@ -101,7 +105,9 @@ function ExpiryIndicator({ expiresAt }: { expiresAt: string | null }) {
   );
 }
 
-// ─── Coupon type tag ─────────────────────────────────────────────────────────
+// ─── Coupon kind tag ─────────────────────────────────────────────────────────
+// On the cream card we use warm-brown text — never gold (gold-on-cream fails
+// contrast per .impeccable.md anti-patterns).
 
 type CouponKind = "code" | "deal" | "free_shipping";
 
@@ -112,9 +118,12 @@ function resolveKind(discountType: string | null | undefined): CouponKind {
 }
 
 function CouponTypeTag({ kind }: { kind: CouponKind }) {
+  const baseClasses =
+    "font-accent text-warm-brown inline-flex items-center gap-1 text-[11px] font-semibold";
+
   if (kind === "free_shipping") {
     return (
-      <span className="font-accent text-cream/85 inline-flex items-center gap-1 text-[11px] font-semibold">
+      <span className={baseClasses}>
         <Truck className="h-3 w-3" aria-hidden />
         شحن مجاني
       </span>
@@ -123,7 +132,7 @@ function CouponTypeTag({ kind }: { kind: CouponKind }) {
 
   if (kind === "deal") {
     return (
-      <span className="font-accent text-cream/85 inline-flex items-center gap-1 text-[11px] font-semibold">
+      <span className={baseClasses}>
         <Tag className="h-3 w-3" aria-hidden />
         عرض مباشر
       </span>
@@ -131,18 +140,23 @@ function CouponTypeTag({ kind }: { kind: CouponKind }) {
   }
 
   return (
-    <span className="font-accent text-cream/85 inline-flex items-center gap-1 text-[11px] font-semibold">
+    <span className={baseClasses}>
       <Percent className="h-3 w-3" aria-hidden />
       كود خصم
     </span>
   );
 }
 
-// ─── Main component — V2 Featured ───────────────────────────────────────────
-// The card is split horizontally:
-//   ↑ Top: bold red gradient block carrying store logo + giant discount + ribbons
-//   ↓ Bottom: cream surface with title, description, expiry, primary CTA
-// One unified design across every surface (homepage, store, category, search).
+// ─── Main component — V3 Cream Surface ──────────────────────────────────────
+// Aligns with .impeccable.md §5: bg-cream card, gold-tinted border, red
+// discount badge as the only red accent on the surface. The discount sits in
+// the top-start corner (RTL = right). Store identity is a calm avatar +
+// name; the hero of the card is the title + the badge.
+//
+// Why this changed from V2 (bold-red gradient header): V2 made every card
+// scream. On a grid of 4-8 cards the surface read as "wall of red" rather
+// than "a strip of distinct deals". The spec was explicit on this — see
+// "Bold doesn't mean loud" in design principles.
 
 export function CouponCard({ coupon, className }: CouponCardProps) {
   const [revealed, setRevealed] = React.useState<string | null>(null);
@@ -152,7 +166,12 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
 
   const hasCode = coupon.discount_type !== "free_shipping";
   const kind = resolveKind(coupon.discount_type);
-  const fresh = freshnessState(coupon.updated_at);
+
+  // last_verified_at lives on the row but the generated Database type isn't
+  // refreshed yet — defensive read avoids a build error.
+  const lastVerifiedAt =
+    (coupon as unknown as { last_verified_at?: string | null }).last_verified_at ?? null;
+  const fresh = freshnessState(lastVerifiedAt, coupon.updated_at);
 
   async function handleReveal() {
     if (loading) return;
@@ -200,45 +219,40 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
   return (
     <Card
       className={cn(
-        "group hover:shadow-brand relative flex h-full flex-col overflow-hidden border-2 border-transparent transition-all duration-200 hover:-translate-y-1 hover:border-brand-gold",
+        "group relative flex h-full flex-col bg-cream border border-brand-gold/20 rounded-2xl shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-red/30 hover:shadow-md",
         className
       )}
     >
-      {/* ── Top: bold-red banner ───────────────────────────────────── */}
-      <div className="bg-gradient-to-br from-brand-red to-brand-red-dark relative overflow-hidden px-5 pb-5 pt-12">
-        {/* Freshness pill — top-right (RTL start) */}
-        {fresh === "today" && (
-          <div className="bg-success/15 text-cream border-success/40 absolute top-3 right-3 z-10 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-wide backdrop-blur">
-            <span className="bg-success h-1.5 w-1.5 animate-pulse rounded-full" />
-            تم التحقق اليوم
-          </div>
-        )}
-        {fresh === "week" && (
-          <div className="bg-white/10 text-cream/85 border-white/20 absolute top-3 right-3 z-10 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide backdrop-blur">
-            <BadgeCheck className="h-2.5 w-2.5" aria-hidden />
-            مُحقَّق هذا الأسبوع
-          </div>
-        )}
+      {/* ── Discount badge — top-start corner (RTL = right) ────────── */}
+      {coupon.discount_display && (
+        <div
+          className="bg-brand-red text-cream font-display absolute top-4 right-4 z-10 rounded-xl px-3 py-1.5 text-sm font-black tracking-tight shadow-sm"
+          aria-label={`خصم ${coupon.discount_display}`}
+        >
+          {coupon.discount_display}
+        </div>
+      )}
 
-        {/* Exclusive ribbon — top-left (RTL end) */}
-        {coupon.is_exclusive && (
-          <div className="bg-brand-gold-dark absolute top-3 left-3 z-10 rounded-md px-2 py-1">
-            <span className="font-accent text-cream inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider">
-              <Sparkles className="h-2.5 w-2.5" aria-hidden />
-              حصري
-            </span>
-          </div>
-        )}
+      {/* ── Exclusive ribbon — top-end (RTL = left) ────────────────── */}
+      {coupon.is_exclusive && (
+        <div className="bg-brand-gold absolute top-4 left-4 z-10 rounded-md px-2 py-1">
+          <span className="font-accent text-charcoal inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider">
+            <Sparkles className="h-2.5 w-2.5" aria-hidden />
+            حصري
+          </span>
+        </div>
+      )}
 
-        {/* Store + giant discount */}
-        <div className="flex items-end justify-between gap-4">
-          <div className="bg-cream ring-cream/40 flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-4">
+      <CardContent className="flex flex-1 flex-col gap-3 p-5 pt-6">
+        {/* ── Store row ───────────────────────────────────────────── */}
+        <div className="flex items-center gap-3">
+          <div className="bg-cream-dark ring-brand-gold/25 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-1">
             {coupon.store?.logo_url && !logoError ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={coupon.store.logo_url}
                 alt={coupon.store.name_ar}
-                className="max-h-10 max-w-10 object-contain"
+                className="max-h-9 max-w-9 object-contain"
                 onError={() => setLogoError(true)}
                 onLoad={(e) => {
                   if ((e.target as HTMLImageElement).naturalWidth < 32)
@@ -246,42 +260,31 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
                 }}
               />
             ) : (
-              <span className="font-display text-brand-red text-xl font-bold">
+              <span className="font-display text-brand-red text-base font-bold">
                 {coupon.store?.name_ar?.slice(0, 2) ?? "؟"}
               </span>
             )}
           </div>
 
-          {coupon.discount_display && (
-            <div className="text-cream flex flex-col items-end leading-none">
-              <span className="font-display text-5xl font-extrabold tracking-tight">
-                {coupon.discount_display}
+          {/* Right-pad so the absolute badge doesn't collide with the name */}
+          <div className="flex min-w-0 flex-col pr-16">
+            {coupon.store ? (
+              <Link
+                href={`/stores/${coupon.store.slug}`}
+                className="font-display text-charcoal hover:text-brand-red truncate text-sm font-bold transition-colors"
+              >
+                {coupon.store.name_ar}
+              </Link>
+            ) : (
+              <span className="font-display text-charcoal text-sm font-bold">
+                متجر
               </span>
-              <span className="font-accent mt-1 text-[10px] uppercase tracking-widest opacity-80">
-                خصم
-              </span>
-            </div>
-          )}
+            )}
+            <CouponTypeTag kind={kind} />
+          </div>
         </div>
 
-        {/* Store name + kind tag */}
-        <div className="mt-3 flex items-center justify-between gap-2">
-          {coupon.store ? (
-            <Link
-              href={`/stores/${coupon.store.slug}`}
-              className="font-display text-cream hover:text-brand-gold truncate text-sm font-bold transition-colors"
-            >
-              {coupon.store.name_ar}
-            </Link>
-          ) : (
-            <span className="font-display text-cream text-sm font-bold">متجر</span>
-          )}
-          <CouponTypeTag kind={kind} />
-        </div>
-      </div>
-
-      {/* ── Bottom: cream surface ──────────────────────────────────── */}
-      <CardContent className="flex flex-1 flex-col gap-3 p-5">
+        {/* ── Title ───────────────────────────────────────────────── */}
         <h3 className="font-display text-charcoal text-base font-bold leading-snug">
           <Link
             href={`/coupons/${coupon.slug}`}
@@ -291,6 +294,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
           </Link>
         </h3>
 
+        {/* ── Description ────────────────────────────────────────── */}
         {coupon.description_ar && (
           <p className="text-warm-brown font-body line-clamp-2 text-sm leading-relaxed">
             {coupon.description_ar}
@@ -302,8 +306,23 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
           {revealed ? `كود الخصم هو ${revealed}` : ""}
         </span>
 
+        {/* ── Footer row: expiry + freshness, then CTA ───────────── */}
         <div className="mt-auto flex flex-col gap-3">
-          <ExpiryIndicator expiresAt={coupon.expires_at} />
+          <div className="flex items-center justify-between gap-2">
+            <ExpiryIndicator expiresAt={coupon.expires_at} />
+            {fresh === "today" && (
+              <span className="bg-success/12 text-success border-success/30 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold">
+                <span className="bg-success h-1.5 w-1.5 animate-pulse rounded-full" />
+                مُحقَّق اليوم
+              </span>
+            )}
+            {fresh === "week" && (
+              <span className="bg-cream-dark text-warm-brown border-brand-gold/30 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold">
+                <BadgeCheck className="h-2.5 w-2.5" aria-hidden />
+                مُحقَّق هذا الأسبوع
+              </span>
+            )}
+          </div>
 
           {hasCode ? (
             revealed ? (
@@ -311,7 +330,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
                 <button
                   onClick={handleCopy}
                   className={cn(
-                    "border-brand-gold bg-brand-gold/10 hover:bg-brand-gold/20 group/code relative flex items-center justify-between gap-2 rounded-xl border-2 border-dashed p-3 transition-colors",
+                    "border-brand-gold bg-brand-gold/10 hover:bg-brand-gold/20 group/code flex items-center justify-between gap-2 rounded-xl border-2 border-dashed p-3 transition-colors",
                     copied && "animate-gold-flash"
                   )}
                   aria-label="نسخ الكود"
@@ -334,7 +353,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
                   </span>
                 </button>
                 <Button
-                  variant="gold"
+                  variant="primary"
                   size="md"
                   onClick={handleGoToStore}
                   className="w-full"
@@ -357,7 +376,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
             )
           ) : (
             <Button
-              variant="gold"
+              variant="primary"
               size="md"
               onClick={handleGoToStore}
               className="w-full"

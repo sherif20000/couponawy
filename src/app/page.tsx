@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { StoreLogo } from "@/components/stores/store-logo";
 import {
-  ArrowLeft,
   Sparkles,
   Flame,
   TrendingUp,
@@ -24,7 +23,6 @@ import { CouponCard } from "@/components/coupons/coupon-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Section } from "@/components/shell/section";
 import { SectionHeader } from "@/components/shell/section-header";
-import { PageHero } from "@/components/shell/page-hero";
 import { cn } from "@/lib/utils";
 import {
   getFeaturedCoupons,
@@ -105,7 +103,7 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
-      <HeroSection topCoupons={coupons.slice(0, 3)} />
+      <HeroSection />
       {categories.length > 0 && <CategoryFilterStrip categories={categories} />}
       <FeaturedCouponsSection coupons={coupons} />
       {expiringSoon.length > 0 && <ExpiringSoonSection coupons={expiringSoon} />}
@@ -116,163 +114,81 @@ export default async function Home() {
   );
 }
 
-// ── Hero V1 — Bold red full-bleed ────────────────────────────────────────
-// Two-column grid on desktop:
-//   ↑ Left:  badge eyebrow → big headline → subtitle → search → trust pills
-//   ↓ Right: 3 floating coupon teaser cards stacked with slight rotation
-// Replaces the previous PageHero composition so the homepage carries a
-// distinct, conversion-focused first screen — every other route still uses
-// the shared <PageHero> primitive.
-function HeroSection({
-  topCoupons,
-}: {
-  topCoupons: Awaited<ReturnType<typeof getFeaturedCoupons>>;
-}) {
-  return (
-    <section className="bg-brand-red relative overflow-hidden">
-      {/* Subtle dotted texture — keeps the red from feeling flat */}
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-          backgroundSize: "24px 24px",
-        }}
-      />
+// ── Hero — Bold Bazaar spec (.impeccable.md §3) ──────────────────────────
+// Dark crimson-to-near-black radial gradient. Two columns on desktop:
+//   text right (RTL start), 2×2 stat cards left (RTL end).
+// The single CTA is yellow on dark — the high-contrast moment the spec calls
+// out as "the deal feeling". No search bar here (the header search handles
+// intent navigation; this hero is for the first-time emotional pitch).
+//
+// Why we replaced the rotated floating-card hero: the floating cards made
+// the page feel like a marketing template and competed with the live grid
+// directly below. Stats are quieter, more credible, and let the headline
+// breathe.
+const HERO_STATS: Array<{ value: string; label: string }> = [
+  { value: "٥٠٠+", label: "متجر شريك" },
+  { value: "٢,٤٠٠+", label: "كوبون فعّال" },
+  { value: "يومي", label: "تحديث" },
+  { value: "٩٨٪", label: "معدّل النجاح" },
+];
 
-      <Container size="xl" className="relative py-14 md:py-20">
+function HeroSection() {
+  return (
+    <section
+      className="relative overflow-hidden text-white"
+      style={{
+        background:
+          "radial-gradient(ellipse at 65% 50%, oklch(41% 0.25 26) 0%, oklch(10% 0.008 26) 75%)",
+      }}
+    >
+      <Container size="xl" className="relative py-16 md:py-24">
         <div className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr]">
-          {/* ── Left column ────────────────────────────────────── */}
+          {/* ── Right column (RTL start) — headline + CTA ─────────── */}
           <div className="flex flex-col gap-6">
-            <span
-              className="bg-brand-gold/15 text-brand-gold border-brand-gold/30 font-accent animate-fade-up inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur"
+            <h1
+              className="font-display animate-fade-up text-5xl font-black leading-[1.15] md:text-6xl"
               style={{ animationDelay: "0ms" }}
             >
-              <Flame className="h-3.5 w-3.5" aria-hidden />
-              +٢٤٠٠ كوبون فعّال هذا الأسبوع
-            </span>
-
-            <h1
-              className="font-display animate-fade-up text-4xl font-extrabold leading-[1.1] text-white md:text-6xl"
-              style={{ animationDelay: "75ms" }}
-            >
-              وفّر في كل
+              خصومات تصل
               <br />
-              عمليّة <span className="text-brand-gold">تسوّق</span>
+              إلى <span className="text-brand-gold">٧٠٪</span>
             </h1>
 
             <p
-              className="font-body animate-fade-up max-w-md text-base leading-relaxed text-white/85 md:text-lg"
-              style={{ animationDelay: "150ms" }}
+              className="font-body animate-fade-up max-w-md text-base leading-[1.7] text-white/70 md:text-lg"
+              style={{ animationDelay: "75ms" }}
             >
-              أكواد خصم حقيقية ومُحقّقة يومياً من أكبر المتاجر العربية
-              والعالمية. انسخ الكود واحصل على خصمك فوراً.
+              اكتشف أفضل كوبونات الخصم من أكبر المتاجر العربية والعالمية —
+              مُحقّقة يومياً، فعّالة فوراً.
             </p>
 
-            {/* Search bar */}
-            <form
-              action="/search"
-              method="get"
-              role="search"
-              className="bg-white/10 ring-white/20 animate-fade-up flex items-center gap-2 rounded-2xl p-1.5 ring-1 backdrop-blur-sm"
-              style={{ animationDelay: "225ms" }}
-            >
-              <input
-                type="search"
-                name="q"
-                placeholder="نون، أمازون، نمشي، طلبات، شي إن..."
-                aria-label="ابحث عن متجر أو كوبون"
-                className="font-body placeholder:text-white/55 flex-1 bg-transparent px-4 text-base text-white outline-none"
-              />
-              <Button type="submit" variant="gold" size="md">
-                ابحث الكوبونات
-              </Button>
-            </form>
-
-            {/* Trust pills */}
             <div
-              className="font-accent animate-fade-up flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/75"
-              style={{ animationDelay: "300ms" }}
+              className="animate-fade-up flex flex-wrap items-center gap-3"
+              style={{ animationDelay: "150ms" }}
             >
-              <span className="inline-flex items-center gap-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-brand-gold" aria-hidden />
-                ١٢٠+ متجر موثّق
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <Flame className="h-3.5 w-3.5 text-brand-gold" aria-hidden />
-                تحديث يومي
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <ShoppingBag className="h-3.5 w-3.5 text-brand-gold" aria-hidden />
-                توفير حتى ٧٠٪
-              </span>
+              <Button asChild variant="gold" size="lg" className="rounded-xl">
+                <Link href="/coupons">ابدأ التوفير الآن</Link>
+              </Button>
             </div>
           </div>
 
-          {/* ── Right column — floating coupon teasers (desktop only) ──
-              Three real top coupons, each lightly rotated, staggered vertically.
-              On mobile we hide this entire column to keep the hero short and
-              push the user toward the live <FeaturedCouponsSection> below. */}
-          {topCoupons.length > 0 && (
-            <div className="relative hidden h-80 md:block">
-              {topCoupons.slice(0, 3).map((c, idx) => {
-                const positions = [
-                  { top: "0", end: "1.5rem", rotate: "3deg", delay: "150ms" },
-                  { top: "7rem", end: "0", rotate: "-2deg", delay: "300ms" },
-                  { top: "14rem", end: "3rem", rotate: "2deg", delay: "450ms" },
-                ];
-                const p = positions[idx];
-                return (
-                  <Link
-                    key={c.id}
-                    href={`/coupons/${c.slug}`}
-                    className="bg-cream text-charcoal hover:-translate-y-0.5 animate-fade-up absolute z-10 block w-64 rounded-2xl p-4 shadow-xl transition-transform hover:shadow-2xl"
-                    style={{
-                      top: p.top,
-                      insetInlineEnd: p.end,
-                      transform: `rotate(${p.rotate})`,
-                      animationDelay: p.delay,
-                    }}
-                  >
-                    <div className="mb-3 flex items-center gap-2">
-                      <div className="bg-brand-gold/20 ring-brand-gold/30 flex h-8 w-8 items-center justify-center overflow-hidden rounded-full ring-2">
-                        {c.store?.logo_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={c.store.logo_url}
-                            alt={c.store.name_ar}
-                            className="max-h-6 max-w-6 object-contain"
-                          />
-                        ) : (
-                          <span className="font-display text-brand-red text-[10px] font-bold">
-                            {c.store?.name_ar?.slice(0, 2) ?? "؟"}
-                          </span>
-                        )}
-                      </div>
-                      <span className="font-display text-sm font-bold">
-                        {c.store?.name_ar ?? "متجر"}
-                      </span>
-                      <span className="bg-success/15 text-success ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold">
-                        نشط
-                      </span>
-                    </div>
-                    <p className="font-body text-warm-brown line-clamp-2 text-xs leading-relaxed">
-                      {c.title_ar}
-                    </p>
-                    <div className="border-brand-gold/20 mt-3 flex items-baseline justify-between border-t pt-2">
-                      <span className="font-display text-brand-red text-2xl font-extrabold leading-none">
-                        {c.discount_display ?? "—"}
-                      </span>
-                      <span className="font-accent text-warm-brown-light text-[10px] uppercase tracking-wider">
-                        خصم
-                      </span>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          )}
+          {/* ── Left column (RTL end) — 2×2 stat cards ─────────────── */}
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
+            {HERO_STATS.map((s, i) => (
+              <div
+                key={s.label}
+                className="animate-fade-up rounded-2xl border border-white/10 bg-black/30 p-5 backdrop-blur-sm md:p-6"
+                style={{ animationDelay: `${200 + i * 50}ms` }}
+              >
+                <div className="font-display text-brand-gold text-3xl font-black leading-none md:text-4xl">
+                  {s.value}
+                </div>
+                <div className="font-body mt-2 text-xs font-medium text-white/60 md:text-sm">
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </Container>
     </section>
