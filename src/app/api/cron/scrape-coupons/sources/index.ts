@@ -7,8 +7,9 @@
 import { couponava } from "./couponava";
 import { arabiccoupon } from "./arabiccoupon";
 import { alcoupon } from "./alcoupon";
+import { codekhasem } from "./codekhasem";
 import type { CouponSource } from "./types";
 
-export const SOURCES: CouponSource[] = [couponava, arabiccoupon, alcoupon];
+export const SOURCES: CouponSource[] = [couponava, arabiccoupon, alcoupon, codekhasem];
 
 export type { CouponSource, ScrapedCoupon, SourceResult } from "./types";
