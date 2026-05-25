@@ -63,6 +63,48 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Site-wide JSON-LD: WebSite with SearchAction (sitelinks search box in
+  // Google) + Organization (knowledge panel + logo). Keeping both inside one
+  // @graph means a single script tag and one shared @id space for entities to
+  // reference each other. See SEO audit P0 finding.
+  const siteSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: "كوبوناوي",
+        inLanguage: "ar-SA",
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        url: SITE_URL,
+        name: "كوبوناوي",
+        logo: {
+          "@type": "ImageObject",
+          url: `${SITE_URL}/icon.png`,
+          width: 512,
+          height: 512,
+        },
+        sameAs: [
+          // Social profiles go here as they're added. Empty array is still
+          // valid JSON-LD; populating later doesn't require a schema change.
+        ],
+      },
+    ],
+  };
+
   return (
     <html
       lang="ar"
@@ -70,6 +112,12 @@ export default function RootLayout({
       className={`${cairo.variable} h-full antialiased`}
     >
       <body className="bg-cream text-charcoal font-body min-h-full flex flex-col">
+        {/* Site-wide structured data. Inline (not next/script) so Google's
+            crawler sees it in the initial HTML response. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteSchema) }}
+        />
         {/* Google Analytics — only loads when NEXT_PUBLIC_GA_ID is set */}
         {GA_ID && (
           <>

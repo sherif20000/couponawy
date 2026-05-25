@@ -25,15 +25,25 @@ export const runtime = "edge";
 
 const SITE_NAME = "كوبوناوي";
 
-// Cairo Bold variable URL — same family the rest of the site uses, so OG cards
-// match the on-site typography. Using `latin,arabic` subset to keep size manageable.
-const CAIRO_BOLD_URL =
-  "https://fonts.gstatic.com/s/cairo/v28/SLXgc1nY6HkvalIvTp2mxdt0UX8gfC4uSE7QEcuEAg.ttf";
-
-async function loadFont() {
-  const res = await fetch(CAIRO_BOLD_URL);
-  if (!res.ok) throw new Error("Failed to load Cairo font for OG image");
-  return res.arrayBuffer();
+// Cairo Bold — STATIC TTFs pinned in the repo (not Google's variable subset).
+// Why: Google's variable URL (v28 SLXgc1nY...) served us partial GSUB tables that
+// Satori couldn't parse, surfacing as `Error: lookupType: 5 - substitution` in
+// Vercel runtime logs every few hours. Pinning the static-weight files from the
+// v31 release gives us deterministic font data forever, at the cost of ~107KB
+// committed binaries. Edge runtime bundles them via `new URL(import.meta.url)`.
+//
+// We need BOTH subsets because OG cards mix Arabic (eyebrow, title) and Latin
+// (footer "couponawy.com"). Registering both as the same family name lets Satori
+// fall back across unicode ranges automatically.
+async function loadFonts() {
+  const [latinRes, arabicRes] = await Promise.all([
+    fetch(new URL("./cairo-bold.ttf", import.meta.url)),
+    fetch(new URL("./cairo-bold-arabic.ttf", import.meta.url)),
+  ]);
+  if (!latinRes.ok || !arabicRes.ok) {
+    throw new Error("Failed to load Cairo font for OG image");
+  }
+  return Promise.all([latinRes.arrayBuffer(), arabicRes.arrayBuffer()]);
 }
 
 export async function GET(req: NextRequest) {
@@ -58,13 +68,18 @@ export async function GET(req: NextRequest) {
   };
   const badge = typeBadge[type];
 
-  let cairoBold: ArrayBuffer | null = null;
+  let cairoLatin: ArrayBuffer | null = null;
+  let cairoArabic: ArrayBuffer | null = null;
   try {
-    cairoBold = await loadFont();
+    const [latin, arabic] = await loadFonts();
+    cairoLatin = latin;
+    cairoArabic = arabic;
   } catch {
-    // If the font CDN is unreachable, fall back to system fonts. Arabic letters
-    // may not connect properly but the card still renders.
-    cairoBold = null;
+    // If the bundled font fetch fails (shouldn't happen — it's in the function
+    // bundle) fall back to system fonts. Arabic shaping may break but the card
+    // still renders so social previews don't 500.
+    cairoLatin = null;
+    cairoArabic = null;
   }
 
   return new ImageResponse(
@@ -170,18 +185,16 @@ export async function GET(req: NextRequest) {
     {
       width: 1200,
       height: 630,
-      // Only register the font when fetch succeeded — the fallback path renders
-      // with whatever default Satori has, which is good enough for ASCII fallbacks.
-      fonts: cairoBold
-        ? [
-            {
-              name: "Cairo",
-              data: cairoBold,
-              style: "normal",
-              weight: 800,
-            },
-          ]
-        : undefined,
+      // Register both subsets as the same family — Satori picks per-glyph based
+      // on the unicode-range each TTF covers. Falls back to system if either is
+      // missing (best-effort, won't render Arabic correctly but won't 500).
+      fonts:
+        cairoLatin && cairoArabic
+          ? [
+              { name: "Cairo", data: cairoLatin, style: "normal", weight: 800 },
+              { name: "Cairo", data: cairoArabic, style: "normal", weight: 800 },
+            ]
+          : undefined,
       // Cache aggressively at the edge — these images change rarely (only when
       // titles change), and regenerating per request would be wasteful.
       headers: {

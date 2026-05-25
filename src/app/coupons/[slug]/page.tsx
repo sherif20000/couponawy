@@ -2,7 +2,7 @@ import Link from "next/link";
 import { StoreLogo } from "@/components/stores/store-logo";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Clock, BadgeCheck, Sparkles, Tag, AlertCircle, Flag } from "lucide-react";
+import { Clock, BadgeCheck, Sparkles, Tag, AlertCircle, Flag, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/shell/section";
 import { PageHero } from "@/components/shell/page-hero";
@@ -10,6 +10,7 @@ import { SectionHeader } from "@/components/shell/section-header";
 import { CouponCard } from "@/components/coupons/coupon-card";
 import { CouponRevealHero } from "@/components/coupons/coupon-reveal-hero";
 import {
+  getCategoriesForCoupon,
   getCouponBySlug,
   getRelatedCoupons,
   getAllCouponSlugsBuildTime,
@@ -129,7 +130,13 @@ export default async function CouponPage({ params }: PageProps) {
   const coupon = await getCouponBySlug(slug);
   if (!coupon) notFound();
 
-  const related = await getRelatedCoupons(coupon.store_id, coupon.id, 4);
+  // Fetch related coupons + this coupon's category tags in parallel. The
+  // categories drive a small "تصفّح المزيد في {category}" cross-link section,
+  // restoring internal-link equity that previously dead-ended on the leaf URL.
+  const [related, categories] = await Promise.all([
+    getRelatedCoupons(coupon.store_id, coupon.id, 4),
+    getCategoriesForCoupon(coupon.id),
+  ]);
   const days = daysUntil(coupon.expires_at);
   const verifiedOn = formatDate(coupon.last_verified_at);
   const hasCode = coupon.discount_type !== "free_shipping";
@@ -264,8 +271,12 @@ export default async function CouponPage({ params }: PageProps) {
             </span>
           )}
           {coupon.success_rate != null && (
+            // TrendingUp (not BadgeCheck) so the success-rate icon visually
+            // differs from the "verified on" line right above it. The audit
+            // flagged stacked-identical BadgeCheck icons as a hierarchy bug —
+            // two trust signals reading as one duplicated stamp.
             <span className="inline-flex items-center gap-1.5">
-              <BadgeCheck className="text-brand-gold h-4 w-4" aria-hidden />
+              <TrendingUp className="text-brand-gold h-4 w-4" aria-hidden />
               نسبة نجاح {Math.round(coupon.success_rate * 100)}%
             </span>
           )}
@@ -424,6 +435,28 @@ export default async function CouponPage({ params }: PageProps) {
             </aside>
         </div>
       </Section>
+
+      {/* Category cross-links — restores internal-link equity from leaf coupon
+          URLs back into category landing pages. Rendered as compact gold pills
+          so the page doesn't end with a "dead-end" feeling. */}
+      {categories.length > 0 && (
+        <Section spacing="md">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-display text-charcoal text-sm font-bold">
+              تصفّح المزيد في:
+            </span>
+            {categories.map((c) => (
+              <Link
+                key={c.id}
+                href={`/categories/${c.slug}`}
+                className="font-accent border-brand-gold/30 text-brand-red-dark hover:border-brand-red hover:bg-brand-red hover:text-white inline-flex items-center rounded-full border bg-cream px-3 py-1 text-xs font-bold transition-colors"
+              >
+                {c.name_ar}
+              </Link>
+            ))}
+          </div>
+        </Section>
+      )}
 
       {related.length > 0 && (
         <Section tone="muted" spacing="lg">

@@ -9,10 +9,25 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/auth/"],
+        // /admin/ + /auth/ keep crawlers out of authenticated UX.
+        // /api/ avoids wasted crawl budget on JSON endpoints.
+        // /*?utm_* + /*?fbclid + /search?q= block tracker/parameter URLs
+        //   that would otherwise generate duplicate-content URLs in Google's
+        //   index for every campaign and visitor session.
+        disallow: [
+          "/admin/",
+          "/auth/",
+          "/api/",
+          "/*?utm_*",
+          "/*?fbclid=*",
+          "/*?gclid=*",
+          "/search?q=",
+        ],
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,
-    host: BASE_URL,
+    // `host` removed — non-standard directive that Google ignores. Bing
+    // recommends it but the canonical link element in <head> serves the
+    // same purpose for them too.
   };
 }

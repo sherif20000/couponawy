@@ -160,10 +160,18 @@ export default async function ArticlePage({ params }: PageProps) {
           like a magazine article, not a wall of text. */}
       {article.featured_image_url && (
         <div className="bg-cream-dark/30">
+          {/* Featured image is the LCP on article pages — prioritise it.
+              width/height are the intrinsic 1280×640 (≈ aspect-16/8) so the
+              browser reserves the box before bytes land (kills CLS). */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={article.featured_image_url}
             alt={article.title_ar}
+            width={1280}
+            height={640}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="mx-auto block aspect-[16/8] w-full max-w-5xl object-cover"
           />
         </div>

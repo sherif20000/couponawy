@@ -24,12 +24,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const now = new Date();
 
+  // Helper — converts `updated_at` strings to Date, falling back to "now" when
+  // a row was never touched (shouldn't happen, but defensive). `changeFrequency`
+  // dropped from "hourly" (Google effectively caps it at "daily") to "daily".
+  const toDate = (s: string | null) => (s ? new Date(s) : now);
+
   // Static pages
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
       lastModified: now,
-      changeFrequency: "hourly",
+      changeFrequency: "daily",
       priority: 1.0,
     },
     {
@@ -41,7 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${BASE_URL}/coupons`,
       lastModified: now,
-      changeFrequency: "hourly",
+      changeFrequency: "daily",
       priority: 0.9,
     },
     {
@@ -71,7 +76,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${BASE_URL}/deals/today`,
       lastModified: now,
-      changeFrequency: "hourly",
+      changeFrequency: "daily",
       priority: 0.8,
     },
     {
@@ -125,47 +130,53 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Store detail pages
-  const storeRoutes: MetadataRoute.Sitemap = storeSlugs.map(({ slug }) => ({
-    url: `${BASE_URL}/stores/${slug}`,
-    lastModified: now,
-    changeFrequency: "daily" as const,
-    priority: 0.8,
-  }));
+  // Detail pages now carry per-row lastModified so Google can tell when an
+  // individual store/coupon/category/article/guide changed, rather than seeing
+  // every URL bumped on every sitemap regeneration.
+  const storeRoutes: MetadataRoute.Sitemap = storeSlugs.map(
+    ({ slug, updated_at }) => ({
+      url: `${BASE_URL}/stores/${slug}`,
+      lastModified: toDate(updated_at),
+      changeFrequency: "daily" as const,
+      priority: 0.8,
+    })
+  );
 
-  // Coupon detail pages
-  const couponRoutes: MetadataRoute.Sitemap = couponSlugs.map(({ slug }) => ({
-    url: `${BASE_URL}/coupons/${slug}`,
-    lastModified: now,
-    changeFrequency: "daily" as const,
-    priority: 0.7,
-  }));
+  const couponRoutes: MetadataRoute.Sitemap = couponSlugs.map(
+    ({ slug, updated_at }) => ({
+      url: `${BASE_URL}/coupons/${slug}`,
+      lastModified: toDate(updated_at),
+      changeFrequency: "daily" as const,
+      priority: 0.7,
+    })
+  );
 
-  // Category detail pages
   const categoryRoutes: MetadataRoute.Sitemap = categorySlugs.map(
-    ({ slug }) => ({
+    ({ slug, updated_at }) => ({
       url: `${BASE_URL}/categories/${slug}`,
-      lastModified: now,
+      lastModified: toDate(updated_at),
       changeFrequency: "daily" as const,
       priority: 0.6,
     })
   );
 
-  // Blog articles
-  const articleRoutes: MetadataRoute.Sitemap = articleSlugs.map(({ slug }) => ({
-    url: `${BASE_URL}/blog/${slug}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.7,
-  }));
+  const articleRoutes: MetadataRoute.Sitemap = articleSlugs.map(
+    ({ slug, updated_at }) => ({
+      url: `${BASE_URL}/blog/${slug}`,
+      lastModified: toDate(updated_at),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })
+  );
 
-  // Buying guides
-  const guideRoutes: MetadataRoute.Sitemap = guideSlugs.map(({ slug }) => ({
-    url: `${BASE_URL}/guides/${slug}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.7,
-  }));
+  const guideRoutes: MetadataRoute.Sitemap = guideSlugs.map(
+    ({ slug, updated_at }) => ({
+      url: `${BASE_URL}/guides/${slug}`,
+      lastModified: toDate(updated_at),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })
+  );
 
   return [
     ...staticRoutes,

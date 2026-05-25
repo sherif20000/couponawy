@@ -123,11 +123,13 @@ export async function getRelatedArticles(
  * Build-time helper used by generateStaticParams() in /blog/[slug].
  * Uses the admin client because static params have no request/cookie context.
  */
-export async function getAllArticleSlugsBuildTime(): Promise<{ slug: string }[]> {
+export async function getAllArticleSlugsBuildTime(): Promise<
+  { slug: string; updated_at: string | null }[]
+> {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("articles")
-    .select("slug")
+    .select("slug, updated_at")
     .eq("status", "published");
   if (error) {
     console.error("[getAllArticleSlugsBuildTime]", error);
@@ -171,11 +173,13 @@ export async function getGuideBySlug(slug: string): Promise<BuyingGuide | null> 
   return data;
 }
 
-export async function getAllGuideSlugsBuildTime(): Promise<{ slug: string }[]> {
+export async function getAllGuideSlugsBuildTime(): Promise<
+  { slug: string; updated_at: string | null }[]
+> {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("buying_guides")
-    .select("slug")
+    .select("slug, updated_at")
     .eq("status", "published");
   if (error) {
     console.error("[getAllGuideSlugsBuildTime]", error);

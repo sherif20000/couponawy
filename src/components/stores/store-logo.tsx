@@ -47,12 +47,17 @@ export function StoreLogo({ logoUrl, nameAr, size = "md" }: StoreLogoProps) {
 
   if (logoUrl && !imgError) {
     return (
+      // width/height are reservation hints, not display dimensions — CSS
+      // max-w/max-h does the visual sizing. Setting them avoids CLS when the
+      // image swaps in. 64 covers all three sizes (sm/md/lg).
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={withBrandfetchAuth(logoUrl)}
         alt={nameAr}
         loading="lazy"
         decoding="async"
+        width={64}
+        height={64}
         className={imgClass}
         onError={() => setImgError(true)}
         onLoad={(e) => {

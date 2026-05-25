@@ -36,6 +36,16 @@ type CouponCardProps = {
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
+// The coupon card renders the store logo in a 36×36 container. The DB stores
+// Brandfetch URLs at /w/256/h/256 which is overkill — every coupon card on the
+// homepage was pulling a ~6KB image when 1.5KB would do. Rewrite small-context
+// URLs to /w/128/h/128 (still 2× retina for our 36px target). Non-Brandfetch
+// URLs pass through untouched.
+function smallLogoUrl(url: string): string {
+  if (!url.includes("cdn.brandfetch.io/")) return url;
+  return url.replace("/w/256/h/256", "/w/128/h/128");
+}
+
 function daysUntil(iso: string | null): number | null {
   if (!iso) return null;
   const diff = new Date(iso).getTime() - Date.now();
@@ -261,12 +271,18 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
         <div className="flex items-center gap-3">
           <div className="bg-cream-dark ring-brand-gold/25 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-1">
             {coupon.store?.logo_url && !logoError ? (
+              // Brandfetch w/128 is plenty for a 36px display @ 2DPR.
+              // The original DB URL is .../w/256/h/256; we rewrite to /w/128/h/128
+              // for cards to cut payload ~75% per card. Falls back to original
+              // URL untouched for non-Brandfetch sources.
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={coupon.store.logo_url}
+                src={smallLogoUrl(coupon.store.logo_url)}
                 alt={coupon.store.name_ar}
                 loading="lazy"
                 decoding="async"
+                width={36}
+                height={36}
                 className="max-h-9 max-w-9 object-contain"
                 onError={() => setLogoError(true)}
                 onLoad={(e) => {

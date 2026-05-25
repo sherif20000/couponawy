@@ -173,7 +173,7 @@ function HeroSection() {
           </div>
 
           {/* ── Left column (RTL end) — 2×2 stat cards ───────────────
-              Cards use bg-black/45 + brand-gold/15 border so they have
+              Cards use bg-black/30 + brand-gold/15 border so they have
               real edge definition against the already-dark gradient.
               min-h locks the 2×2 grid to a stable height so single-word
               labels like "تحديث" don't collapse the cell.
@@ -184,7 +184,7 @@ function HeroSection() {
             {HERO_STATS.map((s, i) => (
               <div
                 key={s.label}
-                className="border-brand-gold/15 animate-fade-up flex min-h-[120px] flex-col justify-center rounded-2xl border bg-black/45 p-5 backdrop-blur-sm md:p-6"
+                className="border-brand-gold/15 animate-fade-up flex min-h-[120px] flex-col justify-center rounded-2xl border bg-black/30 p-5 backdrop-blur-sm md:p-6"
                 style={{ animationDelay: `${200 + i * 50}ms` }}
               >
                 <dd className="font-display text-brand-gold text-3xl font-black leading-none md:text-4xl">
@@ -372,12 +372,14 @@ function CategoryFilterStrip({
     >
       <Container size="xl">
         <div className="scrollbar-hide flex items-center gap-2 overflow-x-auto py-3">
-          {/* "All" pill — anchored heavier than inactive pills so the
-              active state reads as pressed-in, not just recolored.
-              font-black + a soft brand-red glow shadow does the work. */}
+          {/* "All" pill — visual anchor for the row, but NOT in a pressed/active
+              state. Audit flagged the previous shadow-brand + font-black combo
+              as a false "you are on /coupons" signal even when viewing the
+              homepage. Now reads as a clear primary CTA: solid red, bold (not
+              black), no inset shadow. */}
           <Link
             href="/coupons"
-            className="font-display shadow-brand shrink-0 rounded-full bg-brand-red px-5 py-2 text-sm font-black text-white transition-all duration-150 hover:bg-brand-red-dark active:scale-[0.97]"
+            className="font-display shrink-0 rounded-full bg-brand-red px-5 py-2 text-sm font-bold text-white transition-all duration-150 hover:bg-brand-red-dark active:scale-[0.97]"
           >
             الكل
           </Link>

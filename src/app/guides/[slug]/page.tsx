@@ -139,10 +139,16 @@ export default async function GuidePage({ params }: PageProps) {
 
       {guide.featured_image_url && (
         <div className="bg-cream-dark/30">
+          {/* LCP candidate on guide pages — prioritise + reserve dimensions. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={guide.featured_image_url}
             alt={guide.title_ar}
+            width={1280}
+            height={640}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="mx-auto block aspect-[16/8] w-full max-w-5xl object-cover"
           />
         </div>
