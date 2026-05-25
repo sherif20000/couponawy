@@ -303,17 +303,20 @@ function CategoriesSection({
   categoryCounts: Record<string, number>;
 }) {
   return (
-    <Section spacing="md">
+    <Section tone="muted" spacing="lg">
+      {/* Role differentiation from the sticky top filter strip: that's a
+          single-row FILTER (quick switch). This bottom section is the
+          DESTINATION grid — bigger touch targets, larger icons, the
+          coupon count as a real signal not a tiny badge. */}
       <SectionHeader
+        eyebrow={{ icon: Tag, label: "تصفّح", tone: "brand" }}
         title="تسوّق حسب القسم"
-        subtitle="اعثر على العرض المناسب لاحتياجك"
+        subtitle="اختر القسم وانطلق إلى أحدث العروض"
       />
       {categories.length === 0 ? (
         <EmptyState message="لا توجد أقسام بعد" />
       ) : (
-        // Pill chips: compact + scannable + visually distinct from coupon cards.
-        // Hover = full red fill so the affordance reads instantly.
-        <div className="flex flex-wrap gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {categories.map((category) => {
             const Icon = CATEGORY_ICONS[category.slug] ?? Tag;
             const count = categoryCounts[category.id];
@@ -322,21 +325,24 @@ function CategoriesSection({
                 key={category.id}
                 href={`/categories/${category.slug}`}
                 className={cn(
-                  "group inline-flex items-center gap-2 rounded-full border px-4 py-2.5 transition-all duration-200",
-                  "bg-cream border-brand-gold/25 hover:bg-brand-red hover:border-brand-red hover:text-cream"
+                  "group bg-cream border-brand-gold/25 hover:border-brand-red/40 active:scale-[0.97]",
+                  "flex flex-col items-center justify-center gap-2 rounded-2xl border p-5 shadow-sm",
+                  "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                 )}
               >
-                <Icon
-                  className="text-brand-red group-hover:text-cream group-hover:animate-icon-bounce h-4 w-4 shrink-0 transition-colors"
-                  strokeWidth={1.75}
-                  aria-hidden
-                />
-                <span className="font-display text-charcoal group-hover:text-cream text-sm font-bold transition-colors">
+                <div className="bg-brand-red/8 group-hover:bg-brand-red/15 flex h-12 w-12 items-center justify-center rounded-xl transition-colors">
+                  <Icon
+                    className="text-brand-red h-6 w-6 transition-transform group-hover:scale-110"
+                    strokeWidth={1.75}
+                    aria-hidden
+                  />
+                </div>
+                <span className="font-display text-charcoal text-sm font-bold leading-tight">
                   {category.name_ar}
                 </span>
                 {count !== undefined && count > 0 && (
-                  <span className="font-accent bg-brand-gold/15 text-charcoal group-hover:bg-cream/20 group-hover:text-cream rounded-full px-1.5 py-0.5 text-xs font-bold leading-none transition-colors">
-                    {count}
+                  <span className="font-accent text-warm-brown text-[11px] font-medium">
+                    {count} كوبون
                   </span>
                 )}
               </Link>
