@@ -234,19 +234,21 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
         className
       )}
     >
-      {/* ── Discount badge — top-start corner (RTL = right) ────────── */}
+      {/* ── Discount badge — logical end-of-row in RTL.
+          start-4 in RTL = right; in LTR (future English mirror) = left.
+          Using logical properties keeps RTL/LTR symmetry correct. */}
       {coupon.discount_display && (
         <div
-          className="bg-brand-red text-cream font-display absolute top-4 right-4 z-10 rounded-xl px-3 py-1.5 text-sm font-black tracking-tight shadow-sm"
+          className="bg-brand-red text-white font-display absolute top-4 start-4 z-10 rounded-xl px-3 py-1.5 text-sm font-black tracking-tight shadow-sm"
           aria-label={`خصم ${coupon.discount_display}`}
         >
           {coupon.discount_display}
         </div>
       )}
 
-      {/* ── Exclusive ribbon — top-end (RTL = left) ────────────────── */}
+      {/* ── Exclusive ribbon — logical opposite corner (RTL = left) ─── */}
       {coupon.is_exclusive && (
-        <div className="bg-brand-gold absolute top-4 left-4 z-10 rounded-md px-2 py-1">
+        <div className="bg-brand-gold absolute top-4 end-4 z-10 rounded-md px-2 py-1">
           <span className="font-accent text-charcoal inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider">
             <Sparkles className="h-2.5 w-2.5" aria-hidden />
             حصري
@@ -263,6 +265,8 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
               <img
                 src={coupon.store.logo_url}
                 alt={coupon.store.name_ar}
+                loading="lazy"
+                decoding="async"
                 className="max-h-9 max-w-9 object-contain"
                 onError={() => setLogoError(true)}
                 onLoad={(e) => {
@@ -277,8 +281,9 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
             )}
           </div>
 
-          {/* Right-pad so the absolute badge doesn't collide with the name */}
-          <div className="flex min-w-0 flex-col pr-16">
+          {/* Logical end-padding so the absolute badge doesn't collide
+              with the name. Use pe-* instead of pr-* for RTL/LTR symmetry. */}
+          <div className="flex min-w-0 flex-col pe-16">
             {coupon.store ? (
               <Link
                 href={`/stores/${coupon.store.slug}`}

@@ -174,26 +174,28 @@ function HeroSection() {
 
           {/* ── Left column (RTL end) — 2×2 stat cards ───────────────
               Cards use bg-black/45 + brand-gold/15 border so they have
-              real edge definition against the already-dark gradient
-              (was bg-black/30 + white/10 — too washed-out per audit).
+              real edge definition against the already-dark gradient.
               min-h locks the 2×2 grid to a stable height so single-word
-              labels like "تحديث" don't collapse the cell. */}
-          <div className="grid grid-cols-2 gap-3 md:gap-4">
+              labels like "تحديث" don't collapse the cell.
+              Semantic <dl>/<dt>/<dd> so screen readers announce each
+              stat as a structured term + definition rather than a
+              floating string of numbers and words. */}
+          <dl className="grid grid-cols-2 gap-3 md:gap-4">
             {HERO_STATS.map((s, i) => (
               <div
                 key={s.label}
                 className="border-brand-gold/15 animate-fade-up flex min-h-[120px] flex-col justify-center rounded-2xl border bg-black/45 p-5 backdrop-blur-sm md:p-6"
                 style={{ animationDelay: `${200 + i * 50}ms` }}
               >
-                <div className="font-display text-brand-gold text-3xl font-black leading-none md:text-4xl">
+                <dd className="font-display text-brand-gold text-3xl font-black leading-none md:text-4xl">
                   {s.value}
-                </div>
-                <div className="font-body mt-2 whitespace-nowrap text-xs font-medium text-white/65 md:text-sm">
+                </dd>
+                <dt className="font-body mt-2 whitespace-nowrap text-xs font-medium text-white/65 md:text-sm">
                   {s.label}
-                </div>
+                </dt>
               </div>
             ))}
-          </div>
+          </dl>
         </div>
       </Container>
     </section>
@@ -358,7 +360,9 @@ function CategoryFilterStrip({
   return (
     <nav
       aria-label="تصفية الكوبونات حسب القسم"
-      className="sticky top-[88px] z-30 border-b border-brand-gold/15 bg-cream/95 backdrop-blur-sm"
+      // top-[104px] = ticker (~40px) + header (h-16 = 64px). Was 88px which
+      // tucked the strip under the bottom 16px of the header on scroll.
+      className="sticky top-[104px] z-30 border-b border-brand-gold/15 bg-cream/95 backdrop-blur-sm"
     >
       <Container size="xl">
         <div className="scrollbar-hide flex items-center gap-2 overflow-x-auto py-3">

@@ -45,7 +45,7 @@ export async function Header() {
       : FALLBACK_TICKER.map((f) => ({ ...f, slug: undefined }));
 
   return (
-    <div className="sticky top-0 z-40 w-full">
+    <div className="sticky top-0 z-50 w-full">
       {/* ── Ticker V2 — live-deals strip ────────────────────────────
           Each item = real coupon: store · discount · code.
           Static "مباشر" anchor on the right (RTL = start side) gives users
