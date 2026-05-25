@@ -213,14 +213,17 @@ export type Database = {
           description_ar: string | null
           description_en: string | null
           display_order: number
+          editorial_intro_ar: string | null
           icon: string | null
           id: string
           is_featured: boolean
           name_ar: string
           name_en: string | null
           parent_id: string | null
+          seasonal_calendar_ar: string | null
           seo_description: string | null
           seo_title: string | null
+          shopping_guide_ar: string | null
           slug: string
           updated_at: string
         }
@@ -229,14 +232,17 @@ export type Database = {
           description_ar?: string | null
           description_en?: string | null
           display_order?: number
+          editorial_intro_ar?: string | null
           icon?: string | null
           id?: string
           is_featured?: boolean
           name_ar: string
           name_en?: string | null
           parent_id?: string | null
+          seasonal_calendar_ar?: string | null
           seo_description?: string | null
           seo_title?: string | null
+          shopping_guide_ar?: string | null
           slug: string
           updated_at?: string
         }
@@ -245,14 +251,17 @@ export type Database = {
           description_ar?: string | null
           description_en?: string | null
           display_order?: number
+          editorial_intro_ar?: string | null
           icon?: string | null
           id?: string
           is_featured?: boolean
           name_ar?: string
           name_en?: string | null
           parent_id?: string | null
+          seasonal_calendar_ar?: string | null
           seo_description?: string | null
           seo_title?: string | null
+          shopping_guide_ar?: string | null
           slug?: string
           updated_at?: string
         }
@@ -796,6 +805,7 @@ export type Database = {
           description_ar: string | null
           description_en: string | null
           display_order: number
+          editorial_intro_ar: string | null
           id: string
           is_featured: boolean
           is_verified: boolean
@@ -808,6 +818,8 @@ export type Database = {
           rating: number | null
           review_count: number | null
           schema_data: Json | null
+          seasonal_calendar_ar: string | null
+          shipping_info_ar: string | null
           short_description_ar: string | null
           short_description_en: string | null
           slug: string
@@ -824,6 +836,7 @@ export type Database = {
           description_ar?: string | null
           description_en?: string | null
           display_order?: number
+          editorial_intro_ar?: string | null
           id?: string
           is_featured?: boolean
           is_verified?: boolean
@@ -836,6 +849,8 @@ export type Database = {
           rating?: number | null
           review_count?: number | null
           schema_data?: Json | null
+          seasonal_calendar_ar?: string | null
+          shipping_info_ar?: string | null
           short_description_ar?: string | null
           short_description_en?: string | null
           slug: string
@@ -852,6 +867,7 @@ export type Database = {
           description_ar?: string | null
           description_en?: string | null
           display_order?: number
+          editorial_intro_ar?: string | null
           id?: string
           is_featured?: boolean
           is_verified?: boolean
@@ -864,6 +880,8 @@ export type Database = {
           rating?: number | null
           review_count?: number | null
           schema_data?: Json | null
+          seasonal_calendar_ar?: string | null
+          shipping_info_ar?: string | null
           short_description_ar?: string | null
           short_description_en?: string | null
           slug?: string

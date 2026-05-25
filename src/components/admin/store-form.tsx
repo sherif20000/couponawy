@@ -21,6 +21,9 @@ interface Store {
   og_image: string | null;
   rating: number | null;
   review_count: number | null;
+  editorial_intro_ar: string | null;
+  seasonal_calendar_ar: string | null;
+  shipping_info_ar: string | null;
 }
 
 interface Props {
@@ -187,6 +190,64 @@ export function StoreForm({ store, action, submitLabel }: Props) {
           className="w-full px-3 py-2 rounded-lg border border-charcoal/15 bg-white text-charcoal text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent resize-none"
         />
       </div>
+
+      {/* ── Editorial overrides ─────────────────────────────────────
+          Three optional long-form Arabic textareas that override the
+          programmatic templates on the store's public page. Leave empty to
+          fall back to template-generated copy. Markdown-lite: use **bold**
+          and double-newlines for paragraph breaks. Target word counts are
+          guidance, not enforced. */}
+      <details className="border border-charcoal/15 rounded-xl bg-white/40 px-4 py-3">
+        <summary className="cursor-pointer text-sm font-semibold text-charcoal">
+          محتوى تحريري طويل (اختياري — يستبدل القوالب)
+        </summary>
+        <div className="mt-4 space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-charcoal mb-1.5">
+              مقدمة تحريرية{" "}
+              <span className="text-warm-brown/50 text-xs font-normal">
+                (400-500 كلمة · يستبدل قسم «عن المتجر»)
+              </span>
+            </label>
+            <textarea
+              name="editorial_intro_ar"
+              defaultValue={store?.editorial_intro_ar ?? ""}
+              rows={8}
+              className="w-full px-3 py-2 rounded-lg border border-charcoal/15 bg-white text-charcoal text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent resize-y"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-charcoal mb-1.5">
+              تقويم الخصومات الموسمية{" "}
+              <span className="text-warm-brown/50 text-xs font-normal">
+                (400-500 كلمة · رمضان، الجمعة البيضاء، إلخ)
+              </span>
+            </label>
+            <textarea
+              name="seasonal_calendar_ar"
+              defaultValue={store?.seasonal_calendar_ar ?? ""}
+              rows={8}
+              className="w-full px-3 py-2 rounded-lg border border-charcoal/15 bg-white text-charcoal text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent resize-y"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-charcoal mb-1.5">
+              دليل الشحن والدفع{" "}
+              <span className="text-warm-brown/50 text-xs font-normal">
+                (300-400 كلمة · توقيت التوصيل، الدفع، الإرجاع)
+              </span>
+            </label>
+            <textarea
+              name="shipping_info_ar"
+              defaultValue={store?.shipping_info_ar ?? ""}
+              rows={8}
+              className="w-full px-3 py-2 rounded-lg border border-charcoal/15 bg-white text-charcoal text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent resize-y"
+            />
+          </div>
+        </div>
+      </details>
 
       {/* Flags row */}
       <div className="flex flex-wrap items-center gap-4">
