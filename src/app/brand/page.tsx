@@ -556,22 +556,22 @@ export default function BrandPage() {
         <Container size="xl">
           <div className="flex flex-col gap-4">
             <span className="font-accent text-brand-gold text-xs uppercase tracking-widest">
-              Sprint 1 · Design lock-in · Not deployed to production
+              Sprint 1 · Design lock-in · Closed
             </span>
             <h1 className="font-display text-4xl font-extrabold md:text-5xl">
               The Brand System
             </h1>
             <p className="font-body text-cream/80 max-w-2xl text-base leading-relaxed">
-              Single source of truth for couponawy v2. Three statuses below: <strong>LOCKED</strong> (don&apos;t rediscuss),
-              <strong> PICK ONE</strong> (choose your variant), <strong>PREVIEW</strong> (informational).
-              Nothing here is live on couponawy.com — this is a feature-branch preview only.
+              Single source of truth for couponawy v2. Sprint 1 picks are <strong>locked</strong>:
+              ticker V2 (live deals), coupon card V2 (featured), hero V1 (bold red full-bleed).
+              Every page below the hero now uses these as the standard primitives.
             </p>
             <div className="mt-3 flex flex-wrap gap-3 text-sm">
               <Link
                 href="/"
                 className="bg-white/10 hover:bg-white/20 inline-flex items-center gap-2 rounded-full px-4 py-2 backdrop-blur transition-colors"
               >
-                ↩ Back to production homepage
+                ↩ Back to homepage
               </Link>
             </div>
           </div>
@@ -629,46 +629,16 @@ export default function BrandPage() {
         </div>
       </Section>
 
-      {/* ── MOVABLE BAR (TICKER) — PICK ONE ───────────────────────── */}
-      <Section eyebrow="The movable bar" title="Ticker strip" status="pick">
-        <div className="flex flex-col gap-6">
-          <div>
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <h3 className="font-display text-charcoal text-lg font-bold">V1 — Current (kept by default)</h3>
-              <span className="font-accent text-warm-brown bg-cream-dark rounded-full px-3 py-1 text-xs font-semibold">
-                static promo lines
-              </span>
-            </div>
-            <TickerV1Current />
-            <p className="text-warm-brown-light font-body mt-2 text-xs">
-              Brand-gold text on near-black bar, RTL scroll, 5 evergreen promo lines. What you have today.
-            </p>
-          </div>
-          <div>
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <h3 className="font-display text-charcoal text-lg font-bold">V2 — Live deals (recommended)</h3>
-              <span className="font-accent text-brand-red bg-brand-red/10 rounded-full px-3 py-1 text-xs font-semibold">
-                pulls top 5 active codes
-              </span>
-            </div>
-            <TickerV2LiveDeals />
-            <p className="text-warm-brown-light font-body mt-2 text-xs">
-              Same animation, but each item is a real coupon (store · category · code · discount). Pulled from DB,
-              refreshed every cron cycle. Click → coupon detail.
-            </p>
-          </div>
-          <div>
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <h3 className="font-display text-charcoal text-lg font-bold">V3 — Compact with &quot;مباشر&quot; tag</h3>
-              <span className="font-accent text-warm-brown bg-cream-dark rounded-full px-3 py-1 text-xs font-semibold">
-                minimalist · 28px high
-              </span>
-            </div>
-            <TickerV3Compact />
-            <p className="text-warm-brown-light font-body mt-2 text-xs">
-              Tightest option. &quot;LIVE&quot; pill on the right anchor + short benefit phrases scrolling.
-            </p>
-          </div>
+      {/* ── MOVABLE BAR (TICKER) — LOCKED V2 ──────────────────────── */}
+      <Section eyebrow="The movable bar" title="Ticker strip · V2 Live deals" status="locked">
+        <div className="flex flex-col gap-3">
+          <TickerV2LiveDeals />
+          <p className="text-warm-brown font-body text-sm">
+            <strong>Shipped:</strong> the live header ticker now pulls the top 5 active coupons from the DB on every
+            request (server-rendered, no flash). Each tile is clickable → coupon detail page. The static
+            &quot;مباشر&quot; (LIVE) anchor on the right stays put while the deals scroll RTL. Cron-refreshed inventory means
+            the ticker is always current.
+          </p>
         </div>
       </Section>
 
@@ -742,69 +712,48 @@ export default function BrandPage() {
         </div>
       </Section>
 
-      {/* ── COUPON CARD — PICK ONE ────────────────────────────────── */}
-      <Section eyebrow="Components" title="Coupon card — pick the v2 design" status="pick">
+      {/* ── COUPON CARD — LOCKED V2 ────────────────────────────────── */}
+      <Section eyebrow="Components" title="Coupon card · V2 Featured" status="locked">
         <div className="grid gap-6 md:grid-cols-3">
           <div className="flex flex-col gap-2">
-            <h4 className="font-display text-charcoal text-sm font-bold">V1 — Current</h4>
+            <h4 className="font-display text-charcoal text-sm font-bold">Standard card</h4>
             <p className="text-warm-brown-light font-body text-xs">
-              What&apos;s shipped today. Solid baseline.
-            </p>
-            <CouponCardV1Current />
-          </div>
-          <div className="flex flex-col gap-2">
-            <h4 className="font-display text-charcoal text-sm font-bold">
-              V2 — Featured / Hero (recommended)
-            </h4>
-            <p className="text-warm-brown-light font-body text-xs">
-              Bold red header, big discount number, freshness pill, exclusive ribbon. Trust + impact.
+              Used everywhere: homepage, store pages, category pages, search results.
             </p>
             <CouponCardV2Featured />
           </div>
           <div className="flex flex-col gap-2">
-            <h4 className="font-display text-charcoal text-sm font-bold">V3 — Editorial / Clean</h4>
+            <h4 className="font-display text-charcoal text-sm font-bold">With exclusive</h4>
             <p className="text-warm-brown-light font-body text-xs">
-              Typographic discount, dashed divider, lighter feel. For list views & content pages.
+              Gold ribbon top-left when <code>is_exclusive = true</code>.
             </p>
-            <CouponCardV3Editorial />
+            <CouponCardV2Featured />
+          </div>
+          <div className="flex flex-col gap-2">
+            <h4 className="font-display text-charcoal text-sm font-bold">Freshness pill</h4>
+            <p className="text-warm-brown-light font-body text-xs">
+              Green pulse pill appears top-right when <code>updated_at</code> is ≤24h old. Sprint 3 replaces with real
+              <code>last_verified_at</code>.
+            </p>
+            <CouponCardV2Featured />
           </div>
         </div>
         <p className="text-warm-brown font-body mt-6 text-sm">
-          <strong>Recommended path:</strong> ship V2 as the featured-slot card (homepage hero, &quot;exclusive&quot; pages),
-          V3 as the standard list card (store pages, category pages, search results). V1 retires.
+          <strong>Shipped:</strong> the production <code>&lt;CouponCard&gt;</code> component now matches this design.
+          One unified card across every surface — no V1, no V3. All existing callers (8 homepage slots, store pages,
+          category pages, search, related-coupons) automatically pick up the new visual.
         </p>
       </Section>
 
-      {/* ── HERO — PICK ONE ───────────────────────────────────────── */}
-      <Section eyebrow="Components" title="Homepage hero — pick the direction" status="pick">
-        <div className="flex flex-col gap-12">
-          <div>
-            <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
-              <h3 className="font-display text-charcoal text-lg font-bold">V1 — Bold red full-bleed</h3>
-              <span className="font-accent text-brand-red bg-brand-red/10 rounded-full px-3 py-1 text-xs font-semibold">
-                high-energy · bazaar feel
-              </span>
-            </div>
-            <HeroV1BoldRed />
-            <p className="text-warm-brown-light font-body mt-3 text-xs">
-              Brand-red dominates. Search-first, gold CTA, floating coupon stack on the right. Closest to your current
-              direction — refined.
-            </p>
-          </div>
-          <div>
-            <div className="mb-4 flex flex-wrap items-baseline justify-between gap-3">
-              <h3 className="font-display text-charcoal text-lg font-bold">V2 — Cream split with coupon grid</h3>
-              <span className="font-accent text-warm-brown bg-cream-dark rounded-full px-3 py-1 text-xs font-semibold">
-                editorial · trust-first
-              </span>
-            </div>
-            <HeroV2CreamSplit />
-            <p className="text-warm-brown-light font-body mt-3 text-xs">
-              Cream background, brand-red as accent on the second line of the headline. Right side shows real coupons
-              with codes — proof-of-value upfront. Feels more &quot;catalogue&quot; than &quot;sale-driven&quot;.
-            </p>
-          </div>
-        </div>
+      {/* ── HERO — LOCKED V1 ─────────────────────────────────────── */}
+      <Section eyebrow="Components" title="Homepage hero · V1 Bold red full-bleed" status="locked">
+        <HeroV1BoldRed />
+        <p className="text-warm-brown font-body mt-6 text-sm">
+          <strong>Shipped:</strong> the homepage now leads with this hero. Brand-red full-bleed, gold CTA,
+          search-first, trust pills, floating coupon stack on the right populated from the top 3 real featured
+          coupons. The cards rotate subtly and stagger their fade-up. Mobile drops the floating stack and keeps the
+          hero short to push users to the featured-coupons grid below.
+        </p>
       </Section>
 
       {/* ── SECTION HEADER ────────────────────────────────────────── */}
@@ -917,21 +866,38 @@ export default function BrandPage() {
         </div>
       </Section>
 
-      {/* ── DECISIONS TO LOCK ─────────────────────────────────────── */}
-      <Section eyebrow="Sprint 1 sign-off" title="What we need from you" status="preview">
+      {/* ── SPRINT 1 CLOSED · SPRINT 2 NEXT ──────────────────────── */}
+      <Section eyebrow="Sprint 1 closed" title="What ships next" status="preview">
         <div className="bg-charcoal text-cream rounded-3xl p-8 md:p-10">
+          <div className="mb-8 flex flex-wrap items-baseline gap-4">
+            <span className="bg-success/15 text-success border-success/30 font-accent rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider">
+              ✓ Sprint 1 complete
+            </span>
+            <span className="text-cream/60 font-body text-sm">
+              Ticker V2 · Coupon card V2 · Hero V1 — all live on preview, ready to merge to main
+            </span>
+          </div>
+
           <h3 className="font-display mb-6 text-2xl font-extrabold">
-            3 picks → Sprint 1 closes
+            Sprint 2 · Daily-Fresh Coupon Engine
           </h3>
+          <p className="text-cream/80 font-body mb-6 max-w-2xl text-base leading-relaxed">
+            Solves the &quot;no real updated daily/weekly mechanism&quot; gap. After Sprint 2, coupons can never silently
+            rot — every code has a visible freshness signal, and a cron job verifies inventory nightly.
+          </p>
+
           <ol className="flex flex-col gap-5">
             <li className="flex gap-4">
               <span className="bg-brand-gold text-charcoal font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-extrabold">
                 1
               </span>
               <div>
-                <strong className="font-display text-lg">Ticker strip variant?</strong>
+                <strong className="font-display text-lg">
+                  DB migration: <code>last_verified_at</code>, <code>verified_by</code>
+                </strong>
                 <p className="text-cream/70 font-body mt-1 text-sm">
-                  V1 (current evergreen lines) · V2 (live deals from DB) · V3 (compact w/ مباشر tag)
+                  Real verification timestamps replace the <code>updated_at</code> proxy currently powering the
+                  freshness pill on coupon cards.
                 </p>
               </div>
             </li>
@@ -940,9 +906,10 @@ export default function BrandPage() {
                 2
               </span>
               <div>
-                <strong className="font-display text-lg">Coupon card variant?</strong>
+                <strong className="font-display text-lg">Nightly scrape cron</strong>
                 <p className="text-cream/70 font-body mt-1 text-sm">
-                  Default recommendation: <strong>V2 featured</strong> for hero/exclusive slots, <strong>V3 editorial</strong> for list views. V1 retires.
+                  <code>/api/cron/scrape-coupons</code> at 03:00 UTC. Adds new codes, marks dupes, bumps verified-at.
+                  Never deletes — only archives via the existing expire-coupons cron.
                 </p>
               </div>
             </li>
@@ -951,17 +918,30 @@ export default function BrandPage() {
                 3
               </span>
               <div>
-                <strong className="font-display text-lg">Hero direction?</strong>
+                <strong className="font-display text-lg">Admin verify-queue</strong>
                 <p className="text-cream/70 font-body mt-1 text-sm">
-                  V1 bold red full-bleed · V2 cream split with coupon grid
+                  New <code>/admin/verify-queue</code> sorted by oldest verified-at. One-click manual verify bumps the
+                  timestamp, optionally pins.
+                </p>
+              </div>
+            </li>
+            <li className="flex gap-4">
+              <span className="bg-brand-gold text-charcoal font-display flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-extrabold">
+                4
+              </span>
+              <div>
+                <strong className="font-display text-lg">Sunday hand-test ritual</strong>
+                <p className="text-cream/70 font-body mt-1 text-sm">
+                  30-min weekly process: verify the top 50 by clicks. Documented in PLAYBOOK.
                 </p>
               </div>
             </li>
           </ol>
+
           <div className="border-cream/15 mt-8 border-t pt-6">
             <p className="text-cream/70 font-body text-sm">
-              Reply with your 3 picks (e.g. <em>&quot;ticker V2, card V2+V3, hero V1&quot;</em>) and I&apos;ll do the production
-              refactor on the same branch. Sprint 2 starts the day after merge.
+              Sprint 2 starts the moment you say &quot;merge sprint-1-design and start sprint 2&quot;. ETA: 5 working days
+              once kicked off.
             </p>
           </div>
         </div>

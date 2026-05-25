@@ -192,3 +192,24 @@ export async function getFeaturedCategories(limit = 10): Promise<Category[]> {
 
   return data;
 }
+
+// Top N active coupons for the live-deals ticker strip in the global header.
+// Ordering: featured first, then by display_order, then most recently updated —
+// gives the ticker a strong "the best, then the freshest" feel.
+export async function getTickerCoupons(limit = 5): Promise<FeaturedCoupon[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("coupons")
+    .select(`*, store:stores ( id, slug, name_ar, logo_url )`)
+    .eq("status", "active")
+    .order("is_featured", { ascending: false })
+    .order("display_order", { ascending: true })
+    .order("updated_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error("[getTickerCoupons]", error);
+    return [];
+  }
+  return (data ?? []) as FeaturedCoupon[];
+}
