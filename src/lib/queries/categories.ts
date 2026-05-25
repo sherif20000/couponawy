@@ -87,39 +87,29 @@ export async function getCouponsByCategory(
 
 /**
  * Returns a map of { [categoryId]: activeCount } for all categories.
- * Two-step: fetch active coupon IDs first, then count their category associations.
- * Keeps the logic in JS to avoid needing a DB view or RPC.
+ *
+ * Previously did this in two JS steps: fetch ~600 active coupon IDs, then call
+ * .in('coupon_id', [...600 ids]) on coupon_categories. That produced a Supabase
+ * REST URL > 16KB which Node's undici HTTP client rejects with HeadersOverflowError
+ * (500 on Vercel, silent empty data locally).
+ *
+ * Now delegates the JOIN + GROUP BY to a stable Postgres function so the wire
+ * payload is tiny (one row per category).
  */
 export async function getCategoryCouponCounts(): Promise<Record<string, number>> {
   const supabase = await createClient();
 
-  // Step 1: all active coupon IDs
-  const { data: activeCoupons, error: aErr } = await supabase
-    .from("coupons")
-    .select("id")
-    .eq("status", "active");
+  const { data, error } = await supabase.rpc("get_category_coupon_counts");
 
-  if (aErr) {
-    console.error("[getCategoryCouponCounts] coupons", aErr);
+  if (error) {
+    console.error("[getCategoryCouponCounts]", error);
     return {};
   }
 
-  const activeIds = (activeCoupons ?? []).map((c) => c.id);
-  if (activeIds.length === 0) return {};
-
-  // Step 2: all junction rows for those coupons
-  const { data: junction, error: jErr } = await supabase
-    .from("coupon_categories")
-    .select("category_id")
-    .in("coupon_id", activeIds);
-
-  if (jErr) {
-    console.error("[getCategoryCouponCounts] junction", jErr);
-    return {};
-  }
-
-  return (junction ?? []).reduce<Record<string, number>>((acc, row) => {
-    acc[row.category_id] = (acc[row.category_id] ?? 0) + 1;
+  // RPC returns `{ category_id: string; count: number }[]`. Coerce the `count`
+  // because Postgres `bigint` arrives as `string | number` depending on the driver.
+  return (data ?? []).reduce<Record<string, number>>((acc, row) => {
+    acc[row.category_id] = Number(row.count);
     return acc;
   }, {});
 }
@@ -143,55 +133,34 @@ export async function getActiveCoupons(): Promise<FeaturedCoupon[]> {
 /**
  * Resolves the set of active coupon IDs that should be visible for a given country.
  *
- * Logic:
+ * Visibility logic (unchanged from before):
  *   - Coupons with NO entries in coupon_countries → global, visible everywhere.
  *   - Coupons with entries in coupon_countries → visible only in those countries.
  *
- * Returns `null` when no countryCode is supplied (caller should show all coupons).
+ * Previously fetched ~600 active IDs, then ran .in('coupon_id', [...]) on
+ * coupon_countries — the resulting REST URL was > 16KB and undici rejected it.
+ * Now delegated to a stable Postgres function that returns the filtered uuid[]
+ * directly, so the wire payload stays small.
+ *
+ * Returns `null` on RPC error (caller treats this as "show all, don't filter").
  */
 export async function getVisibleCouponIds(
   countryCode: string
 ): Promise<string[] | null> {
   const supabase = await createClient();
 
-  // Fetch all active coupon IDs
-  const { data: activeCoupons, error: aErr } = await supabase
-    .from("coupons")
-    .select("id")
-    .eq("status", "active");
+  const { data, error } = await supabase.rpc("get_visible_coupon_ids", {
+    p_country_code: countryCode,
+  });
 
-  if (aErr) {
-    console.error("[getVisibleCouponIds] coupons", aErr);
+  if (error) {
+    console.error("[getVisibleCouponIds]", error);
     return null;
   }
 
-  const allActiveIds = (activeCoupons ?? []).map((c) => c.id);
-  if (allActiveIds.length === 0) return [];
-
-  // Fetch all coupon_countries rows for those coupons
-  const { data: rows, error: rErr } = await supabase
-    .from("coupon_countries")
-    .select("coupon_id, country_code")
-    .in("coupon_id", allActiveIds);
-
-  if (rErr) {
-    console.error("[getVisibleCouponIds] coupon_countries", rErr);
-    return null;
-  }
-
-  // Build a set: coupon_ids that have ANY country restriction
-  const restrictedIds = new Set((rows ?? []).map((r) => r.coupon_id));
-  // Build a set: coupon_ids restricted specifically for the requested country
-  const countryIds = new Set(
-    (rows ?? [])
-      .filter((r) => r.country_code === countryCode)
-      .map((r) => r.coupon_id)
-  );
-
-  // Keep coupons that are either: unrestricted (global) OR restricted for this country
-  return allActiveIds.filter(
-    (id) => !restrictedIds.has(id) || countryIds.has(id)
-  );
+  // RPC returns `uuid[]` which arrives as `string[]`. Coalesce to an array so
+  // downstream `.in()` calls see [] (treated as "no matches") instead of null.
+  return (data as string[] | null) ?? [];
 }
 
 export async function getActiveCouponsPaginated(

@@ -1037,6 +1037,14 @@ export type Database = {
         }
         Returns: void
       }
+      get_visible_coupon_ids: {
+        Args: { p_country_code: string }
+        Returns: string[]
+      }
+      get_category_coupon_counts: {
+        Args: never
+        Returns: { category_id: string; count: number }[]
+      }
     }
     Enums: {
       affiliate_network_type:
