@@ -39,11 +39,28 @@ type CouponCardProps = {
 // The coupon card renders the store logo in a 36×36 container. The DB stores
 // Brandfetch URLs at /w/256/h/256 which is overkill — every coupon card on the
 // homepage was pulling a ~6KB image when 1.5KB would do. Rewrite small-context
-// URLs to /w/128/h/128 (still 2× retina for our 36px target). Non-Brandfetch
-// URLs pass through untouched.
+// URLs to /w/128/h/128 (still 2× retina for our 36px target).
+//
+// IMPORTANT: Brandfetch returns 401 (interpreted as a 1×1 placeholder image)
+// when the `?c={CLIENT_ID}` auth param is missing. The original StoreLogo
+// component appends it via withBrandfetchAuth(); when this fast-path was added
+// in PR #3 it accidentally dropped that step, causing every coupon-card
+// avatar to fall back to the initials-only state. Now we re-append here so
+// the URL always carries auth.
+//
+// Non-Brandfetch URLs pass through untouched (e.g. legacy stores still on
+// their own CDN).
+const BRANDFETCH_CLIENT_ID =
+  process.env.NEXT_PUBLIC_BRANDFETCH_CLIENT_ID ?? "";
+
 function smallLogoUrl(url: string): string {
   if (!url.includes("cdn.brandfetch.io/")) return url;
-  return url.replace("/w/256/h/256", "/w/128/h/128");
+  let result = url.replace("/w/256/h/256", "/w/128/h/128");
+  if (BRANDFETCH_CLIENT_ID && !result.includes("c=")) {
+    const sep = result.includes("?") ? "&" : "?";
+    result = `${result}${sep}c=${BRANDFETCH_CLIENT_ID}`;
+  }
+  return result;
 }
 
 function daysUntil(iso: string | null): number | null {
@@ -194,9 +211,51 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
     (coupon as unknown as { last_verified_at?: string | null }).last_verified_at ?? null;
   const fresh = freshnessState(lastVerifiedAt, coupon.updated_at);
 
+  // Fires the click tracking RPC. Extracted so reveal AND the explicit
+  // "go to store" button can both record a click.
+  function trackStoreClick() {
+    const supabase = createClient();
+    return supabase.rpc("track_click", {
+      p_coupon_id: coupon.id || null,
+      p_store_id: coupon.store?.id || null,
+      p_country_code:
+        document.cookie
+          .split("; ")
+          .find((c) => c.startsWith("preferred_country="))
+          ?.split("=")[1] ?? null,
+      p_referrer: document.referrer || null,
+      p_user_agent: navigator.userAgent || null,
+    });
+  }
+
+  // Opens the merchant URL in a new tab.
+  //
+  // Why `noopener` but NOT `noreferrer`:
+  //   - `noopener` is mandatory: prevents the merchant page from accessing
+  //     our window via window.opener (security).
+  //   - `noreferrer` is HARMFUL HERE: it strips the Referer header, which
+  //     CJ / Impact / Awin / arabclicks rely on to attribute the click and
+  //     credit us with the affiliate commission. Keep the referrer so the
+  //     cookie lands and we get paid.
+  //
+  // We also pre-open the popup synchronously (before any await) — Safari and
+  // Chrome both block window.open() called from inside an async handler
+  // unless it's tied to a fresh user gesture. Opening first and assigning
+  // the URL later sidesteps the popup blocker.
+  function openMerchantTab(): Window | null {
+    const win = window.open("about:blank", "_blank", "noopener");
+    if (win) win.opener = null;
+    return win;
+  }
+
   async function handleReveal() {
     if (loading) return;
     setLoading(true);
+    // Open the tab BEFORE the await so the popup blocker treats this as part
+    // of the user-gesture chain. We assign the real URL after the RPC
+    // resolves. If the destination URL is missing (rare data quality miss),
+    // we skip the tab entirely.
+    const popup = coupon.destination_url ? openMerchantTab() : null;
     try {
       const supabase = createClient();
       const { data, error } = await supabase.rpc("reveal_coupon", {
@@ -205,9 +264,25 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
       if (error) throw error;
       if (!data) throw new Error("لا يوجد كود لهذا الكوبون");
       setRevealed(data);
+      // Reveal succeeded → drop the user on the merchant page so the
+      // affiliate cookie sets while they switch to that tab to paste the
+      // code. This is the industry-standard "show code + open tab"
+      // pattern used by RetailMenot, Honey, almowafir, coupcode.
+      if (popup && coupon.destination_url) {
+        popup.location.href = coupon.destination_url;
+        // Fire-and-forget click tracking; don't await — the popup is
+        // already on its way.
+        void trackStoreClick();
+      } else if (popup) {
+        // No destination_url; close the placeholder tab.
+        popup.close();
+      }
     } catch (err) {
       console.error("[reveal_coupon]", err);
       toast.error("تعذّر إظهار الكود، جرّب مرة أخرى");
+      // Close the placeholder tab on failure so the user isn't dropped on
+      // about:blank.
+      popup?.close();
     } finally {
       setLoading(false);
     }
@@ -221,20 +296,15 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
     setTimeout(() => setCopied(false), 2000);
   }
 
+  // Explicit "Go to store" button — same behavior as the auto-open above,
+  // but for the case where the user closed the auto-opened tab and wants
+  // to re-launch the store. Keep the same noopener-but-with-referrer
+  // policy for affiliate attribution.
   function handleGoToStore() {
-    const supabase = createClient();
-    supabase.rpc("track_click", {
-      p_coupon_id: coupon.id || null,
-      p_store_id: coupon.store?.id || null,
-      p_country_code:
-        document.cookie
-          .split("; ")
-          .find((c) => c.startsWith("preferred_country="))
-          ?.split("=")[1] ?? null,
-      p_referrer: document.referrer || null,
-      p_user_agent: navigator.userAgent || null,
-    });
-    window.open(coupon.destination_url, "_blank", "noopener,noreferrer");
+    void trackStoreClick();
+    if (!coupon.destination_url) return;
+    const win = window.open(coupon.destination_url, "_blank", "noopener");
+    if (win) win.opener = null;
   }
 
   return (
