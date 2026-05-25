@@ -41,12 +41,17 @@ function formatExpiryDate(iso: string): string {
   }).format(new Date(iso));
 }
 
-// Returns the freshness state for the green "verified" pill. Uses updated_at
-// as a Sprint-1 proxy; Sprint 3 replaces this with a real last_verified_at
-// column populated by the nightly scrape + manual admin verify-queue.
-function freshnessState(updatedAt: string | null): "today" | "week" | "old" | null {
-  if (!updatedAt) return null;
-  const ageHours = (Date.now() - new Date(updatedAt).getTime()) / (1000 * 60 * 60);
+// Returns the freshness state for the green "verified" pill.
+// Sprint 2 introduced last_verified_at — that column is the source of truth.
+// Until the migration runs (or for any row that hasn't been verified yet),
+// we fall back to updated_at so the pill keeps rendering meaningfully.
+function freshnessState(
+  lastVerifiedAt: string | null | undefined,
+  updatedAt: string | null
+): "today" | "week" | "old" | null {
+  const source = lastVerifiedAt ?? updatedAt;
+  if (!source) return null;
+  const ageHours = (Date.now() - new Date(source).getTime()) / (1000 * 60 * 60);
   if (ageHours <= 24) return "today";
   if (ageHours <= 24 * 7) return "week";
   return "old";
@@ -152,7 +157,11 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
 
   const hasCode = coupon.discount_type !== "free_shipping";
   const kind = resolveKind(coupon.discount_type);
-  const fresh = freshnessState(coupon.updated_at);
+  // last_verified_at is added by the Sprint 2 migration; the type may not yet
+  // include it on every code path, so we narrow defensively.
+  const lastVerifiedAt =
+    (coupon as unknown as { last_verified_at?: string | null }).last_verified_at ?? null;
+  const fresh = freshnessState(lastVerifiedAt, coupon.updated_at);
 
   async function handleReveal() {
     if (loading) return;
