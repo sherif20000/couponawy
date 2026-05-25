@@ -172,18 +172,23 @@ function HeroSection() {
             </div>
           </div>
 
-          {/* ── Left column (RTL end) — 2×2 stat cards ─────────────── */}
+          {/* ── Left column (RTL end) — 2×2 stat cards ───────────────
+              Cards use bg-black/45 + brand-gold/15 border so they have
+              real edge definition against the already-dark gradient
+              (was bg-black/30 + white/10 — too washed-out per audit).
+              min-h locks the 2×2 grid to a stable height so single-word
+              labels like "تحديث" don't collapse the cell. */}
           <div className="grid grid-cols-2 gap-3 md:gap-4">
             {HERO_STATS.map((s, i) => (
               <div
                 key={s.label}
-                className="animate-fade-up rounded-2xl border border-white/10 bg-black/30 p-5 backdrop-blur-sm md:p-6"
+                className="border-brand-gold/15 animate-fade-up flex min-h-[120px] flex-col justify-center rounded-2xl border bg-black/45 p-5 backdrop-blur-sm md:p-6"
                 style={{ animationDelay: `${200 + i * 50}ms` }}
               >
                 <div className="font-display text-brand-gold text-3xl font-black leading-none md:text-4xl">
                   {s.value}
                 </div>
-                <div className="font-body mt-2 text-xs font-medium text-white/60 md:text-sm">
+                <div className="font-body mt-2 whitespace-nowrap text-xs font-medium text-white/65 md:text-sm">
                   {s.label}
                 </div>
               </div>
@@ -202,7 +207,11 @@ function FeaturedCouponsSection({
 }) {
   return (
     <Section spacing="lg" className="scroll-mt-32" id="featured-coupons">
+      {/* Eyebrow matches the pattern used by Trending + Expiring sections.
+          Without it the most-important section was the only one without
+          an eyebrow tag — backward hierarchy per audit. */}
       <SectionHeader
+        eyebrow={{ icon: Sparkles, label: "مختارة لك", tone: "gold" }}
         title="أفضل الكوبونات هذا الأسبوع"
         subtitle="عروض مختارة بعناية، مجرّبة وجاهزة للاستخدام"
         cta={{ href: "/coupons", label: "كل الكوبونات" }}
@@ -353,19 +362,21 @@ function CategoryFilterStrip({
     >
       <Container size="xl">
         <div className="scrollbar-hide flex items-center gap-2 overflow-x-auto py-3">
-          {/* "All" pill — always rendered first, styled as active */}
+          {/* "All" pill — anchored heavier than inactive pills so the
+              active state reads as pressed-in, not just recolored.
+              font-black + a soft brand-red glow shadow does the work. */}
           <Link
             href="/coupons"
-            className="font-display shrink-0 rounded-full bg-brand-red px-5 py-2 text-sm font-bold text-white shadow-sm transition-colors hover:bg-brand-red-dark"
+            className="font-display shadow-brand shrink-0 rounded-full bg-brand-red px-5 py-2 text-sm font-black text-white transition-all duration-150 hover:bg-brand-red-dark active:scale-[0.97]"
           >
             الكل
           </Link>
-          {/* Category pills */}
+          {/* Category pills — lighter weight + active-press feedback */}
           {categories.map((category) => (
             <Link
               key={category.id}
               href={`/categories/${category.slug}`}
-              className="font-display shrink-0 rounded-full border border-brand-gold/25 bg-cream px-5 py-2 text-sm font-semibold text-charcoal transition-colors hover:border-brand-red hover:bg-brand-red hover:text-white"
+              className="font-display shrink-0 rounded-full border border-brand-gold/25 bg-cream px-5 py-2 text-sm font-semibold text-charcoal transition-all duration-150 hover:border-brand-red hover:bg-brand-red hover:text-white active:scale-[0.97]"
             >
               {category.name_ar}
             </Link>
@@ -394,6 +405,7 @@ function TrendingCouponsSection({
           <CouponCard
             key={coupon.id}
             coupon={coupon}
+            variant="trending"
             className="animate-fade-up"
           />
         ))}
