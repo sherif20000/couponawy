@@ -233,7 +233,7 @@ function StoresSection({
   stores: Awaited<ReturnType<typeof getFeaturedStores>>;
 }) {
   return (
-    <Section tone="muted" spacing="md">
+    <Section tone="muted" spacing="lg">
       <SectionHeader
         title="متاجر نثق بها"
         subtitle="أكثر المتاجر شعبية في السعودية والخليج"
@@ -242,23 +242,25 @@ function StoresSection({
       {stores.length === 0 ? (
         <EmptyState message="لا توجد متاجر بعد" />
       ) : (
-        // Logo strip — wraps on all sizes; centered to feel like a curated showcase, not a list.
-        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
+        // Trust-anchor showcase. Larger avatars (72-80px) + bigger name labels
+        // give the section the visual weight a "stores we trust" claim demands —
+        // per design audit, the prior 56-64px circles read as footer accessories.
+        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
           {stores.map((store) => (
             <Link
               key={store.id}
               href={`/stores/${store.slug}`}
-              className="group flex flex-col items-center gap-2"
+              className="group flex flex-col items-center gap-2.5"
               title={store.name_ar}
             >
-              <div className="bg-cream ring-brand-gold/20 group-hover:ring-brand-red/40 flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-sm ring-2 transition-all duration-200 group-hover:shadow-md md:h-16 md:w-16">
+              <div className="bg-cream ring-brand-gold/25 group-hover:ring-brand-red/40 flex h-[72px] w-[72px] shrink-0 items-center justify-center overflow-hidden rounded-full shadow-sm ring-2 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:shadow-md md:h-20 md:w-20">
                 <StoreLogo
                   logoUrl={store.logo_url}
                   nameAr={store.name_ar}
-                  size="md"
+                  size="lg"
                 />
               </div>
-              <span className="font-body text-warm-brown group-hover:text-brand-red w-16 truncate text-center text-[11px] transition-colors">
+              <span className="font-display text-charcoal group-hover:text-brand-red w-20 truncate text-center text-[13px] font-semibold transition-colors">
                 {store.name_ar}
               </span>
             </Link>
