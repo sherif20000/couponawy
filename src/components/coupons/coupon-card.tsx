@@ -11,14 +11,13 @@ import {
   Tag,
   Truck,
   Percent,
+  BadgeCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { buildOutboundUrl } from "@/lib/utils/outbound-url";
 import type { FeaturedCoupon } from "@/lib/queries/homepage";
 
 type CouponCardProps = {
@@ -40,6 +39,17 @@ function formatExpiryDate(iso: string): string {
     month: "long",
     day: "numeric",
   }).format(new Date(iso));
+}
+
+// Returns the freshness state for the green "verified" pill. Uses updated_at
+// as a Sprint-1 proxy; Sprint 3 replaces this with a real last_verified_at
+// column populated by the nightly scrape + manual admin verify-queue.
+function freshnessState(updatedAt: string | null): "today" | "week" | "old" | null {
+  if (!updatedAt) return null;
+  const ageHours = (Date.now() - new Date(updatedAt).getTime()) / (1000 * 60 * 60);
+  if (ageHours <= 24) return "today";
+  if (ageHours <= 24 * 7) return "week";
+  return "old";
 }
 
 // ─── Expiry indicator (always rendered) ─────────────────────────────────────
@@ -104,8 +114,8 @@ function resolveKind(discountType: string | null | undefined): CouponKind {
 function CouponTypeTag({ kind }: { kind: CouponKind }) {
   if (kind === "free_shipping") {
     return (
-      <span className="font-accent inline-flex items-center gap-1 rounded-md bg-emerald-50 px-1.5 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">
-        <Truck className="h-2.5 w-2.5" aria-hidden />
+      <span className="font-accent text-cream/85 inline-flex items-center gap-1 text-[11px] font-semibold">
+        <Truck className="h-3 w-3" aria-hidden />
         شحن مجاني
       </span>
     );
@@ -113,22 +123,26 @@ function CouponTypeTag({ kind }: { kind: CouponKind }) {
 
   if (kind === "deal") {
     return (
-      <span className="font-accent bg-brand-gold/10 text-brand-gold-dark ring-brand-gold/30 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-semibold ring-1">
-        <Tag className="h-2.5 w-2.5" aria-hidden />
+      <span className="font-accent text-cream/85 inline-flex items-center gap-1 text-[11px] font-semibold">
+        <Tag className="h-3 w-3" aria-hidden />
         عرض مباشر
       </span>
     );
   }
 
   return (
-    <span className="font-accent bg-brand-red/10 text-brand-red ring-brand-red/20 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-semibold ring-1">
-      <Percent className="h-2.5 w-2.5" aria-hidden />
+    <span className="font-accent text-cream/85 inline-flex items-center gap-1 text-[11px] font-semibold">
+      <Percent className="h-3 w-3" aria-hidden />
       كود خصم
     </span>
   );
 }
 
-// ─── Main component ──────────────────────────────────────────────────────────
+// ─── Main component — V2 Featured ───────────────────────────────────────────
+// The card is split horizontally:
+//   ↑ Top: bold red gradient block carrying store logo + giant discount + ribbons
+//   ↓ Bottom: cream surface with title, description, expiry, primary CTA
+// One unified design across every surface (homepage, store, category, search).
 
 export function CouponCard({ coupon, className }: CouponCardProps) {
   const [revealed, setRevealed] = React.useState<string | null>(null);
@@ -138,6 +152,7 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
 
   const hasCode = coupon.discount_type !== "free_shipping";
   const kind = resolveKind(coupon.discount_type);
+  const fresh = freshnessState(coupon.updated_at);
 
   async function handleReveal() {
     if (loading) return;
@@ -150,8 +165,6 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
       if (error) throw error;
       if (!data) throw new Error("لا يوجد كود لهذا الكوبون");
       setRevealed(data);
-      // window.open is intentionally NOT called here —
-      // user copies the code first, then taps the separate store button.
     } catch (err) {
       console.error("[reveal_coupon]", err);
       toast.error("تعذّر إظهار الكود، جرّب مرة أخرى");
@@ -169,7 +182,6 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
   }
 
   function handleGoToStore() {
-    // Fire-and-forget: track the click without blocking navigation
     const supabase = createClient();
     supabase.rpc("track_click", {
       p_coupon_id: coupon.id || null,
@@ -182,84 +194,94 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
       p_referrer: document.referrer || null,
       p_user_agent: navigator.userAgent || null,
     });
-    // Append couponawy UTM params for merchant-side attribution.
-    const tracked = buildOutboundUrl(coupon.destination_url, {
-      surface: "card",
-      couponSlug: coupon.slug,
-      storeSlug: coupon.store?.slug ?? null,
-    });
-    window.open(tracked, "_blank", "noopener,noreferrer");
+    window.open(coupon.destination_url, "_blank", "noopener,noreferrer");
   }
 
   return (
     <Card
       className={cn(
-        "group flex h-full flex-col overflow-hidden hover:-translate-y-0.5 hover:shadow-lg",
+        "group hover:shadow-brand relative flex h-full flex-col overflow-hidden border-2 border-transparent transition-all duration-200 hover:-translate-y-1 hover:border-brand-gold",
         className
       )}
     >
-      {/* ── Card header ─────────────────────────────────────────────── */}
-      <div className="border-brand-gold/20 border-b p-4">
-        <div className="flex items-start justify-between gap-3">
-          {/* Store info */}
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="bg-cream ring-brand-gold/30 flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full ring-2">
-              {coupon.store?.logo_url && !logoError ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={coupon.store.logo_url}
-                  alt={coupon.store.name_ar}
-                  className="max-h-9 max-w-9 object-contain"
-                  onError={() => setLogoError(true)}
-                  onLoad={(e) => {
-                    // < 32 catches both Clearbit's old 1×1 silent failure AND
-                    // Google S2's 16×16 generic-globe placeholder for unknown domains.
-                    if ((e.target as HTMLImageElement).naturalWidth < 32)
-                      setLogoError(true);
-                  }}
-                />
-              ) : (
-                <span className="font-display text-brand-red text-sm font-bold">
-                  {coupon.store?.name_ar?.slice(0, 2) ?? "؟"}
-                </span>
-              )}
-            </div>
-            <div className="flex min-w-0 flex-col gap-1">
-              {coupon.store ? (
-                <Link
-                  href={`/stores/${coupon.store.slug}`}
-                  className="font-display text-charcoal hover:text-brand-red truncate text-sm font-bold"
-                >
-                  {coupon.store.name_ar}
-                </Link>
-              ) : (
-                <span className="font-display text-charcoal text-sm font-bold">
-                  متجر
-                </span>
-              )}
-              <CouponTypeTag kind={kind} />
-            </div>
+      {/* ── Top: bold-red banner ───────────────────────────────────── */}
+      <div className="bg-gradient-to-br from-brand-red to-brand-red-dark relative overflow-hidden px-5 pb-5 pt-12">
+        {/* Freshness pill — top-right (RTL start) */}
+        {fresh === "today" && (
+          <div className="bg-success/15 text-cream border-success/40 absolute top-3 right-3 z-10 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold tracking-wide backdrop-blur">
+            <span className="bg-success h-1.5 w-1.5 animate-pulse rounded-full" />
+            تم التحقق اليوم
           </div>
+        )}
+        {fresh === "week" && (
+          <div className="bg-white/10 text-cream/85 border-white/20 absolute top-3 right-3 z-10 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide backdrop-blur">
+            <BadgeCheck className="h-2.5 w-2.5" aria-hidden />
+            مُحقَّق هذا الأسبوع
+          </div>
+        )}
 
-          {/* Discount badge + exclusive badge */}
-          <div className="flex shrink-0 flex-col items-end gap-1.5">
-            {coupon.discount_display && (
-              <span className="font-display bg-brand-gold text-charcoal rounded-xl px-3 py-1.5 text-sm font-extrabold leading-none shadow-sm">
-                {coupon.discount_display}
+        {/* Exclusive ribbon — top-left (RTL end) */}
+        {coupon.is_exclusive && (
+          <div className="bg-brand-gold-dark absolute top-3 left-3 z-10 rounded-md px-2 py-1">
+            <span className="font-accent text-cream inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider">
+              <Sparkles className="h-2.5 w-2.5" aria-hidden />
+              حصري
+            </span>
+          </div>
+        )}
+
+        {/* Store + giant discount */}
+        <div className="flex items-end justify-between gap-4">
+          <div className="bg-cream ring-cream/40 flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-4">
+            {coupon.store?.logo_url && !logoError ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={coupon.store.logo_url}
+                alt={coupon.store.name_ar}
+                className="max-h-10 max-w-10 object-contain"
+                onError={() => setLogoError(true)}
+                onLoad={(e) => {
+                  if ((e.target as HTMLImageElement).naturalWidth < 32)
+                    setLogoError(true);
+                }}
+              />
+            ) : (
+              <span className="font-display text-brand-red text-xl font-bold">
+                {coupon.store?.name_ar?.slice(0, 2) ?? "؟"}
               </span>
             )}
-            {coupon.is_exclusive && (
-              <Badge variant="exclusive" className="shrink-0">
-                <Sparkles className="h-3 w-3" aria-hidden />
-                حصري
-              </Badge>
-            )}
           </div>
+
+          {coupon.discount_display && (
+            <div className="text-cream flex flex-col items-end leading-none">
+              <span className="font-display text-5xl font-extrabold tracking-tight">
+                {coupon.discount_display}
+              </span>
+              <span className="font-accent mt-1 text-[10px] uppercase tracking-widest opacity-80">
+                خصم
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Store name + kind tag */}
+        <div className="mt-3 flex items-center justify-between gap-2">
+          {coupon.store ? (
+            <Link
+              href={`/stores/${coupon.store.slug}`}
+              className="font-display text-cream hover:text-brand-gold truncate text-sm font-bold transition-colors"
+            >
+              {coupon.store.name_ar}
+            </Link>
+          ) : (
+            <span className="font-display text-cream text-sm font-bold">متجر</span>
+          )}
+          <CouponTypeTag kind={kind} />
         </div>
       </div>
 
-      {/* ── Card body ───────────────────────────────────────────────── */}
-      <CardContent className="flex flex-1 flex-col gap-4 p-5">
+      {/* ── Bottom: cream surface ──────────────────────────────────── */}
+      <CardContent className="flex flex-1 flex-col gap-3 p-5">
         <h3 className="font-display text-charcoal text-base font-bold leading-snug">
           <Link
             href={`/coupons/${coupon.slug}`}
@@ -281,12 +303,11 @@ export function CouponCard({ coupon, className }: CouponCardProps) {
         </span>
 
         <div className="mt-auto flex flex-col gap-3">
-          {/* Expiry — always shown */}
           <ExpiryIndicator expiresAt={coupon.expires_at} />
 
           {hasCode ? (
             revealed ? (
-              <div className="flex flex-col gap-2 animate-reveal-pop">
+              <div className="animate-reveal-pop flex flex-col gap-2">
                 <button
                   onClick={handleCopy}
                   className={cn(
