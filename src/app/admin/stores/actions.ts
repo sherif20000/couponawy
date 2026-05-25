@@ -27,6 +27,11 @@ export async function createStore(formData: FormData) {
   const rating = ratingRaw ? parseFloat(ratingRaw) : null;
   const reviewCountRaw = formData.get("review_count") as string;
   const review_count = reviewCountRaw ? parseInt(reviewCountRaw) : null;
+  // Editorial overrides (optional long-form markdown). Empty string → null
+  // so the public page falls back to programmatic templates.
+  const editorial_intro_ar = (formData.get("editorial_intro_ar") as string) || null;
+  const seasonal_calendar_ar = (formData.get("seasonal_calendar_ar") as string) || null;
+  const shipping_info_ar = (formData.get("shipping_info_ar") as string) || null;
 
   const { error } = await supabase.from("stores").insert({
     name_ar,
@@ -45,6 +50,9 @@ export async function createStore(formData: FormData) {
     og_image,
     rating,
     review_count,
+    editorial_intro_ar,
+    seasonal_calendar_ar,
+    shipping_info_ar,
   });
 
   if (error) {
@@ -79,6 +87,9 @@ export async function updateStore(id: string, formData: FormData) {
   const rating = ratingRaw ? parseFloat(ratingRaw) : null;
   const reviewCountRaw = formData.get("review_count") as string;
   const review_count = reviewCountRaw ? parseInt(reviewCountRaw) : null;
+  const editorial_intro_ar = (formData.get("editorial_intro_ar") as string) || null;
+  const seasonal_calendar_ar = (formData.get("seasonal_calendar_ar") as string) || null;
+  const shipping_info_ar = (formData.get("shipping_info_ar") as string) || null;
 
   const { error } = await supabase
     .from("stores")
@@ -99,6 +110,9 @@ export async function updateStore(id: string, formData: FormData) {
       og_image,
       rating,
       review_count,
+      editorial_intro_ar,
+      seasonal_calendar_ar,
+      shipping_info_ar,
     })
     .eq("id", id);
 

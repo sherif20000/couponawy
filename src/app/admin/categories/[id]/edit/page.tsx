@@ -86,6 +86,55 @@ export default async function EditCategoryPage({ params, searchParams }: Props) 
             </div>
           </div>
 
+          {/* Editorial overrides — optional long-form Arabic copy that
+              replaces the programmatic templates on the public category
+              page. Markdown-lite: **bold** + double-newline paragraphs. */}
+          <details className="border border-charcoal/15 rounded-xl bg-white/40 px-4 py-3">
+            <summary className="cursor-pointer text-sm font-semibold text-charcoal">
+              محتوى تحريري طويل (اختياري — يستبدل القوالب)
+            </summary>
+            <div className="mt-4 space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-charcoal mb-1.5">
+                  مقدمة تحريرية{" "}
+                  <span className="text-warm-brown/50 text-xs font-normal">
+                    (يستبدل قسم «عن القسم»)
+                  </span>
+                </label>
+                <textarea
+                  name="editorial_intro_ar"
+                  defaultValue={category.editorial_intro_ar ?? ""}
+                  rows={8}
+                  className="w-full px-3 py-2 rounded-lg border border-charcoal/15 bg-white text-charcoal text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent resize-y"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-charcoal mb-1.5">
+                  تقويم الخصومات الموسمية
+                </label>
+                <textarea
+                  name="seasonal_calendar_ar"
+                  defaultValue={category.seasonal_calendar_ar ?? ""}
+                  rows={8}
+                  className="w-full px-3 py-2 rounded-lg border border-charcoal/15 bg-white text-charcoal text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent resize-y"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-charcoal mb-1.5">
+                  دليل الشراء الذكي
+                </label>
+                <textarea
+                  name="shopping_guide_ar"
+                  defaultValue={category.shopping_guide_ar ?? ""}
+                  rows={8}
+                  className="w-full px-3 py-2 rounded-lg border border-charcoal/15 bg-white text-charcoal text-sm focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent resize-y"
+                />
+              </div>
+            </div>
+          </details>
+
           <div className="flex items-center gap-3 pt-2">
             <button
               type="submit"

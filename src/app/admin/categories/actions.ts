@@ -39,10 +39,27 @@ export async function updateCategory(id: string, formData: FormData) {
   const icon = (formData.get("icon") as string) || null;
   const display_order =
     parseInt(formData.get("display_order") as string) || 0;
+  // Editorial override fields. Empty → null so the public page falls back
+  // to programmatic template output.
+  const editorial_intro_ar =
+    (formData.get("editorial_intro_ar") as string) || null;
+  const seasonal_calendar_ar =
+    (formData.get("seasonal_calendar_ar") as string) || null;
+  const shopping_guide_ar =
+    (formData.get("shopping_guide_ar") as string) || null;
 
   const { error } = await supabase
     .from("categories")
-    .update({ name_ar, name_en, slug, icon, display_order })
+    .update({
+      name_ar,
+      name_en,
+      slug,
+      icon,
+      display_order,
+      editorial_intro_ar,
+      seasonal_calendar_ar,
+      shopping_guide_ar,
+    })
     .eq("id", id);
 
   if (error) {

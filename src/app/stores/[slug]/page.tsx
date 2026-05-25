@@ -81,11 +81,20 @@ export default async function StorePage({ params }: PageProps) {
 
   // Build the same template input twice — used by both the long-copy + FAQ
   // components and by the FAQPage JSON-LD blob below.
+  //
+  // The 3 *Override fields read directly from the store row. When admin has
+  // authored long-form Arabic copy for any block, the template function
+  // returns the override verbatim; otherwise it falls back to programmatic
+  // template output. This lets us ship template baseline for all 612 stores
+  // and progressively upgrade the top 50 with editorial content.
   const templateInput = {
     nameAr: store.name_ar,
     shortDescription: store.short_description_ar,
     countryCode: store.country_code,
     activeCouponCount: activeCount,
+    editorialIntroOverride: store.editorial_intro_ar,
+    seasonalCalendarOverride: store.seasonal_calendar_ar,
+    shippingInfoOverride: store.shipping_info_ar,
   } as const;
 
   const faqItems = storeFaq(templateInput);

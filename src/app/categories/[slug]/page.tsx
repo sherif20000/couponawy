@@ -1,14 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { BookOpen, Calendar } from "lucide-react";
 import { Section } from "@/components/shell/section";
 import { SectionHeader } from "@/components/shell/section-header";
 import { PageHero } from "@/components/shell/page-hero";
 import { CouponGridWithFilters } from "@/components/coupons/coupon-grid-with-filters";
 import { EmptyState } from "@/components/ui/empty-state";
 import { StoreFaq, buildFaqJsonLd } from "@/components/seo/store-faq";
+import { ProseFromText } from "@/components/seo/store-long-copy";
 import { StoreLogo } from "@/components/stores/store-logo";
-import { aboutCategoryCopy, categoryFaq } from "@/lib/content/store-templates";
+import {
+  aboutCategoryCopy,
+  categoryFaq,
+  categorySeasonalCalendar,
+  categoryShoppingGuide,
+} from "@/lib/content/store-templates";
 import {
   getAllCategorySlugsBuildTime,
   getCategoryBySlug,
@@ -92,9 +99,17 @@ export default async function CategoryPage({ params }: Props) {
     countryCode: null,
     activeCouponCount: coupons.length,
     topStoreCount: topStores.length,
+    // Editorial overrides — admin-authored long-form Arabic copy. Template
+    // functions return these verbatim when set, otherwise fall back to the
+    // programmatic baseline.
+    editorialIntroOverride: category.editorial_intro_ar,
+    seasonalCalendarOverride: category.seasonal_calendar_ar,
+    shoppingGuideOverride: category.shopping_guide_ar,
   } as const;
 
   const aboutText = aboutCategoryCopy(templateInput);
+  const seasonalText = categorySeasonalCalendar(templateInput);
+  const guideText = categoryShoppingGuide(templateInput);
   const faqItems = categoryFaq(templateInput);
   const faqJsonLd = buildFaqJsonLd(faqItems);
 
@@ -146,11 +161,32 @@ export default async function CategoryPage({ params }: Props) {
           subtitle={`${coupons.length} كوبون نشط${topStores.length > 0 ? ` من ${topStores.length} متجر` : ""}`}
           as="h2"
         />
-        <div className="font-body text-warm-brown max-w-3xl space-y-4 text-base leading-relaxed">
-          {aboutText.split(/\n\s*\n/).map((paragraph, i) => (
-            <p key={i}>{paragraph.trim()}</p>
-          ))}
-        </div>
+        <ProseFromText text={aboutText} />
+      </Section>
+
+      {/* Shopping guide — generic checklist that helps shoppers buy smart in
+          this category. ~300-400 ar words from the categoryShoppingGuide
+          template (or admin override). */}
+      <Section spacing="lg">
+        <SectionHeader
+          eyebrow={{ icon: BookOpen, label: "دليل الشراء", tone: "gold" }}
+          title={`نصائح للشراء الذكي في قسم ${category.name_ar}`}
+          subtitle="٧ خطوات قبل تطبيق أي كوبون"
+          as="h2"
+        />
+        <ProseFromText text={guideText} />
+      </Section>
+
+      {/* Seasonal calendar — when do prices in this category drop. ~300-400
+          ar words. Restored from category template; high editorial value. */}
+      <Section tone="muted" spacing="lg">
+        <SectionHeader
+          eyebrow={{ icon: Calendar, label: "تقويم العروض", tone: "brand" }}
+          title={`أفضل وقت للشراء في ${category.name_ar}`}
+          subtitle="رمضان، الجمعة البيضاء، يوم التأسيس — متى تنخفض الأسعار؟"
+          as="h2"
+        />
+        <ProseFromText text={seasonalText} />
       </Section>
 
       {/* Top stores in this category — links shoppers to store pages and adds
