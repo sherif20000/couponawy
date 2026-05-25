@@ -72,7 +72,7 @@ export default async function CouponsPage({ searchParams }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <p className="text-sm text-warm-brown">
-            {total.toLocaleString("ar-EG")} كوبون
+            {total.toLocaleString("en-US")} كوبون
           </p>
           <div className="flex items-center gap-3 flex-wrap">
             <form method="GET" className="flex items-center gap-2">
@@ -171,11 +171,11 @@ export default async function CouponsPage({ searchParams }: Props) {
                     </td>
                     <td className="px-4 py-3 text-warm-brown/60 text-xs" dir="ltr">
                       {coupon.expires_at
-                        ? new Date(coupon.expires_at).toLocaleDateString("ar-EG")
+                        ? new Date(coupon.expires_at).toLocaleDateString("ar-SA-u-nu-latn")
                         : "—"}
                     </td>
                     <td className="px-4 py-3 text-warm-brown/60 text-xs">
-                      {(coupon.reveal_count ?? 0).toLocaleString("ar-EG")}
+                      {(coupon.reveal_count ?? 0).toLocaleString("en-US")}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">

@@ -12,7 +12,7 @@ export default function CouponNotFound() {
     <main className="flex flex-1 flex-col items-center justify-center">
       <Container size="md" className="py-20 text-center">
         <p className="font-display text-brand-gold/30 select-none text-[9rem] font-extrabold leading-none md:text-[12rem]">
-          ٤٠٤
+          404
         </p>
 
         <h1 className="font-display text-charcoal -mt-4 mb-3 text-2xl font-extrabold md:text-3xl">

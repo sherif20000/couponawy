@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default async function DealsOfTheDayPage() {
   const coupons = await getDealsOfTheDay();
 
-  const today = new Intl.DateTimeFormat("ar-SA", {
+  const today = new Intl.DateTimeFormat("ar-SA-u-nu-latn", {
     weekday: "long",
     day: "numeric",
     month: "long",

@@ -106,12 +106,12 @@ function Section({
 
 const sampleCoupon = {
   store: { name_ar: "نون", slug: "noon" },
-  title_ar: "خصم ١٥٪ على الإلكترونيات والأجهزة المنزلية",
-  description_ar: "ينطبق على معظم الأقسام عدا عروض اليوم. الحد الأدنى ٢٠٠ ر.س.",
-  discount_display: "١٥٪",
+  title_ar: "خصم 15% على الإلكترونيات والأجهزة المنزلية",
+  description_ar: "ينطبق على معظم الأقسام عدا عروض اليوم. الحد الأدنى 200 ر.س.",
+  discount_display: "15%",
   discount_type: "percentage" as const,
   is_exclusive: true,
-  expiry_label: "ينتهي خلال ٢٥ يوماً",
+  expiry_label: "ينتهي خلال 25 يوماً",
 };
 
 // ─── COUPON CARD VARIANTS ───────────────────────────────────────────────────
@@ -294,7 +294,7 @@ function HeroV1BoldRed() {
         <div className="flex flex-col gap-5">
           <Badge variant="gold">
             <Flame className="h-3 w-3" />
-            +٢٠٠ كوبون فعّال هذا الأسبوع
+            +200 كوبون فعّال هذا الأسبوع
           </Badge>
           <h1 className="font-display text-4xl font-extrabold leading-tight md:text-6xl">
             وفّر في كل عملية تسوّق
@@ -315,11 +315,11 @@ function HeroV1BoldRed() {
           <div className="text-cream/70 font-accent flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
             <span className="inline-flex items-center gap-1.5">
               <BadgeCheck className="h-3.5 w-3.5" />
-              ١٢٠+ متجر موثّق
+              120+ متجر موثّق
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Star className="h-3.5 w-3.5 fill-brand-gold text-brand-gold" />
-              ٤.٨ من ٥ من ٣ آلاف مستخدم
+              4.8 من 5 من 3 آلاف مستخدم
             </span>
           </div>
         </div>
@@ -338,10 +338,10 @@ function HeroV1BoldRed() {
                 </span>
               </div>
               <p className="font-body text-warm-brown line-clamp-2 text-xs leading-relaxed">
-                خصم ٢٠٪ على الإلكترونيات
+                خصم 20% على الإلكترونيات
               </p>
               <div className="mt-3 flex items-baseline justify-between">
-                <span className="font-display text-brand-red text-2xl font-extrabold">٢٠٪</span>
+                <span className="font-display text-brand-red text-2xl font-extrabold">20%</span>
                 <span className="text-warm-brown-light text-[10px]">خصم</span>
               </div>
             </div>
@@ -358,10 +358,10 @@ function HeroV1BoldRed() {
                 </span>
               </div>
               <p className="font-body text-warm-brown line-clamp-2 text-xs leading-relaxed">
-                شحن مجاني + خصم ١٥٪
+                شحن مجاني + خصم 15%
               </p>
               <div className="mt-3 flex items-baseline justify-between">
-                <span className="font-display text-brand-red text-2xl font-extrabold">١٥٪</span>
+                <span className="font-display text-brand-red text-2xl font-extrabold">15%</span>
                 <span className="text-warm-brown-light text-[10px]">+ شحن</span>
               </div>
             </div>
@@ -380,7 +380,7 @@ function HeroV2CreamSplit() {
         <div className="flex flex-col gap-5">
           <Badge variant="outline">
             <Sparkles className="h-3 w-3" />
-            محدّث الآن — آخر كوبون منذ ١٢ دقيقة
+            محدّث الآن — آخر كوبون منذ 12 دقيقة
           </Badge>
           <h1 className="font-display text-charcoal text-4xl font-extrabold leading-tight md:text-6xl">
             وفّر في كل
@@ -403,21 +403,21 @@ function HeroV2CreamSplit() {
           <div className="text-warm-brown font-accent flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
             <span className="inline-flex items-center gap-1.5">
               <BadgeCheck className="text-success h-3.5 w-3.5" />
-              ١٢٠+ متجر موثّق
+              120+ متجر موثّق
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Flame className="text-brand-red h-3.5 w-3.5" />
-              ٢٤٠٠+ كوبون فعّال
+              2400+ كوبون فعّال
             </span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           {[
-            { name: "نون", code: "NOON15", disc: "١٥٪", color: "from-yellow-400 to-yellow-500" },
-            { name: "شي ان", code: "SH25", disc: "٢٥٪", color: "from-black to-gray-800" },
-            { name: "أمازون", code: "AMZ50", disc: "٥٠ر.س", color: "from-orange-500 to-orange-600" },
-            { name: "نمشي", code: "NM30", disc: "٣٠٪", color: "from-rose-500 to-rose-600" },
+            { name: "نون", code: "NOON15", disc: "15%", color: "from-yellow-400 to-yellow-500" },
+            { name: "شي ان", code: "SH25", disc: "25%", color: "from-black to-gray-800" },
+            { name: "أمازون", code: "AMZ50", disc: "50ر.س", color: "from-orange-500 to-orange-600" },
+            { name: "نمشي", code: "NM30", disc: "30%", color: "from-rose-500 to-rose-600" },
           ].map((c) => (
             <div
               key={c.code}
@@ -449,10 +449,10 @@ function HeroV2CreamSplit() {
 
 function TickerV1Current() {
   const items = [
-    { icon: "🔥", text: "عروض تصل لـ ٧٠٪" },
+    { icon: "🔥", text: "عروض تصل لـ 70%" },
     { icon: "⚡", text: "كوبونات جديدة كل يوم" },
-    { icon: "✅", text: "أكثر من ٢٤٠٠ كوبون فعّال" },
-    { icon: "🏪", text: "١٢٠+ متجر موثّق" },
+    { icon: "✅", text: "أكثر من 2400 كوبون فعّال" },
+    { icon: "🏪", text: "120+ متجر موثّق" },
     { icon: "💰", text: "وفّر على كل طلب" },
   ];
   return (
@@ -477,11 +477,11 @@ function TickerV1Current() {
 
 function TickerV2LiveDeals() {
   const deals = [
-    { store: "نون", code: "NOON25", disc: "٢٥٪", category: "إلكترونيات" },
-    { store: "شي ان", code: "SH40", disc: "٤٠٪", category: "أزياء" },
+    { store: "نون", code: "NOON25", disc: "25%", category: "إلكترونيات" },
+    { store: "شي ان", code: "SH40", disc: "40%", category: "أزياء" },
     { store: "أمازون", code: "FREESHIP", disc: "شحن مجاني", category: "كل الأقسام" },
-    { store: "نمشي", code: "EXTRA30", disc: "٣٠٪", category: "ملابس" },
-    { store: "صيدلية النهدي", code: "NH15", disc: "١٥٪", category: "العناية" },
+    { store: "نمشي", code: "EXTRA30", disc: "30%", category: "ملابس" },
+    { store: "صيدلية النهدي", code: "NH15", disc: "15%", category: "العناية" },
   ];
   return (
     <div className="overflow-hidden rounded-xl py-2" style={{ background: "oklch(8% 0.005 26)" }}>
@@ -515,10 +515,10 @@ function TickerV2LiveDeals() {
 
 function TickerV3Compact() {
   const items = [
-    "🔥 ٧٠٪ خصم",
+    "🔥 70% خصم",
     "⚡ كوبونات يومية",
-    "✅ ٢٤٠٠+ فعّال",
-    "🏪 ١٢٠+ متجر",
+    "✅ 2400+ فعّال",
+    "🏪 120+ متجر",
     "💰 وفّر اليوم",
   ];
   return (
@@ -616,7 +616,7 @@ export default function BrandPage() {
           </div>
           <div className="border-brand-gold/20 flex items-baseline justify-between gap-4 border-b pb-4">
             <p className="font-body text-charcoal text-base leading-relaxed">
-              نصّ المتن — يقرأ بسهولة على الموبايل والسطح المكتبي. عرض السطر مثاليّ بين ٤٥ و ٧٥ حرفاً.
+              نصّ المتن — يقرأ بسهولة على الموبايل والسطح المكتبي. عرض السطر مثاليّ بين 45 و 75 حرفاً.
             </p>
             <span className="font-mono text-warm-brown shrink-0 text-xs">text-base · font-regular (400)</span>
           </div>

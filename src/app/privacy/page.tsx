@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "سياسة الخصوصية لمنصة كوبوناوي — كيف نجمع بياناتك ونحميها.",
 };
 
-const LAST_UPDATED = "٢٣ أبريل ٢٠٢٥";
+const LAST_UPDATED = "23 أبريل 2025";
 
 export default function PrivacyPage() {
   return (
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ١. ما البيانات التي نجمعها؟
+                1. ما البيانات التي نجمعها؟
               </h2>
               <ul className="space-y-2 list-disc list-inside">
                 <li>
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٢. كيف نستخدم بياناتك؟
+                2. كيف نستخدم بياناتك؟
               </h2>
               <ul className="space-y-2 list-disc list-inside">
                 <li>تحسين المنصة وتطوير محتواها.</li>
@@ -76,7 +76,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٣. الروابط التابعة (Affiliate Links)
+                3. الروابط التابعة (Affiliate Links)
               </h2>
               <p>
                 بعض الروابط على كوبوناوي هي روابط تابعة — أي أننا قد نحصل على
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٤. مشاركة البيانات مع أطراف ثالثة
+                4. مشاركة البيانات مع أطراف ثالثة
               </h2>
               <p>
                 قد نشارك بيانات مجهولة الهوية مع مزوّدي خدمات تحليل البيانات
@@ -99,7 +99,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٥. حماية البيانات
+                5. حماية البيانات
               </h2>
               <p>
                 نستخدم بنية تحتية آمنة مع تشفير البيانات أثناء النقل
@@ -110,7 +110,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٦. حقوقك
+                6. حقوقك
               </h2>
               <ul className="space-y-2 list-disc list-inside">
                 <li>طلب الاطلاع على البيانات التي نحتفظ بها عنك.</li>
@@ -130,7 +130,7 @@ export default function PrivacyPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٧. التغييرات على هذه السياسة
+                7. التغييرات على هذه السياسة
               </h2>
               <p>
                 قد نحدّث هذه السياسة من وقت لآخر. سنعلمك بأي تغييرات جوهرية

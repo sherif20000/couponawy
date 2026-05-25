@@ -51,7 +51,7 @@ export default function HowItWorksPage() {
                 className="bg-cream border-brand-gold/25 flex flex-col items-center gap-4 rounded-2xl border p-6 text-center"
               >
                 <div className="bg-brand-red text-cream font-display flex h-11 w-11 items-center justify-center rounded-full text-base font-extrabold">
-                  {(i + 1).toLocaleString("ar-EG")}
+                  {(i + 1).toLocaleString("en-US")}
                 </div>
                 <Icon
                   className="text-brand-red h-7 w-7"

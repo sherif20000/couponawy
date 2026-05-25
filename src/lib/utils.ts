@@ -5,9 +5,18 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Convert a number or numeric string to Eastern Arabic (٠١٢..٩) numerals. */
+/**
+ * Render a number using Latin digits (0-9).
+ *
+ * Historically this function converted to Eastern Arabic numerals (٠-٩), but
+ * site-wide we now render all numerals in Latin form (per product decision —
+ * easier to scan, consistent with prices/coupon codes that are always Latin,
+ * better OCR/accessibility). Kept the function name for callsite churn but
+ * the body is now an identity. New code should just use `String(value)` or
+ * call `.toLocaleString("en-US")` directly.
+ */
 export function toArabicNumerals(value: number | string): string {
-  return String(value).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[+d]);
+  return String(value);
 }
 
 /** Pluralize Arabic coupon label based on count. */

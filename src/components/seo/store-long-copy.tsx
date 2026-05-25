@@ -54,7 +54,7 @@ export function StoreLongCopy(props: Props) {
           <SectionHeader
             eyebrow={{ icon: Tag, label: "خطوات بسيطة", tone: "brand" }}
             title={`كيف تستخدم كوبون ${nameAr}`}
-            subtitle="٤ خطوات سريعة من الكود إلى الخصم"
+            subtitle="4 خطوات سريعة من الكود إلى الخصم"
             as="h2"
           />
           <ol className="grid gap-4 md:grid-cols-2">
@@ -65,7 +65,7 @@ export function StoreLongCopy(props: Props) {
               >
                 <span className="bg-brand-red/10 text-brand-red font-display flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold">
                   {/* Arabic-Indic digits keep the steps localized */}
-                  {(i + 1).toLocaleString("ar-EG")}
+                  {(i + 1).toLocaleString("en-US")}
                 </span>
                 <div className="flex flex-col gap-1.5">
                   <h3 className="font-display text-charcoal text-base font-bold">

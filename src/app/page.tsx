@@ -126,10 +126,10 @@ export default async function Home() {
 // directly below. Stats are quieter, more credible, and let the headline
 // breathe.
 const HERO_STATS: Array<{ value: string; label: string }> = [
-  { value: "٥٠٠+", label: "متجر شريك" },
-  { value: "٢,٤٠٠+", label: "كوبون فعّال" },
+  { value: "500+", label: "متجر شريك" },
+  { value: "2,400+", label: "كوبون فعّال" },
   { value: "يومي", label: "تحديث" },
-  { value: "٩٨٪", label: "معدّل النجاح" },
+  { value: "98%", label: "معدّل النجاح" },
 ];
 
 function HeroSection() {
@@ -151,7 +151,7 @@ function HeroSection() {
             >
               خصومات تصل
               <br />
-              إلى <span className="text-brand-gold">٧٠٪</span>
+              إلى <span className="text-brand-gold">70%</span>
             </h1>
 
             <p

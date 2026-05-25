@@ -54,7 +54,7 @@ function daysUntil(iso: string | null): number | null {
 }
 
 function formatExpiryDate(iso: string): string {
-  return new Intl.DateTimeFormat("ar-SA", {
+  return new Intl.DateTimeFormat("ar-SA-u-nu-latn", {
     month: "long",
     day: "numeric",
   }).format(new Date(iso));
@@ -324,7 +324,7 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
           <div className="text-brand-red font-accent inline-flex w-fit items-center gap-1.5 text-xs font-bold">
             <Flame className="h-3.5 w-3.5" aria-hidden />
             <span>
-              {coupon.reveal_count?.toLocaleString("ar-EG")} استخدام هذا الشهر
+              {coupon.reveal_count?.toLocaleString("en-US")} استخدام هذا الشهر
             </span>
           </div>
         )}

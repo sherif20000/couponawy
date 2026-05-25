@@ -20,7 +20,7 @@ export async function submitContactMessage(
     return { success: false, error: "يرجى كتابة رسالتك." };
   }
   if (message.length > 2000) {
-    return { success: false, error: "الرسالة طويلة جداً (الحد الأقصى ٢٠٠٠ حرف)." };
+    return { success: false, error: "الرسالة طويلة جداً (الحد الأقصى 2000 حرف)." };
   }
 
   const supabase = await createClient();

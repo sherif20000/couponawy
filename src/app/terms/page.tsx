@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "شروط وأحكام استخدام منصة كوبوناوي.",
 };
 
-const LAST_UPDATED = "٢٣ أبريل ٢٠٢٥";
+const LAST_UPDATED = "23 أبريل 2025";
 
 export default function TermsPage() {
   return (
@@ -32,7 +32,7 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ١. طبيعة الخدمة
+                1. طبيعة الخدمة
               </h2>
               <p>
                 كوبوناوي منصة إعلامية تجمع كوبونات الخصم والعروض الترويجية من
@@ -44,7 +44,7 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٢. صحة الكوبونات
+                2. صحة الكوبونات
               </h2>
               <p>
                 نبذل جهداً مستمراً للتحقق من صحة الكوبونات وتحديثها، لكننا لا
@@ -56,7 +56,7 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٣. الروابط التابعة
+                3. الروابط التابعة
               </h2>
               <p>
                 قد يحتوي الموقع على روابط تابعة (Affiliate Links). عند الشراء
@@ -67,7 +67,7 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٤. الاستخدام المقبول
+                4. الاستخدام المقبول
               </h2>
               <ul className="space-y-2 list-disc list-inside">
                 <li>
@@ -90,7 +90,7 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٥. الملكية الفكرية
+                5. الملكية الفكرية
               </h2>
               <p>
                 جميع محتويات كوبوناوي من نصوص وصور وشعارات وتصميمات هي
@@ -101,7 +101,7 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٦. إخلاء المسؤولية
+                6. إخلاء المسؤولية
               </h2>
               <p>
                 تُقدَّم خدمة كوبوناوي «كما هي» دون أي ضمانات صريحة أو ضمنية.
@@ -112,7 +112,7 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٧. تعديل الشروط
+                7. تعديل الشروط
               </h2>
               <p>
                 نحتفظ بحق تعديل هذه الشروط في أي وقت. سيُعلن عن التغييرات
@@ -123,7 +123,7 @@ export default function TermsPage() {
 
             <section>
               <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                ٨. القانون المعمول به
+                8. القانون المعمول به
               </h2>
               <p>
                 تخضع هذه الشروط لأحكام نظام التجارة الإلكترونية وحماية

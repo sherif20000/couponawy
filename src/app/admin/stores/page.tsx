@@ -38,7 +38,7 @@ export default async function StoresPage({ searchParams }: Props) {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-warm-brown">
-              {total.toLocaleString("ar-EG")} متجر
+              {total.toLocaleString("en-US")} متجر
             </p>
           </div>
           <div className="flex items-center gap-3">

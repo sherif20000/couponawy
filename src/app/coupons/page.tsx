@@ -58,7 +58,7 @@ export default async function CouponsPage({ searchParams }: Props) {
           { label: "الكوبونات" },
         ]}
         title="جميع الكوبونات"
-        subtitle={`${total.toLocaleString("ar-EG")} كوبون · مجرّبة ومحدّثة يومياً`}
+        subtitle={`${total.toLocaleString("en-US")} كوبون · مجرّبة ومحدّثة يومياً`}
       />
 
       <Section spacing="lg">
@@ -79,8 +79,8 @@ export default async function CouponsPage({ searchParams }: Props) {
               </Button>
             )}
             <span className="font-body text-warm-brown text-sm">
-              صفحة {page.toLocaleString("ar-EG")} من{" "}
-              {totalPages.toLocaleString("ar-EG")}
+              صفحة {page.toLocaleString("en-US")} من{" "}
+              {totalPages.toLocaleString("en-US")}
             </span>
             {page < totalPages && (
               <Button asChild variant="primary" size="sm">

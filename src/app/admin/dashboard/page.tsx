@@ -21,7 +21,7 @@ function StatCard({
     <div className="bg-white rounded-xl p-5 border border-charcoal/8">
       <p className="text-xs text-warm-brown font-medium mb-1">{label}</p>
       <p className="text-3xl font-display font-bold text-charcoal">
-        {value.toLocaleString("ar-EG")}
+        {value.toLocaleString("en-US")}
       </p>
       {sub && <p className="text-xs text-warm-brown/60 mt-1">{sub}</p>}
     </div>
@@ -62,12 +62,12 @@ export default async function DashboardPage() {
             <StatCard
               label="الكوبونات النشطة"
               value={stats.activeCoupons}
-              sub={`من ${stats.totalCoupons.toLocaleString("ar-EG")} إجمالي`}
+              sub={`من ${stats.totalCoupons.toLocaleString("en-US")} إجمالي`}
             />
             <StatCard
               label="المتاجر النشطة"
               value={stats.activeStores}
-              sub={`من ${stats.totalStores.toLocaleString("ar-EG")} إجمالي`}
+              sub={`من ${stats.totalStores.toLocaleString("en-US")} إجمالي`}
             />
             <StatCard label="التصنيفات" value={stats.totalCategories} />
             <StatCard
