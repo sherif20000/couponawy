@@ -91,7 +91,7 @@ export default async function ArticlePage({ params }: PageProps) {
       name: "كوبوناوي",
       logo: {
         "@type": "ImageObject",
-        url: `${BASE_URL}/icon.png`,
+        url: `${BASE_URL}/logo.png`,
       },
     },
     mainEntityOfPage: {

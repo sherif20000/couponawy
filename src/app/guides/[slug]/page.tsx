@@ -82,7 +82,7 @@ export default async function GuidePage({ params }: PageProps) {
     publisher: {
       "@type": "Organization",
       name: "كوبوناوي",
-      logo: { "@type": "ImageObject", url: `${BASE_URL}/icon.png` },
+      logo: { "@type": "ImageObject", url: `${BASE_URL}/logo.png` },
     },
     mainEntityOfPage: {
       "@type": "WebPage",

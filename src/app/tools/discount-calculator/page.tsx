@@ -48,7 +48,7 @@ export default function DiscountCalculatorPage() {
     publisher: {
       "@type": "Organization",
       name: "كوبوناوي",
-      logo: { "@type": "ImageObject", url: `${BASE_URL}/icon.png` },
+      logo: { "@type": "ImageObject", url: `${BASE_URL}/logo.png` },
     },
     mainEntityOfPage: {
       "@type": "WebPage",
