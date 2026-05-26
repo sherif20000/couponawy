@@ -42,7 +42,7 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div className="flex flex-col gap-4">
             <Logo className="text-2xl" inverted />
-            <p className="font-body text-cream/80 max-w-xs text-sm leading-relaxed">
+            <p className="font-body text-cream/90 max-w-xs text-sm leading-relaxed">
               كوبونات خصم وعروض موثوقة من متاجر السعودية والخليج، مختارة بعناية
               من الأستاذ أبو عبدالله.
             </p>
@@ -57,7 +57,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="font-body text-cream/70 hover:text-cream text-sm transition-colors"
+                      className="font-body text-cream/90 hover:text-cream text-sm transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -69,10 +69,10 @@ export function Footer() {
         </div>
 
         <div className="border-cream/10 mt-10 flex flex-col items-center justify-between gap-4 border-t pt-6 md:flex-row">
-          <p className="font-accent text-cream/60 text-xs">
+          <p className="font-accent text-cream/80 text-xs">
             © {year} كوبوناوي. جميع الحقوق محفوظة.
           </p>
-          <p className="font-accent text-cream/60 text-xs">
+          <p className="font-accent text-cream/80 text-xs">
             صُنع بشغف في المملكة العربية السعودية
           </p>
         </div>
