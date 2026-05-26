@@ -254,3 +254,58 @@ export async function getContactMessages(page = 1): Promise<{
   if (error) console.error("[getContactMessages]", error);
   return { messages: data ?? [], total: count ?? 0, page, perPage };
 }
+
+// ─── Verify queue ─────────────────────────────────────────────────────────────
+// Active coupons ordered by oldest verification first. NULL last_verified_at
+// floats to the very top — those are coupons that have never been verified.
+//
+// Used by the admin /verify-queue page and the freshness pill on detail pages.
+// `archive-stale-coupons` cron uses the same staleness signal but writes back
+// (flips to `paused`).
+export async function getStaleCoupons(
+  page = 1,
+  search = "",
+  staleness: "all" | "never" | "30d" | "60d" | "90d" = "all"
+) {
+  const supabase = createAdminClient();
+  const perPage = 30;
+  const from = (page - 1) * perPage;
+
+  // Postgres treats NULL as larger than any value when sorted ASC unless we
+  // use `nullsFirst`. We *want* nulls first — those need attention most.
+  let query = supabase
+    .from("coupons")
+    .select(
+      "id, slug, title_ar, code, status, expires_at, last_verified_at, verified_by, store:stores(id, name_ar, slug)",
+      { count: "exact" }
+    )
+    .eq("status", "active")
+    .order("last_verified_at", { ascending: true, nullsFirst: true })
+    .range(from, from + perPage - 1);
+
+  if (search) {
+    // PostgREST: escape wildcard chars so user input doesn't bypass the like
+    // semantics. Same pattern as the public stores search.
+    const escaped = search.replace(/[,%_]/g, (c) => `\\${c}`);
+    query = query.ilike("title_ar", `%${escaped}%`);
+  }
+
+  if (staleness !== "all") {
+    if (staleness === "never") {
+      query = query.is("last_verified_at", null);
+    } else {
+      const days = staleness === "30d" ? 30 : staleness === "60d" ? 60 : 90;
+      const threshold = new Date(
+        Date.now() - days * 24 * 60 * 60 * 1000
+      ).toISOString();
+      // Either never verified OR verified before threshold
+      query = query.or(
+        `last_verified_at.is.null,last_verified_at.lt.${threshold}`
+      );
+    }
+  }
+
+  const { data, count, error } = await query;
+  if (error) console.error("[getStaleCoupons]", error);
+  return { coupons: data ?? [], total: count ?? 0, page, perPage };
+}
