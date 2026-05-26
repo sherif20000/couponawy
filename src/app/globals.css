@@ -211,7 +211,16 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  color: var(--color-charcoal);
+  /* NO explicit color — headings inherit from their parent so red surfaces
+     can override via `text-white` etc. on the ancestor section.
+     Why: Tailwind v4 puts utilities inside @layer utilities; unlayered CSS
+     (which this file is) beats layered CSS regardless of specificity. If we
+     declared `color: var(--color-charcoal)` here, every h1/h2/h4 site-wide
+     would force-render dark even when the parent has text-white — turning
+     hero headlines, page-hero titles, and footer section labels into black
+     text on the brand-red surface. Body sets the default charcoal color,
+     headings inherit it on cream surfaces; on red surfaces inheritance
+     picks up the section's text-white. */
   /* 1.4 prevents Arabic letter collision — leading-tight (1.25) is too aggressive */
   line-height: 1.4;
   font-feature-settings: "kern" 1, "calt" 1;
