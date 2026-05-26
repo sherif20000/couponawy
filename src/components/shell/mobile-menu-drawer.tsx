@@ -7,6 +7,8 @@ import { Menu, X, Search, Globe, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/brand/logo";
 import { setPreferredCountry } from "@/app/actions/set-country";
+import { readPreferredCountryFromCookie } from "@/lib/utils/country-client";
+import { DEFAULT_COUNTRY } from "@/app/actions/country-constants";
 import type { ActiveCountry } from "@/lib/queries/countries";
 
 const NAV_LINKS = [
@@ -17,14 +19,25 @@ const NAV_LINKS = [
 
 interface Props {
   countries?: ActiveCountry[];
+  /**
+   * Optional initial country code. When omitted, reads document.cookie
+   * post-mount — keeps the parent server tree static. See country-client.ts.
+   */
   currentCode?: string;
 }
 
-export function MobileMenuDrawer({ countries = [], currentCode = "SA" }: Props) {
+export function MobileMenuDrawer({ countries = [], currentCode }: Props) {
   const [open, setOpen] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState("");
   const [countryPending, setCountryPending] = React.useState(false);
+  const [code, setCode] = React.useState<string>(currentCode ?? DEFAULT_COUNTRY);
   const router = useRouter();
+
+  // Read the country cookie client-side once mounted. See country-client.ts
+  // for why this isn't done in the server tree.
+  React.useEffect(() => {
+    setCode(readPreferredCountryFromCookie());
+  }, []);
   const pathname = usePathname();
   const searchRef = React.useRef<HTMLInputElement>(null);
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -104,10 +117,11 @@ export function MobileMenuDrawer({ countries = [], currentCode = "SA" }: Props) 
     setOpen(false);
   }
 
-  async function handleCountrySelect(code: string) {
-    if (code === currentCode || countryPending) return;
+  async function handleCountrySelect(newCode: string) {
+    if (newCode === code || countryPending) return;
     setCountryPending(true);
-    await setPreferredCountry(code);
+    await setPreferredCountry(newCode);
+    setCode(newCode);
     router.refresh();
     setCountryPending(false);
   }
@@ -205,7 +219,7 @@ export function MobileMenuDrawer({ countries = [], currentCode = "SA" }: Props) 
             </p>
             <div className="flex flex-wrap gap-2 px-1">
               {countries.map((country) => {
-                const isSelected = country.code === currentCode;
+                const isSelected = country.code === code;
                 return (
                   <button
                     key={country.code}

@@ -6,7 +6,14 @@ import { MobileMenuDrawer } from "@/components/shell/mobile-menu-drawer";
 import { CountrySwitcher } from "@/components/shell/country-switcher";
 import { getActiveCountries } from "@/lib/queries/countries";
 import { getTickerCoupons } from "@/lib/queries/homepage";
-import { getPreferredCountry } from "@/lib/utils/country";
+
+// NOTE: getPreferredCountry() removed from this server component on purpose.
+// Reading cookies here forced the entire app into dynamic rendering — every
+// page that included <Header> via the root layout became per-request rendered,
+// which made `dynamicParams = false` a no-op and produced soft-404s for unknown
+// slugs. CountrySwitcher + MobileMenuDrawer now read the cookie client-side
+// (see country-client.ts) so the Header stays cookie-free and detail routes
+// can be statically generated.
 
 const NAV_LINKS = [
   { href: "/stores", label: "المتاجر" },
@@ -26,9 +33,14 @@ const FALLBACK_TICKER = [
 ];
 
 export async function Header() {
-  const [countries, currentCode, tickerCoupons] = await Promise.all([
+  // No cookie reads here — both getActiveCountries() and getTickerCoupons()
+  // use cookie-free Supabase clients. The country preference is read on the
+  // client by CountrySwitcher + MobileMenuDrawer (via document.cookie). The
+  // initial render of the country pill briefly shows DEFAULT_COUNTRY before
+  // the useEffect upgrades to the cookie value — minor flash that's vastly
+  // outweighed by the static-rendering perf + SEO win.
+  const [countries, tickerCoupons] = await Promise.all([
     getActiveCountries(),
-    getPreferredCountry(),
     getTickerCoupons(5),
   ]);
 
@@ -139,10 +151,10 @@ export async function Header() {
             <SearchInput />
 
             {countries.length > 0 && (
-              <CountrySwitcher countries={countries} currentCode={currentCode} />
+              <CountrySwitcher countries={countries} />
             )}
 
-            <MobileMenuDrawer countries={countries} currentCode={currentCode} />
+            <MobileMenuDrawer countries={countries} />
           </div>
         </Container>
       </header>
