@@ -94,7 +94,7 @@ export default function RootLayout({
         name: "كوبوناوي",
         logo: {
           "@type": "ImageObject",
-          url: `${SITE_URL}/icon.png`,
+          url: `${SITE_URL}/logo.png`,
           width: 512,
           height: 512,
         },
