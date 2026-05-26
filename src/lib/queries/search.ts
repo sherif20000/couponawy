@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/server";
 import type { FeaturedCoupon } from "@/lib/queries/homepage";
 import type { Database } from "@/types/database";
 
@@ -11,7 +11,7 @@ export type SearchResults = {
 
 export async function searchCoupons(query: string): Promise<FeaturedCoupon[]> {
   if (!query.trim()) return [];
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const { data, error } = await supabase
     .from("coupons")
@@ -31,7 +31,7 @@ export async function searchCoupons(query: string): Promise<FeaturedCoupon[]> {
 
 export async function searchStores(query: string): Promise<Store[]> {
   if (!query.trim()) return [];
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const { data, error } = await supabase
     .from("stores")

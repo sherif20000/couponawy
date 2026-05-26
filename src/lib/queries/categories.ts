@@ -1,9 +1,5 @@
 import { cache } from "react";
-import {
-  createClient,
-  createAdminClient,
-  createPublicClient,
-} from "@/lib/supabase/server";
+import { createAdminClient, createPublicClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 import type { FeaturedCoupon } from "@/lib/queries/homepage";
 
@@ -30,7 +26,7 @@ export async function getAllCategorySlugsBuildTime(): Promise<
 }
 
 export async function getAllCategories(): Promise<Category[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("categories")
     .select("*")
@@ -106,7 +102,7 @@ export async function getCouponsByCategory(
  * payload is tiny (one row per category).
  */
 export async function getCategoryCouponCounts(): Promise<Record<string, number>> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const { data, error } = await supabase.rpc("get_category_coupon_counts");
 
@@ -124,7 +120,7 @@ export async function getCategoryCouponCounts(): Promise<Record<string, number>>
 }
 
 export async function getActiveCoupons(): Promise<FeaturedCoupon[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("coupons")
     .select(`*, store:stores ( id, slug, name_ar, logo_url )`)
@@ -158,7 +154,7 @@ export async function getActiveCoupons(): Promise<FeaturedCoupon[]> {
 // homepage was calling getVisibleCouponIds 3 separate times per render.
 export const getVisibleCouponIds = cache(
   async (countryCode: string): Promise<string[] | null> => {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
 
     const { data, error } = await supabase.rpc("get_visible_coupon_ids", {
       p_country_code: countryCode,
@@ -180,7 +176,7 @@ export async function getActiveCouponsPaginated(
   perPage = 24,
   countryCode?: string
 ): Promise<{ coupons: FeaturedCoupon[]; total: number }> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const from = (page - 1) * perPage;
 
   // When a country filter is active, resolve the visible IDs first.
