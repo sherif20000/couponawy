@@ -19,31 +19,34 @@ export const runtime = "edge";
  * Wired into per-page metadata via openGraph.images = [`/api/og?title=${...}`].
  *
  * Note: next/og uses Satori under the hood — Arabic text rendering requires the
- * font file to be loaded explicitly. We fetch Cairo from Google Fonts at request
- * time; ImageResponse caches it on the edge so subsequent calls reuse it.
+ * font file to be loaded explicitly. We bundle Tajawal Bold + Regular as edge
+ * function assets via `new URL(import.meta.url)`; ImageResponse caches them on
+ * the edge so subsequent calls reuse them.
  */
 
 const SITE_NAME = "كوبوناوي";
 
-// Cairo Bold — STATIC TTFs pinned in the repo (not Google's variable subset).
-// Why: Google's variable URL (v28 SLXgc1nY...) served us partial GSUB tables that
-// Satori couldn't parse, surfacing as `Error: lookupType: 5 - substitution` in
-// Vercel runtime logs every few hours. Pinning the static-weight files from the
-// v31 release gives us deterministic font data forever, at the cost of ~107KB
-// committed binaries. Edge runtime bundles them via `new URL(import.meta.url)`.
+// Tajawal Bold + Regular — single unified family covering both Latin and
+// Arabic glyphs in one TTF each. Replaced the dual-file Cairo setup that was
+// surfacing `Error: lookupType: 5 - substitution` in Vercel runtime logs ~3x
+// per day. Cairo's dual-file design forced Satori to juggle two GSUB tables
+// per render; some glyph sequences hit a chained-context substitution path
+// Satori's font subsetter couldn't process.
 //
-// We need BOTH subsets because OG cards mix Arabic (eyebrow, title) and Latin
-// (footer "couponawy.com"). Registering both as the same family name lets Satori
-// fall back across unicode ranges automatically.
+// Tajawal has half the total GSUB lookup count of Cairo (12 vs 23) and ships
+// Latin + Arabic in one file, so Satori only walks one GSUB table per render.
+// Static TTFs from the Google Fonts OFL repo so we own the bytes forever and
+// don't depend on Google's variable font URLs (which previously served us
+// partial tables and broke the cards entirely).
 async function loadFonts() {
-  const [latinRes, arabicRes] = await Promise.all([
-    fetch(new URL("./cairo-bold.ttf", import.meta.url)),
-    fetch(new URL("./cairo-bold-arabic.ttf", import.meta.url)),
+  const [boldRes, regularRes] = await Promise.all([
+    fetch(new URL("./tajawal-bold.ttf", import.meta.url)),
+    fetch(new URL("./tajawal-regular.ttf", import.meta.url)),
   ]);
-  if (!latinRes.ok || !arabicRes.ok) {
-    throw new Error("Failed to load Cairo font for OG image");
+  if (!boldRes.ok || !regularRes.ok) {
+    throw new Error("Failed to load Tajawal font for OG image");
   }
-  return Promise.all([latinRes.arrayBuffer(), arabicRes.arrayBuffer()]);
+  return Promise.all([boldRes.arrayBuffer(), regularRes.arrayBuffer()]);
 }
 
 export async function GET(req: NextRequest) {
@@ -68,18 +71,18 @@ export async function GET(req: NextRequest) {
   };
   const badge = typeBadge[type];
 
-  let cairoLatin: ArrayBuffer | null = null;
-  let cairoArabic: ArrayBuffer | null = null;
+  let tajawalBold: ArrayBuffer | null = null;
+  let tajawalRegular: ArrayBuffer | null = null;
   try {
-    const [latin, arabic] = await loadFonts();
-    cairoLatin = latin;
-    cairoArabic = arabic;
+    const [bold, regular] = await loadFonts();
+    tajawalBold = bold;
+    tajawalRegular = regular;
   } catch {
     // If the bundled font fetch fails (shouldn't happen — it's in the function
     // bundle) fall back to system fonts. Arabic shaping may break but the card
     // still renders so social previews don't 500.
-    cairoLatin = null;
-    cairoArabic = null;
+    tajawalBold = null;
+    tajawalRegular = null;
   }
 
   return new ImageResponse(
@@ -96,7 +99,7 @@ export async function GET(req: NextRequest) {
           background:
             "radial-gradient(ellipse at 80% 20%, oklch(46% 0.25 26) 0%, oklch(10% 0.02 26) 75%)",
           color: "#fff",
-          fontFamily: "Cairo",
+          fontFamily: "Tajawal",
           direction: "rtl",
         }}
       >
@@ -185,14 +188,16 @@ export async function GET(req: NextRequest) {
     {
       width: 1200,
       height: 630,
-      // Register both subsets as the same family — Satori picks per-glyph based
-      // on the unicode-range each TTF covers. Falls back to system if either is
-      // missing (best-effort, won't render Arabic correctly but won't 500).
+      // Register Bold (700) for headings + Regular (400) for the body URL line.
+      // Tajawal is one file per weight, no Latin/Arabic split — Satori reads the
+      // unicode coverage from each TTF and picks the right one per glyph.
+      // Falls back to system if either fails (best-effort, won't render Arabic
+      // correctly but won't 500).
       fonts:
-        cairoLatin && cairoArabic
+        tajawalBold && tajawalRegular
           ? [
-              { name: "Cairo", data: cairoLatin, style: "normal", weight: 800 },
-              { name: "Cairo", data: cairoArabic, style: "normal", weight: 800 },
+              { name: "Tajawal", data: tajawalBold, style: "normal", weight: 700 },
+              { name: "Tajawal", data: tajawalRegular, style: "normal", weight: 400 },
             ]
           : undefined,
       // Cache aggressively at the edge — these images change rarely (only when
