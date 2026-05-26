@@ -314,30 +314,15 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
         className
       )}
     >
-      {/* ── Discount badge — logical end-of-row in RTL.
-          start-4 in RTL = right; in LTR (future English mirror) = left.
-          Using logical properties keeps RTL/LTR symmetry correct. */}
-      {coupon.discount_display && (
-        <div
-          className="bg-brand-red text-white font-display absolute top-4 start-4 z-10 rounded-xl px-3 py-1.5 text-sm font-black tracking-tight shadow-sm"
-          aria-label={`خصم ${coupon.discount_display}`}
-        >
-          {coupon.discount_display}
-        </div>
-      )}
-
-      {/* ── Exclusive ribbon — logical opposite corner (RTL = left) ─── */}
-      {coupon.is_exclusive && (
-        <div className="bg-brand-gold absolute top-4 end-4 z-10 rounded-md px-2 py-1">
-          <span className="font-accent text-charcoal inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider">
-            <Sparkles className="h-2.5 w-2.5" aria-hidden />
-            حصري
-          </span>
-        </div>
-      )}
-
-      <CardContent className="flex flex-1 flex-col gap-3 p-5 pt-6">
-        {/* ── Store row ───────────────────────────────────────────── */}
+      <CardContent className="flex flex-1 flex-col gap-3 p-5">
+        {/* ── Store row ───────────────────────────────────────────────
+            Layout: [logo] [name+type] [discount badge]
+            The discount badge moved here from absolute top-start because
+            its prior position (top-4 start-4, z-10) sat directly on top
+            of the 48×48 logo container — 24px of forced vertical overlap
+            and ~50px of horizontal overlap. Inline placement keeps the
+            badge prominent (only red element on the card) without ever
+            colliding with the logo. */}
         <div className="flex items-center gap-3">
           <div className="bg-cream-dark ring-brand-gold/25 flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-1">
             {coupon.store?.logo_url && !logoError ? (
@@ -367,9 +352,12 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
             )}
           </div>
 
-          {/* Logical end-padding so the absolute badge doesn't collide
-              with the name. Use pe-* instead of pr-* for RTL/LTR symmetry. */}
-          <div className="flex min-w-0 flex-col pe-16">
+          {/* Name + type takes the remaining horizontal space between the
+              logo and the inline badges. flex-1 + min-w-0 lets the name
+              truncate gracefully on narrow cards without pushing the
+              badges off-screen. No pe-* needed now that both badges are
+              inline siblings (the gap-3 row spacing handles separation). */}
+          <div className="flex min-w-0 flex-1 flex-col">
             {coupon.store ? (
               <Link
                 href={`/stores/${coupon.store.slug}`}
@@ -384,6 +372,33 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
             )}
             <CouponTypeTag kind={kind} />
           </div>
+
+          {/* Inline discount badge — same visual treatment as before
+              (brand-red, white text, bold) but in document flow so it
+              never overlaps the logo. shrink-0 keeps the badge intact
+              on narrow widths; the name column truncates instead. */}
+          {coupon.discount_display && (
+            <div
+              className="bg-brand-red text-white font-display shrink-0 rounded-xl px-3 py-1.5 text-sm font-black tracking-tight shadow-sm"
+              aria-label={`خصم ${coupon.discount_display}`}
+            >
+              {coupon.discount_display}
+            </div>
+          )}
+
+          {/* Inline exclusive ribbon — moved here from absolute top-end
+              corner. Keeping it absolute would have made it collide with
+              the new inline discount badge (both anchor to the card's
+              end side in RTL). Inline at end-of-row keeps the gold→red
+              visual pair together and removes all overlap. */}
+          {coupon.is_exclusive && (
+            <div className="bg-brand-gold shrink-0 rounded-md px-2 py-1">
+              <span className="font-accent text-charcoal inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider">
+                <Sparkles className="h-2.5 w-2.5" aria-hidden />
+                حصري
+              </span>
+            </div>
+          )}
         </div>
 
         {/* ── Trending signal (only on cards with variant="trending") ─
