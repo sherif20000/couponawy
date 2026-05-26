@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createPublicClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 import { getVisibleCouponIds } from "@/lib/queries/categories";
 
@@ -197,7 +197,11 @@ export async function getFeaturedCategories(limit = 10): Promise<Category[]> {
 // Ordering: featured first, then by display_order, then most recently updated —
 // gives the ticker a strong "the best, then the freshest" feel.
 export async function getTickerCoupons(limit = 5): Promise<FeaturedCoupon[]> {
-  const supabase = await createClient();
+  // createPublicClient (no cookies) — getTickerCoupons is called from the
+  // root layout's <Header>. If this used createClient (cookies), every
+  // page in the app would be forced into dynamic rendering. With the
+  // cookie-free client, detail routes can stay static + ISR.
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("coupons")
     .select(`*, store:stores ( id, slug, name_ar, logo_url )`)

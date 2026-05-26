@@ -4,21 +4,40 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Globe, ChevronDown, Check } from "lucide-react";
 import { setPreferredCountry } from "@/app/actions/set-country";
+import { readPreferredCountryFromCookie } from "@/lib/utils/country-client";
+import { DEFAULT_COUNTRY } from "@/app/actions/country-constants";
 import type { ActiveCountry } from "@/lib/queries/countries";
 
 interface Props {
   countries: ActiveCountry[];
-  currentCode: string;
+  /**
+   * Optional initial country code (e.g. when called from a server context
+   * that already has the cookie). When omitted, falls back to
+   * DEFAULT_COUNTRY for the initial render then reads document.cookie in
+   * a useEffect post-mount. The cookie-read pattern is what lets the
+   * parent server tree stay static — see country-client.ts.
+   */
+  currentCode?: string;
 }
 
 export function CountrySwitcher({ countries, currentCode }: Props) {
   const [open, setOpen] = React.useState(false);
   const [pending, setPending] = React.useState(false);
+  // Initial value: prop if supplied (legacy server-provided), else default.
+  // useEffect below upgrades to the real cookie value once mounted.
+  const [code, setCode] = React.useState<string>(currentCode ?? DEFAULT_COUNTRY);
   const router = useRouter();
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const menuRef = React.useRef<HTMLDivElement>(null);
 
-  const current = countries.find((c) => c.code === currentCode) ?? countries[0];
+  // Read the country cookie client-side. Runs once on mount. Server cannot
+  // read cookies here without forcing dynamic rendering on the parent —
+  // see Bug #4a v3 in the PROJECT_MAP.
+  React.useEffect(() => {
+    setCode(readPreferredCountryFromCookie());
+  }, []);
+
+  const current = countries.find((c) => c.code === code) ?? countries[0];
 
   // Close on outside click
   React.useEffect(() => {
@@ -48,11 +67,15 @@ export function CountrySwitcher({ countries, currentCode }: Props) {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  async function handleSelect(code: string) {
-    if (code === currentCode || pending) return;
+  async function handleSelect(newCode: string) {
+    if (newCode === code || pending) return;
     setPending(true);
     setOpen(false);
-    await setPreferredCountry(code);
+    await setPreferredCountry(newCode);
+    // Update local state immediately so the indicator flips without waiting
+    // for the round-trip; router.refresh() then refetches any list pages
+    // that filter by country.
+    setCode(newCode);
     router.refresh();
     setPending(false);
   }
@@ -97,11 +120,11 @@ export function CountrySwitcher({ countries, currentCode }: Props) {
             <button
               key={country.code}
               role="option"
-              aria-selected={country.code === currentCode}
+              aria-selected={country.code === code}
               type="button"
               onClick={() => handleSelect(country.code)}
               className={`font-body flex w-full items-center gap-2.5 px-4 py-2.5 text-sm transition-colors ${
-                country.code === currentCode
+                country.code === code
                   ? "bg-brand-red/5 text-brand-red font-semibold"
                   : "text-charcoal hover:bg-cream-dark/60"
               }`}
@@ -112,7 +135,7 @@ export function CountrySwitcher({ countries, currentCode }: Props) {
                 </span>
               )}
               <span className="flex-1 text-right">{country.name_ar}</span>
-              {country.code === currentCode && (
+              {country.code === code && (
                 <Check className="text-brand-red h-3.5 w-3.5 shrink-0" aria-hidden />
               )}
             </button>
