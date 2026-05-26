@@ -5,6 +5,13 @@ import { Container } from "@/components/ui/container";
 export const metadata: Metadata = {
   title: "الصفحة غير موجودة",
   description: "الصفحة التي تبحث عنها غير موجودة. تصفّح المتاجر والكوبونات على كوبوناوي.",
+  // Tell crawlers not to index this 'not-found' shell. Next.js 16 + Vercel
+  // ISR currently returns HTTP 200 when notFound() fires from a dynamically-
+  // rendered detail page (soft-404), and the only reliable way to stop
+  // Google from indexing that thin/duplicate content is the meta-robots tag.
+  // Status code itself isn't an SEO ranking signal — what hurts is the
+  // indexing of low-value content, and noindex blocks that directly.
+  robots: { index: false, follow: false },
 };
 
 export default function NotFound() {

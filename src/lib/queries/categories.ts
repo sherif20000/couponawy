@@ -1,5 +1,9 @@
 import { cache } from "react";
-import { createClient, createAdminClient } from "@/lib/supabase/server";
+import {
+  createClient,
+  createAdminClient,
+  createPublicClient,
+} from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 import type { FeaturedCoupon } from "@/lib/queries/homepage";
 
@@ -41,7 +45,8 @@ export async function getAllCategories(): Promise<Category[]> {
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  const supabase = await createClient();
+  // createPublicClient — keeps the /categories/[slug] route statically generable.
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("categories")
     .select("*")
@@ -58,7 +63,8 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 export async function getCouponsByCategory(
   categoryId: string
 ): Promise<FeaturedCoupon[]> {
-  const supabase = await createClient();
+  // createPublicClient — keeps the /categories/[slug] route statically generable.
+  const supabase = createPublicClient();
 
   const { data: junction, error: jErr } = await supabase
     .from("coupon_categories")

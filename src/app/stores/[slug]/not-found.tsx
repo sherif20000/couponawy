@@ -5,6 +5,10 @@ import { Container } from "@/components/ui/container";
 export const metadata: Metadata = {
   title: "المتجر غير موجود",
   description: "المتجر الذي تبحث عنه غير موجود. تصفّح جميع المتاجر على كوبوناوي.",
+  // See src/app/not-found.tsx for rationale — noindex blocks Google from
+  // indexing the soft-404 body that fires when an unknown store slug is
+  // visited on the dynamically-rendered /stores/[slug] route.
+  robots: { index: false, follow: false },
 };
 
 export default function StoreNotFound() {

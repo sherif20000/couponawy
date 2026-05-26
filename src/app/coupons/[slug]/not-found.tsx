@@ -5,6 +5,10 @@ import { Container } from "@/components/ui/container";
 export const metadata: Metadata = {
   title: "الكوبون غير موجود",
   description: "الكوبون الذي تبحث عنه غير موجود. تصفّح جميع الكوبونات على كوبوناوي.",
+  // See src/app/not-found.tsx for rationale — noindex blocks Google from
+  // indexing the soft-404 body that fires when an unknown coupon slug is
+  // visited on the dynamically-rendered /coupons/[slug] route.
+  robots: { index: false, follow: false },
 };
 
 export default function CouponNotFound() {
