@@ -1,9 +1,5 @@
 import { cache } from "react";
-import {
-  createClient,
-  createAdminClient,
-  createPublicClient,
-} from "@/lib/supabase/server";
+import { createAdminClient, createPublicClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 import type { FeaturedCoupon } from "@/lib/queries/homepage";
 
@@ -62,7 +58,7 @@ export async function getAllCouponSlugsBuildTime(): Promise<
 export async function getActiveStores(
   countryCode?: string
 ): Promise<StoreListItem[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   let query = supabase
     .from("stores")
     .select("id, slug, name_ar, name_en, logo_url, is_verified, is_featured")
@@ -90,7 +86,7 @@ export async function getActiveStoresPaginated(
   countryCode?: string,
   searchQuery?: string
 ): Promise<{ stores: StoreListItem[]; total: number }> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const from = (page - 1) * perPage;
 
   let query = supabase

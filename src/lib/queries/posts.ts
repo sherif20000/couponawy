@@ -1,4 +1,4 @@
-import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { createAdminClient, createPublicClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
 export type Article = Database["public"]["Tables"]["articles"]["Row"];
@@ -43,7 +43,7 @@ const ARTICLE_LIST_FIELDS =
 export async function getPublishedArticles(
   limit = 24
 ): Promise<ArticleListItem[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("articles")
     .select(ARTICLE_LIST_FIELDS)
@@ -63,7 +63,7 @@ export async function getPublishedArticles(
  * Used by /blog/[slug] page.
  */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("articles")
     .select("*")
@@ -87,7 +87,7 @@ export async function getRelatedArticles(
   tags: string[] | null,
   limit = 3
 ): Promise<ArticleListItem[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   // First try tag-overlap match if we have tags.
   if (tags && tags.length > 0) {
@@ -144,7 +144,7 @@ const GUIDE_LIST_FIELDS =
   "id, slug, title_ar, excerpt_ar, featured_image_url, category_id, published_at";
 
 export async function getPublishedGuides(limit = 24): Promise<GuideListItem[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("buying_guides")
     .select(GUIDE_LIST_FIELDS)
@@ -159,7 +159,7 @@ export async function getPublishedGuides(limit = 24): Promise<GuideListItem[]> {
 }
 
 export async function getGuideBySlug(slug: string): Promise<BuyingGuide | null> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("buying_guides")
     .select("*")

@@ -1,4 +1,4 @@
-import { createClient, createPublicClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 import { getVisibleCouponIds } from "@/lib/queries/categories";
 
@@ -11,7 +11,7 @@ export type FeaturedCoupon = Coupon & {
 };
 
 export async function getFeaturedCoupons(limit = 8, countryCode?: string): Promise<FeaturedCoupon[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   let baseQuery = supabase
     .from("coupons")
@@ -38,7 +38,7 @@ export async function getFeaturedCoupons(limit = 8, countryCode?: string): Promi
 }
 
 export async function getFeaturedStores(limit = 8): Promise<Store[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("stores")
     .select("*")
@@ -55,7 +55,7 @@ export async function getFeaturedStores(limit = 8): Promise<Store[]> {
 }
 
 export async function getExpiringSoonCoupons(limit = 8, countryCode?: string): Promise<FeaturedCoupon[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const now = new Date().toISOString();
   const sevenDays = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
@@ -85,7 +85,7 @@ export async function getExpiringSoonCoupons(limit = 8, countryCode?: string): P
 }
 
 export async function getExclusiveCoupons(limit = 50): Promise<FeaturedCoupon[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("coupons")
     .select(`*, store:stores ( id, slug, name_ar, logo_url )`)
@@ -103,7 +103,7 @@ export async function getExclusiveCoupons(limit = 50): Promise<FeaturedCoupon[]>
 }
 
 export async function getDealsOfTheDay(limit = 50): Promise<FeaturedCoupon[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   // KSA is UTC+3. Start of today in KSA = start of today UTC+3, expressed as UTC.
   const now = new Date();
@@ -133,7 +133,7 @@ export async function getDealsOfTheDay(limit = 50): Promise<FeaturedCoupon[]> {
 }
 
 export async function getTrendingCoupons(limit = 8, countryCode?: string): Promise<FeaturedCoupon[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   let baseQuery = supabase
     .from("coupons")
@@ -160,7 +160,7 @@ export async function getTrendingCoupons(limit = 8, countryCode?: string): Promi
 }
 
 export async function getFeaturedCategories(limit = 10): Promise<Category[]> {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   // First try: fetch only explicitly featured categories
   const { data, error } = await supabase
     .from("categories")
