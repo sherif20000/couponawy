@@ -18,6 +18,20 @@ import {
 
 export const revalidate = 300;
 
+// Reject any slug not present in generateStaticParams output with a hard
+// HTTP 404 — without this, Next.js 16 + Vercel + ISR falls into dynamic
+// on-demand rendering for unknown slugs and the `notFound()` call inside
+// the page body only renders the not-found component while the response
+// status stays at HTTP 200 (a "soft 404"). Google indexes the
+// "الكوبون غير موجود" content as thin/duplicate content and penalizes
+// the whole site. dynamicParams=false fixes the status at the routing
+// layer before the page render starts.
+//
+// Trade-off: a coupon added via /admin won't be live until Vercel
+// rebuilds (next push to main, or manual deploy). Acceptable because
+// auto-scraping is paused and admin-created coupons are rare.
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const slugs = await getAllCouponSlugsBuildTime();
   return slugs.map(({ slug }) => ({ slug }));
