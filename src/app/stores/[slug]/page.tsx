@@ -23,6 +23,12 @@ import {
 
 export const revalidate = 300;
 
+// See comment in src/app/coupons/[slug]/page.tsx — Next.js 16 + Vercel ISR
+// soft-404s unknown slugs (renders not-found body but with HTTP 200).
+// dynamicParams=false forces a hard 404 at the routing layer for any
+// store slug not pre-rendered by generateStaticParams.
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const slugs = await getAllStoreSlugsBuildTime();
   return slugs.map(({ slug }) => ({ slug }));

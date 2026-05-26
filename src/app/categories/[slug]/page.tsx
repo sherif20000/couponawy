@@ -24,13 +24,23 @@ import {
 
 export const revalidate = 300;
 
+// See comment in src/app/coupons/[slug]/page.tsx — Next.js 16 + Vercel ISR
+// soft-404s unknown slugs (renders not-found body but with HTTP 200).
+// dynamicParams=false forces a hard 404 at the routing layer for any
+// category slug not pre-rendered by generateStaticParams.
+export const dynamicParams = false;
+
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  return getAllCategorySlugsBuildTime();
+  // Strip extra fields (updated_at, used by sitemap) — Next.js expects
+  // params objects to contain only the dynamic segment values when
+  // dynamicParams=false is in effect.
+  const slugs = await getAllCategorySlugsBuildTime();
+  return slugs.map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
