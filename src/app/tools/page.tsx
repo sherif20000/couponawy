@@ -37,7 +37,10 @@ const tools = [
     description:
       "كم تكسب فعلياً من استخدام الكوبونات سنوياً — حسب إنفاقك ومعدّل تفعيلك.",
     icon: TrendingUp,
-    accent: "bg-brand-gold/10 text-brand-gold",
+    // Solid brand-gold with text-charcoal is the ONLY spec-allowed pairing for
+    // brand-gold backgrounds (per .impeccable.md contrast rules). The previous
+    // bg-brand-gold/10 + text-brand-gold combination fails AA contrast on cream.
+    accent: "bg-brand-gold text-charcoal",
   },
 ] as const;
 

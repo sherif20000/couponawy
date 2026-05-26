@@ -133,7 +133,7 @@ export async function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="font-body text-white/85 hover:text-white text-sm font-semibold transition-colors duration-150"
+                  className="font-body text-white hover:text-cream text-sm font-semibold transition-colors duration-150"
                 >
                   {link.label}
                 </Link>

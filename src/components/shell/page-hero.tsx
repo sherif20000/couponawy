@@ -84,7 +84,7 @@ export function PageHero({
             {breadcrumbs && breadcrumbs.length > 0 && (
               <nav
                 aria-label="مسار التنقّل"
-                className="font-accent flex items-center gap-2 text-xs text-white/60"
+                className="font-accent flex items-center gap-2 text-xs text-white/85"
               >
                 {breadcrumbs.map((crumb, idx) => {
                   const isLast = idx === breadcrumbs.length - 1;
@@ -98,11 +98,11 @@ export function PageHero({
                           {crumb.label}
                         </Link>
                       ) : (
-                        <span className={isLast ? "text-white" : "text-white/60"}>
+                        <span className={isLast ? "text-white" : "text-white/80"}>
                           {crumb.label}
                         </span>
                       )}
-                      {!isLast && <span className="text-white/30">›</span>}
+                      {!isLast && <span className="text-white/50">›</span>}
                     </React.Fragment>
                   );
                 })}
@@ -131,7 +131,7 @@ export function PageHero({
               {title}
             </Heading>
             {subtitle && (
-              <p className="font-body max-w-2xl text-base leading-relaxed text-white/75 md:text-lg">
+              <p className="font-body max-w-2xl text-base leading-relaxed text-white/90 md:text-lg">
                 {subtitle}
               </p>
             )}
