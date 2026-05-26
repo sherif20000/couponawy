@@ -19,6 +19,7 @@ const FOOTER_SECTIONS = [
       { href: "/how-it-works", label: "كيف نعمل" },
       { href: "/blog", label: "المدونة" },
       { href: "/guides", label: "الدلائل" },
+      { href: "/tools", label: "أدوات وحاسبات" },
       { href: "/contact", label: "تواصل معنا" },
     ],
   },

@@ -21,6 +21,7 @@ const NAV_LINKS = [
   { href: "/coupons", label: "الكوبونات" },
   { href: "/blog", label: "المدونة" },
   { href: "/guides", label: "الدلائل" },
+  { href: "/tools", label: "أدوات" },
 ];
 
 // Fallback ticker items shown only if the DB returns zero active coupons.
