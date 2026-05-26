@@ -8,12 +8,12 @@ import { StoreGrid } from "@/components/stores/store-grid";
 import { getActiveStoresPaginated } from "@/lib/queries/detail";
 import { getPreferredCountry } from "@/lib/utils/country";
 import { toArabicNumerals, pluralizeStore } from "@/lib/utils";
+import { BASE_URL } from "@/lib/utils/site";
 
 // Country preference is cookie-driven, so this page renders dynamically
 // per request. Individual store detail pages retain their own ISR.
 export const dynamic = "force-dynamic";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 export const metadata: Metadata = {
   title: "جميع المتاجر",

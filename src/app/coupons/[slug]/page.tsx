@@ -9,6 +9,7 @@ import { PageHero } from "@/components/shell/page-hero";
 import { SectionHeader } from "@/components/shell/section-header";
 import { CouponCard } from "@/components/coupons/coupon-card";
 import { CouponRevealHero } from "@/components/coupons/coupon-reveal-hero";
+import { BASE_URL } from "@/lib/utils/site";
 import {
   getCategoriesForCoupon,
   getCouponBySlug,
@@ -75,19 +76,17 @@ export async function generateMetadata({
     coupon.description_ar ??
     `${coupon.title_ar} من ${storeName}. كود خصم مجرّب ومحدّث على كوبوناوي.`;
 
-  const BASE_URL_META =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
   // Generate OG card on the edge — title is the offer headline, subtitle is store name.
   // The store logo isn't a great OG image (1:1 ratio, often pixelated), so a branded
   // 1200×630 card communicates "this is a coupon offer from {store}" much better.
-  const ogImage = `${BASE_URL_META}/api/og?title=${encodeURIComponent(coupon.title_ar)}&subtitle=${encodeURIComponent(storeName)}&type=coupon`;
+  const ogImage = `${BASE_URL}/api/og?title=${encodeURIComponent(coupon.title_ar)}&subtitle=${encodeURIComponent(storeName)}&type=coupon`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `${BASE_URL_META}/coupons/${slug}`,
+      canonical: `${BASE_URL}/coupons/${slug}`,
     },
     openGraph: {
       title,
@@ -98,8 +97,6 @@ export async function generateMetadata({
   };
 }
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 function buildCouponJsonLd(
   coupon: NonNullable<Awaited<ReturnType<typeof getCouponBySlug>>>

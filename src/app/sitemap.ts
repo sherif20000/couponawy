@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { BASE_URL } from "@/lib/utils/site";
 import {
   getAllStoreSlugsBuildTime,
   getAllCouponSlugsBuildTime,
@@ -9,8 +10,6 @@ import {
   getAllGuideSlugsBuildTime,
 } from "@/lib/queries/posts";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [storeSlugs, couponSlugs, categorySlugs, articleSlugs, guideSlugs] =

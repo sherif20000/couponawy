@@ -5,6 +5,7 @@ import { Calendar, ArrowLeft } from "lucide-react";
 import { Section } from "@/components/shell/section";
 import { PageHero } from "@/components/shell/page-hero";
 import { PostBody } from "@/components/blog/post-body";
+import { BASE_URL } from "@/lib/utils/site";
 import {
   getGuideBySlug,
   getAllGuideSlugsBuildTime,
@@ -12,7 +13,6 @@ import {
 
 export const revalidate = 1800;
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
