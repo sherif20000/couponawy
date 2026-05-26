@@ -230,20 +230,27 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
 
   // Opens the merchant URL in a new tab.
   //
-  // Why `noopener` but NOT `noreferrer`:
-  //   - `noopener` is mandatory: prevents the merchant page from accessing
-  //     our window via window.opener (security).
+  // Security policy:
+  //   - We need a real reference to the new window so we can navigate it
+  //     to the merchant URL once the RPC resolves (we pre-open about:blank
+  //     synchronously to survive the popup blocker, then assign the real
+  //     URL after the await — see handleReveal). The `noopener` *feature*
+  //     flag on window.open() returns null per spec, which means the
+  //     placeholder tab would be unreachable and the user stares at an
+  //     empty about:blank. So we don't pass `noopener` here.
+  //   - Instead we set `win.opener = null` explicitly. That achieves the
+  //     same security goal (merchant page cannot access our window via
+  //     window.opener) while keeping the reference.
   //   - `noreferrer` is HARMFUL HERE: it strips the Referer header, which
   //     CJ / Impact / Awin / arabclicks rely on to attribute the click and
   //     credit us with the affiliate commission. Keep the referrer so the
   //     cookie lands and we get paid.
   //
-  // We also pre-open the popup synchronously (before any await) — Safari and
+  // We pre-open the popup synchronously (before any await) — Safari and
   // Chrome both block window.open() called from inside an async handler
-  // unless it's tied to a fresh user gesture. Opening first and assigning
-  // the URL later sidesteps the popup blocker.
+  // unless it's tied to a fresh user gesture.
   function openMerchantTab(): Window | null {
-    const win = window.open("about:blank", "_blank", "noopener");
+    const win = window.open("about:blank", "_blank");
     if (win) win.opener = null;
     return win;
   }
@@ -296,14 +303,14 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
     setTimeout(() => setCopied(false), 2000);
   }
 
-  // Explicit "Go to store" button — same behavior as the auto-open above,
-  // but for the case where the user closed the auto-opened tab and wants
-  // to re-launch the store. Keep the same noopener-but-with-referrer
-  // policy for affiliate attribution.
+  // Explicit "Go to store" button — same security policy as openMerchantTab
+  // above: no `noopener` feature flag (it would null the return value),
+  // explicit `win.opener = null` instead. Referer is preserved for the
+  // affiliate cookie to attribute the click.
   function handleGoToStore() {
     void trackStoreClick();
     if (!coupon.destination_url) return;
-    const win = window.open(coupon.destination_url, "_blank", "noopener");
+    const win = window.open(coupon.destination_url, "_blank");
     if (win) win.opener = null;
   }
 
