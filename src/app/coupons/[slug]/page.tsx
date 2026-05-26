@@ -18,18 +18,20 @@ import {
 
 export const revalidate = 300;
 
-// Reject any slug not present in generateStaticParams output with a hard
-// HTTP 404 — without this, Next.js 16 + Vercel + ISR falls into dynamic
-// on-demand rendering for unknown slugs and the `notFound()` call inside
-// the page body only renders the not-found component while the response
-// status stays at HTTP 200 (a "soft 404"). Google indexes the
-// "الكوبون غير موجود" content as thin/duplicate content and penalizes
-// the whole site. dynamicParams=false fixes the status at the routing
-// layer before the page render starts.
+// Intent: reject unknown slugs with a hard HTTP 404. Currently DOES NOT
+// TAKE EFFECT because the root layout's <Header> reads cookies (via
+// getPreferredCountry + getActiveCountries), which forces every page in
+// the app into dynamic rendering. dynamicParams=false is a no-op on
+// dynamic routes — Next.js has no static manifest to enforce against.
 //
-// Trade-off: a coupon added via /admin won't be live until Vercel
-// rebuilds (next push to main, or manual deploy). Acceptable because
-// auto-scraping is paused and admin-created coupons are rare.
+// The SEO consequence (Google indexing the soft-404 body) is currently
+// mitigated by the route-segment not-found.tsx metadata setting
+// `robots: { index: false, follow: false }` — Google sees the response
+// but refuses to index the thin content. See ./not-found.tsx.
+//
+// Kept here so the moment the Header is refactored to be cookie-free
+// (separate client-side country switcher), this enforcement kicks in
+// automatically without code change.
 export const dynamicParams = false;
 
 export async function generateStaticParams() {

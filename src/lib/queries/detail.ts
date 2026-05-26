@@ -1,5 +1,9 @@
 import { cache } from "react";
-import { createClient, createAdminClient } from "@/lib/supabase/server";
+import {
+  createClient,
+  createAdminClient,
+  createPublicClient,
+} from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 import type { FeaturedCoupon } from "@/lib/queries/homepage";
 
@@ -124,8 +128,11 @@ export async function getActiveStoresPaginated(
 // twice — once in `generateMetadata`, once in the page body — and each call
 // previously hit Supabase. With cache(), the second call resolves from the
 // per-request memo. Same for getCouponBySlug below.
+//
+// Uses createPublicClient (not createClient) so the detail route can be
+// statically generated. See server.ts for why this matters.
 export const getStoreBySlug = cache(async (slug: string): Promise<Store | null> => {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("stores")
     .select("*")
@@ -143,7 +150,8 @@ export const getStoreBySlug = cache(async (slug: string): Promise<Store | null> 
 export async function getCouponsForStore(
   storeId: string
 ): Promise<FeaturedCoupon[]> {
-  const supabase = await createClient();
+  // createPublicClient — keeps the /stores/[slug] route statically generable.
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("coupons")
     .select(`*, store:stores ( id, slug, name_ar, logo_url )`)
@@ -161,7 +169,8 @@ export async function getCouponsForStore(
 
 export const getCouponBySlug = cache(
   async (slug: string): Promise<CouponWithStore | null> => {
-    const supabase = await createClient();
+    // createPublicClient — keeps the /coupons/[slug] route statically generable.
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("coupons")
       .select(
@@ -192,7 +201,8 @@ export const getCategoriesForCoupon = cache(
   async (
     couponId: string
   ): Promise<{ id: string; slug: string; name_ar: string }[]> => {
-    const supabase = await createClient();
+    // createPublicClient — keeps the /coupons/[slug] route statically generable.
+    const supabase = createPublicClient();
     const { data, error } = await supabase
       .from("coupon_categories")
       .select("category:categories ( id, slug, name_ar )")
@@ -218,7 +228,8 @@ export async function getRelatedCoupons(
   excludeCouponId: string,
   limit = 4
 ): Promise<FeaturedCoupon[]> {
-  const supabase = await createClient();
+  // createPublicClient — keeps the /coupons/[slug] route statically generable.
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("coupons")
     .select(`*, store:stores ( id, slug, name_ar, logo_url )`)
