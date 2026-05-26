@@ -10,6 +10,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { StoreFaq, buildFaqJsonLd } from "@/components/seo/store-faq";
 import { ProseFromText } from "@/components/seo/store-long-copy";
 import { StoreLogo } from "@/components/stores/store-logo";
+import { BASE_URL } from "@/lib/utils/site";
 import {
   aboutCategoryCopy,
   categoryFaq,
@@ -30,8 +31,6 @@ export const revalidate = 300;
 // category slug not pre-rendered by generateStaticParams.
 export const dynamicParams = false;
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 type Props = { params: Promise<{ slug: string }> };
 

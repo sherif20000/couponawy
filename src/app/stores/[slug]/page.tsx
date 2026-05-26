@@ -15,6 +15,7 @@ import { StoreLogo } from "@/components/stores/store-logo";
 import { storeFaq } from "@/lib/content/store-templates";
 import { buildOutboundUrl } from "@/lib/utils/outbound-url";
 import { toArabicNumerals, pluralizeCoupon } from "@/lib/utils";
+import { BASE_URL } from "@/lib/utils/site";
 import {
   getStoreBySlug,
   getCouponsForStore,
@@ -50,20 +51,18 @@ export async function generateMetadata({
     store.short_description_ar ??
     `أحدث كوبونات ${store.name_ar} وأكواد خصم مجرّبة ومحدّثة يومياً من كوبوناوي.`;
 
-  const BASE_URL_META =
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
   // If admin uploaded a custom og_image we use it. Otherwise generate one on the
   // edge via /api/og?title=…&store=…&type=store.
   const ogImage =
     store.og_image ??
-    `${BASE_URL_META}/api/og?title=${encodeURIComponent(`كوبونات ${store.name_ar}`)}&subtitle=${encodeURIComponent(store.short_description_ar ?? "كوبونات وعروض مجرّبة")}&type=store`;
+    `${BASE_URL}/api/og?title=${encodeURIComponent(`كوبونات ${store.name_ar}`)}&subtitle=${encodeURIComponent(store.short_description_ar ?? "كوبونات وعروض مجرّبة")}&type=store`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `${BASE_URL_META}/stores/${slug}`,
+      canonical: `${BASE_URL}/stores/${slug}`,
     },
     openGraph: {
       title,
@@ -74,8 +73,6 @@ export async function generateMetadata({
   };
 }
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 export default async function StorePage({ params }: PageProps) {
   const { slug } = await params;

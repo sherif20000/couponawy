@@ -7,11 +7,11 @@ import { CouponGridWithFilters } from "@/components/coupons/coupon-grid-with-fil
 import { EmptyState } from "@/components/ui/empty-state";
 import { getActiveCouponsPaginated } from "@/lib/queries/categories";
 import { getPreferredCountry } from "@/lib/utils/country";
+import { BASE_URL } from "@/lib/utils/site";
 
 // Country preference is cookie-driven, so this page renders dynamically per request.
 export const dynamic = "force-dynamic";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 export const metadata: Metadata = {
   title: "جميع الكوبونات",

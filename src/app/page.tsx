@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { StoreLogo } from "@/components/stores/store-logo";
+import { BASE_URL } from "@/lib/utils/site";
 import {
   Sparkles,
   Flame,
@@ -37,8 +38,6 @@ import { getPreferredCountry } from "@/lib/utils/country";
 // force-dynamic so the country cookie is read per-request for personalised results
 export const dynamic = "force-dynamic";
 
-const BASE_URL_META =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 export const metadata: Metadata = {
   title: {
@@ -47,23 +46,21 @@ export const metadata: Metadata = {
   description:
     "كوبونات خصم وعروض مختارة بعناية للمتاجر الموثوقة في السعودية والخليج. جربها قبلك الأستاذ أبو عبدالله.",
   alternates: {
-    canonical: BASE_URL_META,
+    canonical: BASE_URL,
     languages: {
-      "ar-SA": BASE_URL_META,
-      ar: BASE_URL_META,
+      "ar-SA": BASE_URL,
+      ar: BASE_URL,
     },
   },
   openGraph: {
     title: "كوبوناوي — كوبونات وعروض موثوقة",
     description:
       "كوبونات خصم وعروض مختارة بعناية للمتاجر الموثوقة في السعودية والخليج.",
-    url: BASE_URL_META,
+    url: BASE_URL,
     type: "website",
   },
 };
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 const websiteJsonLd = {
   "@context": "https://schema.org",

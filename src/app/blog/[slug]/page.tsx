@@ -7,6 +7,7 @@ import { SectionHeader } from "@/components/shell/section-header";
 import { PageHero } from "@/components/shell/page-hero";
 import { PostBody } from "@/components/blog/post-body";
 import { PostCard } from "@/components/blog/post-card";
+import { BASE_URL } from "@/lib/utils/site";
 import {
   getArticleBySlug,
   getRelatedArticles,
@@ -16,7 +17,6 @@ import { toArabicNumerals } from "@/lib/utils";
 
 export const revalidate = 1800;
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 type PageProps = { params: Promise<{ slug: string }> };
 

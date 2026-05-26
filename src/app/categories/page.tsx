@@ -3,6 +3,7 @@ import { CategoryCard } from "@/components/categories/category-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Section } from "@/components/shell/section";
 import { PageHero } from "@/components/shell/page-hero";
+import { BASE_URL } from "@/lib/utils/site";
 import {
   getAllCategories,
   getCategoryCouponCounts,
@@ -10,7 +11,6 @@ import {
 
 export const revalidate = 300;
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
 
 export const metadata: Metadata = {
   title: "جميع الأقسام",

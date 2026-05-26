@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/shell/header";
 import { Footer } from "@/components/shell/footer";
 import "./globals.css";
+import { BASE_URL } from "@/lib/utils/site";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -18,7 +19,7 @@ const cairo = Cairo({
 });
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://couponawy.com";
+  BASE_URL;
 
 // Default OG card — used by any route that doesn't override openGraph.images.
 // /api/og generates a Cairo-set 1200×630 brand-red card on the edge.
