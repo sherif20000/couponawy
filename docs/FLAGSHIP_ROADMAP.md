@@ -23,7 +23,7 @@
 | 0 | Foundation fixes | #25–#27 | 1 day | DONE (PR #25, merged 2026-05-26) |
 | 1 | Coupon page resurrection | #26 | 3–4 days | DONE (PR #26, merged 2026-05-28) |
 | 2 | Shared content components | #27 | 4–5 days | DONE (PR #27, merged 2026-05-28) |
-| 3 | Typography system | #32 | 2 days | TODO |
+| 3 | Typography system | #28 | 2 days | DONE (PR #28, merged 2026-05-28) |
 | 4 | Homepage prominence reorder | #33 | 1–2 days | TODO |
 | 5 | Schema & rich results | #34–#36 | 4–5 days | TODO |
 | 6 | Flagship content | #37–#39 | 1–2 weeks | TODO |
@@ -89,7 +89,9 @@
 
 | PR | Task | What "done" looks like |
 |---|---|---|
-| #32 | Refined `@theme` block + Tailwind v4 `@utility` classes (`text-headline-xl/lg/md/sm`, `text-numeric-xl/md`, `text-deck`, `text-body-default`, `text-eyebrow`); enable `liga`/`ss01` on headlines and `tnum`/`lnum` on numbers; execute the 8 highest-leverage swaps (homepage hero, hero stats, coupon-card title + discount badge, page-hero h1 + subtitle, post-body h2/h3, footer section labels); remove the 32 `tracking-wide*` violations on Arabic strings | Coupon card has clear 3-tier hierarchy; discount % uses tabular numerals (no jitter across grid); page heroes use one token instead of ad-hoc inline clamp; no positive letter-spacing on Arabic. |
+| #28 | Tailwind v4 `@utility` classes (`text-headline-xl/lg/md/sm`, `text-numeric-xl/md`, `text-deck`, `text-body-default`, `text-eyebrow`); `liga` on headlines + `tnum`/`lnum` on numbers; the 8 highest-leverage swaps (homepage hero + stats, coupon-card discount badge, page-hero h1 + subtitle, post-body h2/h3, footer labels); remove `tracking-*` on Arabic strings | ✅ Discount % uses tabular numerals (no jitter across grid); page heroes use one token instead of ad-hoc inline clamp; no letter-spacing on Arabic (incl. removing page-hero's `-0.02em`). |
+
+**Shipped (PR #28, merged 2026-05-28):** token utilities verified in build output (headline on guide h2/h3, numeric-xl on 176 pages, deck on 48, eyebrow in footer). Key cascade fix: moved base `h1–h6` rule into `@layer base` so token utilities win line-height/features (unlayered-beats-layered trap). `ss01` omitted (Cairo has no stylistic sets — silent no-op). Latin coupon-code displays keep `tracking-wider` (aids code legibility); only Arabic strings were de-tracked. Coupon-card title left at its compact size to avoid grid reflow — the discount badge + 3-tier hierarchy already reads clearly.
 
 ---
 
