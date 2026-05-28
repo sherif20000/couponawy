@@ -7,6 +7,8 @@ import { SectionHeader } from "@/components/shell/section-header";
 import { PageHero } from "@/components/shell/page-hero";
 import { PostBody } from "@/components/blog/post-body";
 import { PostCard } from "@/components/blog/post-card";
+import { ArticleToc } from "@/components/content/article-toc";
+import { extractToc } from "@/lib/content/toc";
 import { BASE_URL } from "@/lib/utils/site";
 import {
   getArticleBySlug,
@@ -71,6 +73,7 @@ export default async function ArticlePage({ params }: PageProps) {
   if (!article) notFound();
 
   const related = await getRelatedArticles(article.id, article.tags, 3);
+  const toc = extractToc(article.body_ar);
 
   // BlogPosting JSON-LD — full schema so the article can appear in Google's
   // article carousel + Discover. Author + publisher + dates required.
@@ -183,9 +186,14 @@ export default async function ArticlePage({ params }: PageProps) {
       )}
 
       <Section size="md" spacing="lg">
-        <article>
-          <PostBody body={article.body_ar} />
-        </article>
+        {/* TOC sidebar (sticky on desktop, collapsible on mobile) + article.
+            In RTL the first grid column sits on the right — natural for Arabic. */}
+        <div className="lg:grid lg:grid-cols-[240px_1fr] lg:items-start lg:gap-12">
+          <ArticleToc items={toc} />
+          <article className="min-w-0">
+            <PostBody body={article.body_ar} headings={toc} />
+          </article>
+        </div>
       </Section>
 
       {related.length > 0 && (

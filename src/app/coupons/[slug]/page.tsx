@@ -11,12 +11,14 @@ import { CouponCard } from "@/components/coupons/coupon-card";
 import { CouponRevealHero } from "@/components/coupons/coupon-reveal-hero";
 import { CouponLongCopy } from "@/components/seo/coupon-long-copy";
 import { StoreFaq, buildFaqJsonLd } from "@/components/seo/store-faq";
+import { RelatedStores } from "@/components/content/related-stores";
 import { couponFaq } from "@/lib/content/coupon-templates";
 import { BASE_URL } from "@/lib/utils/site";
 import {
   getCategoriesForCoupon,
   getCouponBySlug,
   getRelatedCoupons,
+  getRelatedStores,
   getAllCouponSlugsBuildTime,
 } from "@/lib/queries/detail";
 
@@ -149,9 +151,10 @@ export default async function CouponPage({ params }: PageProps) {
   // Fetch related coupons + this coupon's category tags in parallel. The
   // categories drive a small "تصفّح المزيد في {category}" cross-link section,
   // restoring internal-link equity that previously dead-ended on the leaf URL.
-  const [related, categories] = await Promise.all([
+  const [related, categories, relatedStores] = await Promise.all([
     getRelatedCoupons(coupon.store_id, coupon.id, 4),
     getCategoriesForCoupon(coupon.id),
+    getRelatedStores(coupon.store_id, coupon.country_code),
   ]);
   const days = daysUntil(coupon.expires_at);
   const verifiedOn = formatDate(coupon.last_verified_at);
@@ -497,6 +500,14 @@ export default async function CouponPage({ params }: PageProps) {
           </div>
         </Section>
       )}
+
+      <RelatedStores
+        stores={relatedStores}
+        title="متاجر مشابهة"
+        subtitle={`متاجر أخرى في نفس فئات ${storeName} قد تجد فيها عروضاً.`}
+        cta={{ href: "/stores", label: "كل المتاجر" }}
+        tone={related.length > 0 ? "default" : "muted"}
+      />
     </main>
   );
 }
