@@ -20,7 +20,7 @@
 
 | Sprint | Theme | PRs | Effort | Status |
 |---|---|---|---|---|
-| 0 | Foundation fixes | #25–#27 | 1 day | TODO |
+| 0 | Foundation fixes | #25–#27 | 1 day | DONE (PR #25, merged 2026-05-26) |
 | 1 | Coupon page resurrection | #28 | 3–4 days | TODO |
 | 2 | Shared content components | #29–#31 | 4–5 days | TODO |
 | 3 | Typography system | #32 | 2 days | TODO |
