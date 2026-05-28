@@ -9,6 +9,9 @@ import { PageHero } from "@/components/shell/page-hero";
 import { SectionHeader } from "@/components/shell/section-header";
 import { CouponCard } from "@/components/coupons/coupon-card";
 import { CouponRevealHero } from "@/components/coupons/coupon-reveal-hero";
+import { CouponLongCopy } from "@/components/seo/coupon-long-copy";
+import { StoreFaq, buildFaqJsonLd } from "@/components/seo/store-faq";
+import { couponFaq } from "@/lib/content/coupon-templates";
 import { BASE_URL } from "@/lib/utils/site";
 import {
   getCategoriesForCoupon,
@@ -157,6 +160,25 @@ export default async function CouponPage({ params }: PageProps) {
   const isExpired = coupon.status === "expired" || (coupon.expires_at != null && new Date(coupon.expires_at) < new Date());
   const couponJsonLd = buildCouponJsonLd(coupon);
 
+  // Template input drives the SEO long-copy + FAQ blocks below. Same shape is
+  // reused for the FAQPage JSON-LD so the rendered questions and the structured
+  // data stay perfectly in sync. descriptionOverride uses admin-written
+  // description_ar when present (NULL on the vast majority of offers).
+  const couponTemplateInput = {
+    titleAr: coupon.title_ar,
+    storeNameAr: storeName,
+    discountType: coupon.discount_type,
+    discountValue: coupon.discount_value,
+    discountDisplay: coupon.discount_display,
+    code: coupon.code,
+    expiresAt: coupon.expires_at,
+    minOrder: coupon.min_order,
+    countryCode: coupon.country_code,
+    descriptionOverride: coupon.description_ar,
+  } as const;
+  const faqItems = couponFaq(couponTemplateInput);
+  const faqJsonLd = buildFaqJsonLd(faqItems);
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -197,6 +219,10 @@ export default async function CouponPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       <PageHero
         variant="subtle"
@@ -359,95 +385,74 @@ export default async function CouponPage({ params }: PageProps) {
         </div>
       </PageHero>
 
+      {/* Compact offer-facts card. The hero already surfaces expiry + verify
+          date, so this is the at-a-glance numeric summary (usage count, plus
+          min-order / max-discount when the offer carries them). The richer
+          how-to-use steps now live in <CouponLongCopy> below. */}
       <Section size="lg" spacing="lg">
-        <div className="grid gap-10 md:grid-cols-[2fr_1fr]">
-            <div className="flex flex-col gap-8">
-              {!isExpired && <div>
-                <h2 className="font-display text-charcoal mb-4 text-xl font-extrabold md:text-2xl">
-                  كيف أستخدم الكود؟
-                </h2>
-                <ol className="font-body text-warm-brown flex flex-col gap-3 text-base leading-relaxed">
-                  <li className="flex gap-3">
-                    <span className="bg-brand-red/10 text-brand-red font-display flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold">
-                      1
-                    </span>
-                    <span>
-                      اضغط على &quot;إظهار الكود&quot; لعرض كود الخصم ونسخه.
-                    </span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="bg-brand-red/10 text-brand-red font-display flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold">
-                      2
-                    </span>
-                    <span>
-                      انتقل إلى موقع {storeName} وأضف المنتجات إلى السلة كالمعتاد.
-                    </span>
-                  </li>
-                  <li className="flex gap-3">
-                    <span className="bg-brand-red/10 text-brand-red font-display flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold">
-                      3
-                    </span>
-                    <span>
-                      الصق الكود في خانة &quot;كوبون الخصم&quot; عند إتمام الدفع
-                      ليتم تطبيق الخصم.
-                    </span>
-                  </li>
-                </ol>
-              </div>}
-
-              {!isExpired && coupon.verification_note && (
-                <div className="border-brand-gold/30 bg-cream-dark/30 rounded-2xl border p-5">
-                  <h3 className="font-display text-charcoal mb-2 text-base font-bold">
-                    ملاحظة من فريق التحقق
-                  </h3>
-                  <p className="font-body text-warm-brown text-sm leading-relaxed">
-                    {coupon.verification_note}
-                  </p>
+        <div className="flex flex-col gap-6">
+          <div className="border-brand-gold/30 bg-cream-dark/20 rounded-2xl border p-5 md:p-6">
+            <h2 className="font-display text-charcoal mb-4 text-base font-bold">
+              تفاصيل الكوبون
+            </h2>
+            <dl className="font-body grid grid-cols-2 gap-x-6 gap-y-4 text-sm sm:grid-cols-4">
+              {coupon.min_order != null && (
+                <div className="flex flex-col gap-1">
+                  <dt className="text-warm-brown-light">الحد الأدنى</dt>
+                  <dd className="text-charcoal font-semibold">
+                    {coupon.min_order} ريال
+                  </dd>
                 </div>
               )}
-            </div>
-
-            <aside className="flex flex-col gap-4">
-              <div className="border-brand-gold/30 bg-cream-dark/20 rounded-2xl border p-5">
-                <h3 className="font-display text-charcoal mb-4 text-base font-bold">
-                  تفاصيل الكوبون
-                </h3>
-                <dl className="font-body text-sm">
-                  {coupon.min_order != null && (
-                    <div className="border-brand-gold/20 flex justify-between border-b py-2">
-                      <dt className="text-warm-brown-light">الحد الأدنى</dt>
-                      <dd className="text-charcoal font-semibold">
-                        {coupon.min_order} ريال
-                      </dd>
-                    </div>
-                  )}
-                  {coupon.max_discount != null && (
-                    <div className="border-brand-gold/20 flex justify-between border-b py-2">
-                      <dt className="text-warm-brown-light">أقصى خصم</dt>
-                      <dd className="text-charcoal font-semibold">
-                        {coupon.max_discount} ريال
-                      </dd>
-                    </div>
-                  )}
-                  {coupon.expires_at && (
-                    <div className="border-brand-gold/20 flex justify-between border-b py-2">
-                      <dt className="text-warm-brown-light">ينتهي في</dt>
-                      <dd className="text-charcoal font-semibold">
-                        {formatDate(coupon.expires_at)}
-                      </dd>
-                    </div>
-                  )}
-                  <div className="flex justify-between py-2">
-                    <dt className="text-warm-brown-light">عدد الاستخدامات</dt>
-                    <dd className="text-charcoal font-semibold">
-                      {coupon.reveal_count}
-                    </dd>
-                  </div>
-                </dl>
+              {coupon.max_discount != null && (
+                <div className="flex flex-col gap-1">
+                  <dt className="text-warm-brown-light">أقصى خصم</dt>
+                  <dd className="text-charcoal font-semibold">
+                    {coupon.max_discount} ريال
+                  </dd>
+                </div>
+              )}
+              {coupon.expires_at && (
+                <div className="flex flex-col gap-1">
+                  <dt className="text-warm-brown-light">ينتهي في</dt>
+                  <dd className="text-charcoal font-semibold">
+                    {formatDate(coupon.expires_at)}
+                  </dd>
+                </div>
+              )}
+              <div className="flex flex-col gap-1">
+                <dt className="text-warm-brown-light">عدد الاستخدامات</dt>
+                <dd className="text-charcoal font-semibold">
+                  {coupon.reveal_count}
+                </dd>
               </div>
-            </aside>
+            </dl>
+          </div>
+
+          {!isExpired && coupon.verification_note && (
+            <div className="border-brand-gold/30 bg-cream-dark/30 rounded-2xl border p-5 md:p-6">
+              <h2 className="font-display text-charcoal mb-2 text-base font-bold">
+                ملاحظة من فريق التحقق
+              </h2>
+              <p className="font-body text-warm-brown text-sm leading-relaxed">
+                {coupon.verification_note}
+              </p>
+            </div>
+          )}
         </div>
       </Section>
+
+      {/* SEO long-copy — about the offer, how to redeem, terms, savings tactics.
+          Template-generated from coupon-templates.ts; takes 415 coupon pages
+          from ~40 words to 1,000+. Uses admin description_ar for the about
+          block when present (descriptionOverride). */}
+      <CouponLongCopy {...couponTemplateInput} isExpired={isExpired} />
+
+      <StoreFaq
+        title={`الأسئلة الشائعة عن عرض ${storeName}`}
+        items={faqItems}
+        tone="default"
+      />
 
       {/* Category cross-links — restores internal-link equity from leaf coupon
           URLs back into category landing pages. Rendered as compact gold pills
