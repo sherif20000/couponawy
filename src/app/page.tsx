@@ -143,7 +143,7 @@ function HeroSection() {
           {/* ── Right column (RTL start) — headline + CTA ─────────── */}
           <div className="flex flex-col gap-6">
             <h1
-              className="font-display animate-fade-up text-5xl font-black leading-[1.15] md:text-6xl"
+              className="font-display text-headline-xl animate-fade-up font-black"
               style={{ animationDelay: "0ms" }}
             >
               خصومات تصل
@@ -184,7 +184,7 @@ function HeroSection() {
                 className="border-brand-gold/15 animate-fade-up flex min-h-[120px] flex-col justify-center rounded-2xl border bg-black/30 p-5 backdrop-blur-sm md:p-6"
                 style={{ animationDelay: `${200 + i * 50}ms` }}
               >
-                <dd className="font-display text-brand-gold text-3xl font-black leading-none md:text-4xl">
+                <dd className="font-display text-numeric-xl text-brand-gold text-3xl leading-none md:text-4xl">
                   {s.value}
                 </dd>
                 <dt className="font-body mt-2 whitespace-nowrap text-xs font-medium text-white/65 md:text-sm">

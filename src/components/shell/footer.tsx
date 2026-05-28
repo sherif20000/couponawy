@@ -49,7 +49,7 @@ export function Footer() {
           </div>
           {FOOTER_SECTIONS.map((section) => (
             <div key={section.title} className="flex flex-col gap-3">
-              <h4 className="font-display text-brand-gold-light text-sm font-bold">
+              <h4 className="font-display text-eyebrow text-brand-gold-light">
                 {section.title}
               </h4>
               <ul className="flex flex-col gap-2">

@@ -113,25 +113,20 @@ export function PageHero({
                 {eyebrow}
               </div>
             )}
+            {/* Typography tokens (Sprint 3): h1 → headline-lg, h2 → headline-md.
+                Replaces the inline clamp + the -0.02em letter-spacing, which
+                was tightening connected Arabic letters into each other. */}
             <Heading
               id="page-hero-heading"
-              className="font-display font-black text-white"
-              style={{
-                // Fluid typography: scales from ~32px on small phones to ~60px on large desktops.
-                // Replaces the three-breakpoint stack (text-3xl md:text-4xl lg:text-5xl) so headlines
-                // never get awkwardly small on mid-sized devices.
-                fontSize:
-                  as === "h1"
-                    ? "clamp(2rem, 4vw + 1rem, 3.75rem)"
-                    : "clamp(1.625rem, 2.5vw + 1rem, 2.5rem)",
-                lineHeight: 1.15,
-                letterSpacing: "-0.02em",
-              }}
+              className={cn(
+                "font-display font-black text-white",
+                as === "h1" ? "text-headline-lg" : "text-headline-md"
+              )}
             >
               {title}
             </Heading>
             {subtitle && (
-              <p className="font-body max-w-2xl text-base leading-relaxed text-white/90 md:text-lg">
+              <p className="font-body text-deck max-w-2xl text-white/90">
                 {subtitle}
               </p>
             )}

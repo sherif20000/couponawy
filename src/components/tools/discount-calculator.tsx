@@ -179,7 +179,7 @@ export function DiscountCalculator() {
           {result && animated !== null ? (
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1">
-                <p className="font-body text-xs font-semibold uppercase tracking-wide text-warm-brown">النتيجة</p>
+                <p className="font-accent text-eyebrow text-warm-brown">النتيجة</p>
                 <p className="font-display font-black text-brand-red text-5xl md:text-6xl leading-tight tabular-nums" dir="rtl">
                   <span>{heroDisplay}</span>
                   <span className="text-3xl md:text-4xl font-extrabold text-brand-red/80 ms-2">{heroSuffix}</span>
