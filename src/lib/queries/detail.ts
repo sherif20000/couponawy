@@ -241,3 +241,111 @@ export async function getRelatedCoupons(
   }
   return (data ?? []) as FeaturedCoupon[];
 }
+
+/**
+ * Related stores for the store + coupon detail pages — surfaces OTHER active
+ * stores that share a category with the anchor store (same shopping intent),
+ * preferring the same country. Restores internal-link equity that otherwise
+ * dead-ends on a leaf detail page.
+ *
+ * Strategy: 1) find the store's categories, 2) find peer stores tagged in any
+ * of those categories, 3) fetch those stores (featured first). Falls back to
+ * same-country active stores when the store has no category peers.
+ *
+ * createPublicClient — keeps /stores/[slug] + /coupons/[slug] statically
+ * generable (no cookies → no forced dynamic rendering).
+ */
+export async function getRelatedStores(
+  storeId: string,
+  countryCode?: string | null,
+  limit = 6
+): Promise<Store[]> {
+  const supabase = createPublicClient();
+
+  async function fetchStores(restrictIds?: string[]): Promise<Store[]> {
+    let q = supabase
+      .from("stores")
+      .select("*")
+      .eq("status", "active")
+      .neq("id", storeId)
+      .order("is_featured", { ascending: false })
+      .order("name_ar", { ascending: true })
+      .limit(limit);
+    if (restrictIds && restrictIds.length > 0) q = q.in("id", restrictIds);
+    // Same country OR global (null country) stores only.
+    if (countryCode) q = q.or(`country_code.eq.${countryCode},country_code.is.null`);
+
+    const { data, error } = await q;
+    if (error) {
+      console.error("[getRelatedStores]", error);
+      return [];
+    }
+    return (data ?? []) as Store[];
+  }
+
+  // 1. Categories this store is tagged in.
+  const { data: cats } = await supabase
+    .from("store_categories")
+    .select("category_id")
+    .eq("store_id", storeId);
+  const categoryIds = [...new Set((cats ?? []).map((r) => r.category_id))];
+
+  // 2. Peer stores sharing any of those categories.
+  if (categoryIds.length > 0) {
+    const { data: peers } = await supabase
+      .from("store_categories")
+      .select("store_id")
+      .in("category_id", categoryIds)
+      .neq("store_id", storeId);
+    // Cap the id list so the .in() filter never blows past the ~16KB URL limit
+    // (the same class of bug fixed in getCategoryCouponCounts). 150 UUIDs is
+    // well under the limit and far more than the `limit` we render.
+    const candidateIds = [...new Set((peers ?? []).map((r) => r.store_id))].slice(0, 150);
+    if (candidateIds.length > 0) {
+      const byCategory = await fetchStores(candidateIds);
+      if (byCategory.length > 0) return byCategory;
+    }
+  }
+
+  // 3. Fallback — same-country (or global) active stores, excluding self.
+  return fetchStores();
+}
+
+/**
+ * Top categories a store is tagged in — drives the category chips in the store
+ * hero (doubles category interlinking per store page). Ordered by the
+ * category's own display_order so the most prominent categories surface first.
+ *
+ * Wrapped in cache() — the store page may read it from multiple spots in one
+ * request.
+ */
+export const getTopCategoriesForStore = cache(
+  async (
+    storeId: string,
+    limit = 4
+  ): Promise<{ id: string; slug: string; name_ar: string }[]> => {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase
+      .from("store_categories")
+      .select("category:categories ( id, slug, name_ar, display_order )")
+      .eq("store_id", storeId);
+
+    if (error) {
+      console.error("[getTopCategoriesForStore]", error);
+      return [];
+    }
+
+    type CatRow = { id: string; slug: string; name_ar: string; display_order: number | null };
+    const cats = (data ?? [])
+      .flatMap((row) =>
+        Array.isArray(row.category) ? row.category : row.category ? [row.category] : []
+      )
+      .filter((c): c is CatRow => !!c?.slug);
+
+    cats.sort(
+      (a, b) => (a.display_order ?? 9999) - (b.display_order ?? 9999)
+    );
+
+    return cats.slice(0, limit).map(({ id, slug, name_ar }) => ({ id, slug, name_ar }));
+  }
+);

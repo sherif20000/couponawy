@@ -4,6 +4,10 @@ import { Section } from "@/components/shell/section";
 import { PageHero } from "@/components/shell/page-hero";
 import { PostBody } from "@/components/blog/post-body";
 import { SavingsCalculator } from "@/components/tools/savings-calculator";
+import { ArticleToc } from "@/components/content/article-toc";
+import { RelatedCoupons } from "@/components/content/related-coupons";
+import { extractToc } from "@/lib/content/toc";
+import { getFeaturedCoupons } from "@/lib/queries/homepage";
 import { ArrowLeft } from "lucide-react";
 import { BASE_URL } from "@/lib/utils/site";
 import { body } from "./body";
@@ -33,7 +37,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SavingsCalculatorPage() {
+export default async function SavingsCalculatorPage() {
+  const toc = extractToc(body);
+  const relatedCoupons = await getFeaturedCoupons(8);
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -96,10 +103,20 @@ export default function SavingsCalculatorPage() {
       <Section size="md" spacing="lg">
         <SavingsCalculator />
 
-        <article>
-          <PostBody body={body} />
-        </article>
+        <div className="mt-12 lg:grid lg:grid-cols-[240px_1fr] lg:items-start lg:gap-12">
+          <ArticleToc items={toc} />
+          <article className="min-w-0">
+            <PostBody body={body} headings={toc} />
+          </article>
+        </div>
       </Section>
+
+      <RelatedCoupons
+        coupons={relatedCoupons}
+        title="كوبونات مختارة لتوفير أكبر"
+        subtitle="حوّل التوفير المتوقّع إلى توفير حقيقي بأحد هذه الكوبونات المجرّبة."
+        cta={{ href: "/coupons", label: "كل الكوبونات" }}
+      />
 
       <Section spacing="md" size="md">
         <div className="text-center">

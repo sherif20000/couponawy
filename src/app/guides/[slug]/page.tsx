@@ -5,11 +5,16 @@ import { Calendar, ArrowLeft } from "lucide-react";
 import { Section } from "@/components/shell/section";
 import { PageHero } from "@/components/shell/page-hero";
 import { PostBody } from "@/components/blog/post-body";
+import { ArticleToc } from "@/components/content/article-toc";
+import { RelatedCoupons } from "@/components/content/related-coupons";
+import { extractToc } from "@/lib/content/toc";
 import { BASE_URL } from "@/lib/utils/site";
 import {
   getGuideBySlug,
   getAllGuideSlugsBuildTime,
 } from "@/lib/queries/posts";
+import { getCouponsByCategory } from "@/lib/queries/categories";
+import { getFeaturedCoupons } from "@/lib/queries/homepage";
 
 export const revalidate = 1800;
 
@@ -63,6 +68,15 @@ export default async function GuidePage({ params }: PageProps) {
   const { slug } = await params;
   const guide = await getGuideBySlug(slug);
   if (!guide) notFound();
+
+  const toc = extractToc(guide.body_ar);
+  // Related-coupons rail: prefer coupons in the guide's own category so the
+  // editorial content links into relevant live offers; fall back to featured
+  // coupons so the rail is never empty (closes the affiliate loop either way).
+  let relatedCoupons = guide.category_id
+    ? await getCouponsByCategory(guide.category_id)
+    : [];
+  if (relatedCoupons.length === 0) relatedCoupons = await getFeaturedCoupons(8);
 
   // HowTo schema is more specific than Article — Google may surface guides as
   // step-by-step rich results when the body parses cleanly. We use Article as
@@ -160,10 +174,20 @@ export default async function GuidePage({ params }: PageProps) {
       )}
 
       <Section size="md" spacing="lg">
-        <article>
-          <PostBody body={guide.body_ar} />
-        </article>
+        <div className="lg:grid lg:grid-cols-[240px_1fr] lg:items-start lg:gap-12">
+          <ArticleToc items={toc} />
+          <article className="min-w-0">
+            <PostBody body={guide.body_ar} headings={toc} />
+          </article>
+        </div>
       </Section>
+
+      <RelatedCoupons
+        coupons={relatedCoupons}
+        title="كوبونات قد تفيدك"
+        subtitle="عروض نشطة مرتبطة بهذا الدليل — جرّبها قبل الشراء."
+        cta={{ href: "/coupons", label: "كل الكوبونات" }}
+      />
 
       <Section spacing="md" size="md">
         <div className="text-center">

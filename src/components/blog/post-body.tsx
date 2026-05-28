@@ -1,9 +1,17 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import type { TocItem } from "@/lib/content/toc";
 
 type Props = {
   body: string;
   className?: string;
+  /**
+   * Heading list from `extractToc(body)`. When provided, h2/h3 renderers emit
+   * matching `id` anchors so the <ArticleTOC> links resolve. The list is in
+   * document order, so we walk it with a per-render cursor that advances on
+   * every h2/h3 — keeping IDs in lock-step with what extractToc produced.
+   */
+  headings?: TocItem[];
 };
 
 /**
@@ -16,7 +24,18 @@ type Props = {
  *   - ReactMarkdown lets us bind each tag to brand-specific classes precisely
  *     (text colors, spacing, RTL list markers, etc.) without a plugin.
  */
-export function PostBody({ body, className }: Props) {
+export function PostBody({ body, className, headings }: Props) {
+  // Per-render cursor over the document-ordered heading list. Both the h2 and
+  // h3 renderers close over it and advance it as ReactMarkdown reconciles the
+  // tree top-to-bottom, so heading N gets headings[N].id. scroll-mt offsets the
+  // anchor jump so the sticky header doesn't cover the heading.
+  let headingCursor = 0;
+  const nextHeadingId = (): string | undefined => {
+    const id = headings?.[headingCursor]?.id;
+    headingCursor += 1;
+    return id;
+  };
+
   return (
     <div
       className={`font-body text-warm-brown space-y-5 text-base leading-relaxed md:text-lg ${className ?? ""}`}
@@ -25,12 +44,18 @@ export function PostBody({ body, className }: Props) {
         remarkPlugins={[remarkGfm]}
         components={{
           h2: ({ children }) => (
-            <h2 className="font-display text-charcoal mt-10 mb-3 text-2xl font-extrabold md:text-3xl">
+            <h2
+              id={nextHeadingId()}
+              className="font-display text-charcoal mt-10 mb-3 scroll-mt-28 text-2xl font-extrabold md:text-3xl"
+            >
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="font-display text-charcoal mt-8 mb-2 text-xl font-bold md:text-2xl">
+            <h3
+              id={nextHeadingId()}
+              className="font-display text-charcoal mt-8 mb-2 scroll-mt-28 text-xl font-bold md:text-2xl"
+            >
               {children}
             </h3>
           ),

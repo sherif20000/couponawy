@@ -9,6 +9,7 @@ import { PageHero } from "@/components/shell/page-hero";
 import { SectionHeader } from "@/components/shell/section-header";
 import { StoreLongCopy } from "@/components/seo/store-long-copy";
 import { StoreFaq, buildFaqJsonLd } from "@/components/seo/store-faq";
+import { RelatedStores } from "@/components/content/related-stores";
 import { CouponGridWithFilters } from "@/components/coupons/coupon-grid-with-filters";
 import { EmptyState } from "@/components/ui/empty-state";
 import { StoreLogo } from "@/components/stores/store-logo";
@@ -20,6 +21,8 @@ import {
   getStoreBySlug,
   getCouponsForStore,
   getAllStoreSlugsBuildTime,
+  getRelatedStores,
+  getTopCategoriesForStore,
 } from "@/lib/queries/detail";
 
 export const revalidate = 300;
@@ -79,7 +82,11 @@ export default async function StorePage({ params }: PageProps) {
   const store = await getStoreBySlug(slug);
   if (!store) notFound();
 
-  const coupons = await getCouponsForStore(store.id);
+  const [coupons, relatedStores, topCategories] = await Promise.all([
+    getCouponsForStore(store.id),
+    getRelatedStores(store.id, store.country_code),
+    getTopCategoriesForStore(store.id),
+  ]);
   const activeCount = coupons.length;
 
   // Build the same template input twice — used by both the long-copy + FAQ
@@ -237,6 +244,23 @@ export default async function StorePage({ params }: PageProps) {
             </span>
           )}
         </div>
+        {/* Top category chips — doubles category interlinking from the store
+            hero. White-on-red pills invert to red-on-white on hover for clear
+            affordance on the brand-red surface. */}
+        {topCategories.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            {topCategories.map((c) => (
+              <Link
+                key={c.id}
+                href={`/categories/${c.slug}`}
+                className="font-accent hover:text-brand-red inline-flex items-center rounded-full border border-white/25 px-3 py-1 text-xs font-bold text-white/90 transition-colors hover:bg-white"
+              >
+                {c.name_ar}
+              </Link>
+            ))}
+          </div>
+        )}
+
         <div className="pt-2">
           <Button asChild variant="gold" size="md">
             <a
@@ -293,6 +317,13 @@ export default async function StorePage({ params }: PageProps) {
         title={`الأسئلة الشائعة عن ${store.name_ar}`}
         items={faqItems}
         tone="default"
+      />
+
+      <RelatedStores
+        stores={relatedStores}
+        title="متاجر مشابهة"
+        subtitle={`متاجر أخرى في نفس فئات ${store.name_ar} قد تجد فيها عروضاً.`}
+        cta={{ href: "/stores", label: "كل المتاجر" }}
       />
     </main>
   );

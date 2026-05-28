@@ -4,6 +4,10 @@ import { Section } from "@/components/shell/section";
 import { PageHero } from "@/components/shell/page-hero";
 import { PostBody } from "@/components/blog/post-body";
 import { DiscountCalculator } from "@/components/tools/discount-calculator";
+import { ArticleToc } from "@/components/content/article-toc";
+import { RelatedCoupons } from "@/components/content/related-coupons";
+import { extractToc } from "@/lib/content/toc";
+import { getFeaturedCoupons } from "@/lib/queries/homepage";
 import { ArrowLeft } from "lucide-react";
 import { BASE_URL } from "@/lib/utils/site";
 import { body } from "./body";
@@ -34,7 +38,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DiscountCalculatorPage() {
+export default async function DiscountCalculatorPage() {
+  const toc = extractToc(body);
+  const relatedCoupons = await getFeaturedCoupons(8);
+
   // Article + Breadcrumb schema. Article keeps us in Google's "in-depth" rich
   // results pool; Breadcrumb gives us the nav row in SERP.
   const articleJsonLd = {
@@ -99,10 +106,20 @@ export default function DiscountCalculatorPage() {
       <Section size="md" spacing="lg">
         <DiscountCalculator />
 
-        <article>
-          <PostBody body={body} />
-        </article>
+        <div className="mt-12 lg:grid lg:grid-cols-[240px_1fr] lg:items-start lg:gap-12">
+          <ArticleToc items={toc} />
+          <article className="min-w-0">
+            <PostBody body={body} headings={toc} />
+          </article>
+        </div>
       </Section>
+
+      <RelatedCoupons
+        coupons={relatedCoupons}
+        title="كوبونات مختارة لتوفير أكبر"
+        subtitle="بعد ما تحسب الخصم، فعّله فعلياً بأحد هذه الكوبونات المجرّبة."
+        cta={{ href: "/coupons", label: "كل الكوبونات" }}
+      />
 
       <Section spacing="md" size="md">
         <div className="text-center">
