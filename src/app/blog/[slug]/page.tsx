@@ -79,7 +79,12 @@ export default async function ArticlePage({ params }: PageProps) {
     "@type": "BlogPosting",
     headline: article.title_ar,
     description: article.excerpt_ar ?? article.meta_description ?? article.title_ar,
-    image: article.featured_image_url ?? undefined,
+    // Never undefined — Google's Article schema requires `image`. Falls back
+    // to the same dynamic OG card the meta tags use (Sprint 0 schema fix).
+    image:
+      article.og_image ??
+      article.featured_image_url ??
+      `${BASE_URL}/api/og?title=${encodeURIComponent(article.title_ar)}&type=blog`,
     datePublished: article.published_at,
     dateModified: article.updated_at,
     author: {

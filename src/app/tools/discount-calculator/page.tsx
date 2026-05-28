@@ -42,6 +42,8 @@ export default function DiscountCalculatorPage() {
     "@type": "Article",
     headline: TITLE,
     description: DESCRIPTION,
+    // Article schema requires `image` — point at the dynamic OG card (Sprint 0).
+    image: `${BASE_URL}/api/og?title=${encodeURIComponent(TITLE)}&type=guide`,
     datePublished: "2026-05-26",
     dateModified: "2026-05-26",
     author: { "@type": "Organization", name: "كوبوناوي" },

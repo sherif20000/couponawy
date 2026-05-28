@@ -72,7 +72,12 @@ export default async function GuidePage({ params }: PageProps) {
     "@type": "Article",
     headline: guide.title_ar,
     description: guide.excerpt_ar ?? guide.title_ar,
-    image: guide.featured_image_url ?? undefined,
+    // Never undefined — Article schema requires `image`. Falls back to the same
+    // dynamic OG card the meta tags use (Sprint 0 schema fix).
+    image:
+      guide.og_image ??
+      guide.featured_image_url ??
+      `${BASE_URL}/api/og?title=${encodeURIComponent(guide.title_ar)}&type=guide`,
     datePublished: guide.published_at,
     dateModified: guide.updated_at,
     author: {
