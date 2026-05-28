@@ -13,7 +13,12 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
-  weight: ["400", "600", "700", "800", "900"],
+  // 300 + 500 added (Sprint 0). The site uses `font-medium` (500) in 126 places
+  // but 500 was never loaded — the browser was synthesizing a faux-500 from 400,
+  // producing uneven stroke widths on Arabic glyphs. 300 unlocks subtle captions
+  // / copyright lines without resorting to opacity tricks that fail WCAG.
+  // 200 intentionally skipped — too thin for Arabic at body sizes.
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-cairo",
   display: "swap",
 });
