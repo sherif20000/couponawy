@@ -21,7 +21,7 @@
 | Sprint | Theme | PRs | Effort | Status |
 |---|---|---|---|---|
 | 0 | Foundation fixes | #25–#27 | 1 day | DONE (PR #25, merged 2026-05-26) |
-| 1 | Coupon page resurrection | #28 | 3–4 days | TODO |
+| 1 | Coupon page resurrection | #26 | 3–4 days | DONE (PR #26, merged 2026-05-28) |
 | 2 | Shared content components | #29–#31 | 4–5 days | TODO |
 | 3 | Typography system | #32 | 2 days | TODO |
 | 4 | Homepage prominence reorder | #33 | 1–2 days | TODO |
@@ -57,9 +57,11 @@
 
 | PR | Task | What "done" looks like |
 |---|---|---|
-| #28 | Build `src/lib/content/coupon-templates.ts` mirroring the proven `store-templates.ts` pattern; add `<CouponLongCopy>` + `<CouponFaq>` components; mount in `coupons/[slug]/page.tsx` | Every coupon page renders ~1,000+ words of parameterized Arabic copy (about-offer, how-to-redeem, terms/eligibility, 8–10 Q&A FAQ) keyed off `{store_name, discount_type, discount_value, expires_at, code}`. |
+| #26 | Build `src/lib/content/coupon-templates.ts` mirroring the proven `store-templates.ts` pattern; add `<CouponLongCopy>`; mount in `coupons/[slug]/page.tsx` | ✅ Every coupon page renders ~1,000+ words of parameterized Arabic copy (about-offer, how-to-redeem, terms/eligibility, 8-Q FAQ) keyed off `{store_name, discount_type, discount_value, expires_at, code, min_order}`. Build green: all 415 `/coupons/[slug]` pages prerender as SSG. |
 
-**Why this is the keystone sprint:** the store template already proves this pattern works (it generates ~1,200 words/page across 612 stores). Replicating it for coupons is the highest impact-to-effort move in the entire roadmap — it upgrades 415 live pages overnight without a single word of hand-written content or a DB migration.
+**Shipped (PR #26, merged 2026-05-28):** templated about-offer / redeem-steps / terms / savings-tactics / FAQ blocks, wording adapts per discount mechanic (percentage/fixed/free-shipping/bogo) to dodge duplicate-content flags. FAQPage JSON-LD emitted in sync with rendered questions. Reused the generic `StoreFaq` renderer instead of building a separate `CouponFaq` (it was already store-agnostic — DRYer). Admin `description_ar` overrides the about-block when present.
+
+**Why this was the keystone sprint:** the store template already proves this pattern works (it generates ~1,200 words/page across 612 stores). Replicating it for coupons was the highest impact-to-effort move in the entire roadmap — it upgraded 415 live pages overnight without a single word of hand-written content or a DB migration.
 
 ---
 
