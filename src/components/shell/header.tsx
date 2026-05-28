@@ -71,7 +71,7 @@ export async function Header() {
       >
         <div className="flex items-center gap-2">
           {/* "LIVE" anchor — never moves, RTL start (right) */}
-          <span className="bg-brand-red text-cream font-accent shrink-0 rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest">
+          <span className="bg-brand-red text-cream font-accent shrink-0 rounded-md px-2.5 py-1 text-[10px] font-bold">
             مباشر
           </span>
           {/* Scrolling deals */}
@@ -82,7 +82,7 @@ export async function Header() {
                   {tickerItems.map((item, i) => {
                     const inner = (
                       <span className="inline-flex items-center gap-2.5 px-5">
-                        <span className="bg-brand-gold/20 text-brand-gold rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                        <span className="bg-brand-gold/20 text-brand-gold rounded-md px-1.5 py-0.5 text-[10px] font-bold">
                           خصم
                         </span>
                         <span className="font-display text-brand-gold text-[13px] font-bold">

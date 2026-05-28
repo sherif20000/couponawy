@@ -386,7 +386,7 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
               on narrow widths; the name column truncates instead. */}
           {coupon.discount_display && (
             <div
-              className="bg-brand-red text-white font-display shrink-0 rounded-xl px-3 py-1.5 text-sm font-black tracking-tight shadow-sm"
+              className="bg-brand-red text-white font-display text-numeric-xl shrink-0 rounded-xl px-3 py-1.5 text-sm shadow-sm"
               aria-label={`خصم ${coupon.discount_display}`}
             >
               {coupon.discount_display}
@@ -400,7 +400,7 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
               visual pair together and removes all overlap. */}
           {coupon.is_exclusive && (
             <div className="bg-brand-gold shrink-0 rounded-md px-2 py-1">
-              <span className="font-accent text-charcoal inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider">
+              <span className="font-accent text-charcoal inline-flex items-center gap-1 text-[10px] font-bold">
                 <Sparkles className="h-2.5 w-2.5" aria-hidden />
                 حصري
               </span>

@@ -179,7 +179,7 @@ export function SavingsCalculator() {
           {result ? (
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-3">
-                <span className="font-accent bg-brand-gold/20 text-charcoal text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md inline-block w-fit">
+                <span className="font-accent text-eyebrow bg-brand-gold/20 text-charcoal px-2.5 py-1 rounded-md inline-block w-fit">
                   توفيرك السنوي المتوقّع
                 </span>
                 <div

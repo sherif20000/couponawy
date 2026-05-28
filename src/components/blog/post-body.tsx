@@ -46,7 +46,7 @@ export function PostBody({ body, className, headings }: Props) {
           h2: ({ children }) => (
             <h2
               id={nextHeadingId()}
-              className="font-display text-charcoal mt-10 mb-3 scroll-mt-28 text-2xl font-extrabold md:text-3xl"
+              className="font-display text-headline-md text-charcoal mt-10 mb-3 scroll-mt-28 font-extrabold"
             >
               {children}
             </h2>
@@ -54,7 +54,7 @@ export function PostBody({ body, className, headings }: Props) {
           h3: ({ children }) => (
             <h3
               id={nextHeadingId()}
-              className="font-display text-charcoal mt-8 mb-2 scroll-mt-28 text-xl font-bold md:text-2xl"
+              className="font-display text-headline-sm text-charcoal mt-8 mb-2 scroll-mt-28 font-bold"
             >
               {children}
             </h3>
