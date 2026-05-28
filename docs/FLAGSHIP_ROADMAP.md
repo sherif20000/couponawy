@@ -22,7 +22,7 @@
 |---|---|---|---|---|
 | 0 | Foundation fixes | #25–#27 | 1 day | DONE (PR #25, merged 2026-05-26) |
 | 1 | Coupon page resurrection | #26 | 3–4 days | DONE (PR #26, merged 2026-05-28) |
-| 2 | Shared content components | #29–#31 | 4–5 days | TODO |
+| 2 | Shared content components | #27 | 4–5 days | DONE (PR #27, merged 2026-05-28) |
 | 3 | Typography system | #32 | 2 days | TODO |
 | 4 | Homepage prominence reorder | #33 | 1–2 days | TODO |
 | 5 | Schema & rich results | #34–#36 | 4–5 days | TODO |
@@ -73,9 +73,11 @@
 
 | PR | Task | What "done" looks like |
 |---|---|---|
-| #29 | `<ArticleTOC>` — auto-built from `##`/`###` headings, sticky desktop / collapsible mobile | Renders on `blog/[slug]`, `guides/[slug]`, both calculator pages. |
-| #30 | `<RelatedCoupons>` + `<RelatedStores>` widgets (new `getRelatedStores` query in `lib/queries/detail.ts`) | Guides + tools show a live related-coupons rail; store + coupon pages show a related-stores rail (same category/country). |
-| #31 | `<TopCategoriesForStore>` chips in store hero (query existing `coupon_categories`) | Store hero surfaces 4 top category pills; doubles category interlinking per page. |
+| #27 | `<ArticleToc>` — auto-built from `##`/`###` headings, sticky desktop / collapsible mobile | ✅ Renders on `blog/[slug]`, `guides/[slug]`, both calculator pages. Dependency-free `extractToc()` + positional ID matching in `PostBody`; verified every TOC href resolves to a real heading id. |
+| #27 | `<RelatedCoupons>` + `<RelatedStores>` widgets (new `getRelatedStores` query in `lib/queries/detail.ts`) | ✅ Guides (category-relevant, featured fallback) + both tools show a related-coupons rail; store + coupon pages show a related-stores rail (same category/country, capped id-list, country fallback). |
+| #27 | `<TopCategoriesForStore>` chips in store hero (new `getTopCategoriesForStore` query over `store_categories`) | ✅ Store hero surfaces up to 4 category pills (white-on-red, ordered by display_order); doubles category interlinking per page. |
+
+**Shipped (PR #27, merged 2026-05-28):** all three components landed in one PR. TOC is zero-JS (server `<details>` + sticky `<nav>`); slugs keep Arabic letters + Arabic-Indic digits and dedupe like GitHub. Reused the existing `CouponCard` / `StoreCard` for the rails. Build green; tools pages stay static (cookie-free `getFeaturedCoupons`).
 
 ---
 
