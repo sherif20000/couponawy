@@ -1,37 +1,53 @@
-import { Tag, ShieldCheck, Sparkles } from "lucide-react";
-import { Section } from "@/components/shell/section";
-import { SectionHeader } from "@/components/shell/section-header";
+import { Tag, ShieldCheck, Sparkles, Award, Check, Minus, type LucideIcon } from "lucide-react";
 import { ProseFromText } from "@/components/seo/store-long-copy";
 import {
   aboutOfferCopy,
   howToRedeemSteps,
   termsAndEligibilityCopy,
   maximizeSavingsCopy,
-  couponHasCode,
+  editorVerdict,
   type CouponTemplateInput,
 } from "@/lib/content/coupon-templates";
 
 type Props = CouponTemplateInput & {
-  /**
-   * When the offer is expired the page hero already shows the "انتهت الصلاحية"
-   * notice and hides the reveal button. We still render the about + terms +
-   * savings prose (good for SEO and for the shopper hunting a replacement), but
-   * we drop the how-to-redeem steps since there's nothing to redeem.
-   */
+  /** When expired, drop the how-to-redeem steps (nothing left to redeem). */
   isExpired?: boolean;
 };
 
+/** Section heading with optional eyebrow, sized via the Sprint 3 type tokens. */
+function BlockHeading({
+  icon: Icon,
+  eyebrow,
+  title,
+  subtitle,
+}: {
+  icon?: LucideIcon;
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="mb-4 flex flex-col gap-1.5">
+      {Icon && eyebrow && (
+        <span className="font-accent text-brand-red inline-flex items-center gap-1.5 text-xs font-bold">
+          <Icon className="h-3.5 w-3.5" aria-hidden />
+          {eyebrow}
+        </span>
+      )}
+      <h2 className="font-display text-headline-md text-charcoal font-extrabold">{title}</h2>
+      {subtitle && <p className="font-body text-warm-brown-light text-sm">{subtitle}</p>}
+    </div>
+  );
+}
+
 /**
- * SEO long-copy block for coupon detail pages — the coupon-side mirror of
- * StoreLongCopy. Four stacked sections built from coupon-templates.ts:
- *   1. "عن العرض" — what the offer is + how couponawy verifies it
- *   2. "كيف تستخدم العرض" — ordered redeem steps (skipped when expired)
- *   3. "الشروط والأهلية" — terms, minimum order, why codes fail
- *   4. "كيف تضاعف توفيرك" — stacking tactics, BNPL ordering, seasonal timing
- *
- * Reuses the <Section>/<SectionHeader> primitives + the ProseFromText renderer
- * from store-long-copy so spacing, rhythm, and bold-run rendering stay identical
- * across store and coupon pages.
+ * Coupon-page editorial column (flow mode — no <Section> wrappers, so it lives
+ * inside the 2-column grid alongside the sticky sidebar). Blocks:
+ *   1. About the offer
+ *   2. Editor's verdict (EEAT) — first-party "we tried it" + pros/cons
+ *   3. How to redeem (ordered steps; skipped when expired)
+ *   4. Terms & eligibility
+ *   5. Maximize your savings
  */
 export function CouponLongCopy(props: Props) {
   const { storeNameAr, isExpired = false } = props;
@@ -39,27 +55,50 @@ export function CouponLongCopy(props: Props) {
   const termsText = termsAndEligibilityCopy(props);
   const savingsText = maximizeSavingsCopy(props);
   const steps = howToRedeemSteps(props);
-  const hasCode = couponHasCode(props);
-  const stepsSubtitle = hasCode
-    ? "من نسخ الكود إلى تأكيد الخصم"
-    : "من الرابط إلى تأكيد التوفير";
+  const verdict = editorVerdict(props);
 
   return (
-    <>
-      <Section spacing="lg">
-        <SectionHeader title="عن هذا العرض" as="h2" />
+    <div className="flex flex-col gap-12">
+      <section>
+        <BlockHeading title="عن هذا العرض" />
         <ProseFromText text={aboutText} />
-      </Section>
+      </section>
+
+      {/* Editor's verdict — EEAT experience signal */}
+      <section
+        data-speakable
+        className="border-brand-gold/30 bg-cream-dark/20 rounded-2xl border p-6"
+      >
+        <BlockHeading icon={Award} eyebrow="رأي المحرّر" title="هل يستحق هذا العرض؟" />
+        <p className="font-body text-warm-brown text-base leading-relaxed">{verdict.verdict}</p>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <ul className="flex flex-col gap-2">
+            {verdict.pros.map((p) => (
+              <li key={p} className="font-body text-warm-brown flex items-start gap-2 text-sm leading-relaxed">
+                <Check className="text-success mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+                <span>{p}</span>
+              </li>
+            ))}
+          </ul>
+          <ul className="flex flex-col gap-2">
+            {verdict.cons.map((c) => (
+              <li key={c} className="font-body text-warm-brown flex items-start gap-2 text-sm leading-relaxed">
+                <Minus className="text-warm-brown-light mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+                <span>{c}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       {!isExpired && (
-        <Section tone="muted" spacing="lg">
-          <SectionHeader
-            eyebrow={{ icon: Tag, label: "خطوات بسيطة", tone: "brand" }}
+        <section>
+          <BlockHeading
+            icon={Tag}
+            eyebrow="خطوات بسيطة"
             title={`كيف تستخدم عرض ${storeNameAr}`}
-            subtitle={stepsSubtitle}
-            as="h2"
           />
-          <ol className="grid gap-4 md:grid-cols-2">
+          <ol className="grid gap-4 sm:grid-cols-2">
             {steps.map((step, i) => (
               <li
                 key={step.title}
@@ -69,38 +108,33 @@ export function CouponLongCopy(props: Props) {
                   {(i + 1).toLocaleString("en-US")}
                 </span>
                 <div className="flex flex-col gap-1.5">
-                  <h3 className="font-display text-charcoal text-base font-bold">
-                    {step.title}
-                  </h3>
-                  <p className="font-body text-warm-brown text-sm leading-relaxed">
-                    {step.body}
-                  </p>
+                  <h3 className="font-display text-charcoal text-base font-bold">{step.title}</h3>
+                  <p className="font-body text-warm-brown text-sm leading-relaxed">{step.body}</p>
                 </div>
               </li>
             ))}
           </ol>
-        </Section>
+        </section>
       )}
 
-      <Section spacing="lg">
-        <SectionHeader
-          eyebrow={{ icon: ShieldCheck, label: "الشروط والأهلية", tone: "gold" }}
+      <section>
+        <BlockHeading
+          icon={ShieldCheck}
+          eyebrow="الشروط والأهلية"
           title="شروط استخدام العرض"
           subtitle="اقرأها قبل الدفع لتتجنّب رفض الكود"
-          as="h2"
         />
         <ProseFromText text={termsText} />
-      </Section>
+      </section>
 
-      <Section tone="muted" spacing="lg">
-        <SectionHeader
-          eyebrow={{ icon: Sparkles, label: "نصائح التوفير", tone: "brand" }}
+      <section>
+        <BlockHeading
+          icon={Sparkles}
+          eyebrow="نصائح التوفير"
           title="كيف تضاعف توفيرك"
-          subtitle="تكتيكات تركّب قيمة إضافية فوق الكود"
-          as="h2"
         />
         <ProseFromText text={savingsText} />
-      </Section>
-    </>
+      </section>
+    </div>
   );
 }

@@ -237,6 +237,43 @@ export function maximizeSavingsCopy(input: CouponTemplateInput): string {
 }
 
 /**
+ * Editor's verdict — a first-party "we tried it" block (EEAT Experience signal).
+ * Returns a short verdict paragraph + pros/cons keyed off the offer's mechanics,
+ * so every coupon reads like a human checked it, not a scraped listing.
+ */
+export function editorVerdict(input: CouponTemplateInput): {
+  verdict: string;
+  pros: string[];
+  cons: string[];
+} {
+  const { storeNameAr } = input;
+  const noun = discountNoun(input);
+  const hasCode = couponHasCode(input);
+
+  const verdict = `تحقّق فريق كوبوناوي من هذا العرض على متجر ${storeNameAr} قبل نشره، وتأكّد أنّ ${noun} يُطبَّق فعلاً عند الدفع. خلاصتنا: عرض يستحق الاستخدام لمن ينوي الشراء من ${storeNameAr}، وأفضل ما فيه أنّك تستطيع تجميع طلبك في سلة واحدة لتعظيم قيمة التوفير.`;
+
+  const pros = [
+    hasCode
+      ? `${noun} يُطبَّق مباشرة عند لصق الكود في صفحة الدفع`
+      : `${noun} يُفعَّل تلقائياً دون الحاجة لإدخال كود`,
+    "كود مجرّب ومُحدَّث — لا تضيّع وقتك مع أكواد منتهية",
+    "يعمل مع خيارات التقسيط بدون فوائد عبر Tabby و Tamara",
+  ];
+
+  const cons = [
+    input.minOrder != null
+      ? `يتطلّب حدّاً أدنى للطلب قدره ${input.minOrder} ريال`
+      : "قد يشترط حدّاً أدنى للطلب في بعض الفئات",
+    "قد تُستثنى بعض الفئات أو المنتجات المخفّضة أصلاً",
+    input.expiresAt
+      ? "صلاحية محدودة — استخدمه قبل تاريخ الانتهاء"
+      : "قد يُسحب في أي وقت عند تغيّر سياسة المتجر",
+  ];
+
+  return { verdict, pros, cons };
+}
+
+/**
  * FAQ for a coupon page — 8 questions mapped directly to FAQPage schema.
  * Each answer is 1-2 sentences, factual, no hype. Questions reflect the actual
  * queries Arabic shoppers type ("ليش الكود ما اشتغل؟") and Google's "People

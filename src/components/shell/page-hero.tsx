@@ -119,7 +119,9 @@ export function PageHero({
             <Heading
               id="page-hero-heading"
               className={cn(
-                "font-display font-black text-white",
+                // text-balance evens out multi-line headlines (long Arabic
+                // coupon/store titles) instead of leaving a lonely last word.
+                "font-display text-balance font-black text-white",
                 as === "h1" ? "text-headline-lg" : "text-headline-md"
               )}
             >

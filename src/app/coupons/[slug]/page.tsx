@@ -12,7 +12,9 @@ import { CouponRevealHero } from "@/components/coupons/coupon-reveal-hero";
 import { CouponLongCopy } from "@/components/seo/coupon-long-copy";
 import { StoreFaq, buildFaqJsonLd } from "@/components/seo/store-faq";
 import { RelatedStores } from "@/components/content/related-stores";
-import { couponFaq } from "@/lib/content/coupon-templates";
+import { CouponSavingsWidget } from "@/components/coupons/coupon-savings-widget";
+import { CouponTrustSignals } from "@/components/coupons/coupon-trust-signals";
+import { couponFaq, howToRedeemSteps } from "@/lib/content/coupon-templates";
 import { BASE_URL } from "@/lib/utils/site";
 import {
   getCategoriesForCoupon,
@@ -21,6 +23,9 @@ import {
   getRelatedStores,
   getAllCouponSlugsBuildTime,
 } from "@/lib/queries/detail";
+import { getCouponsByCategory } from "@/lib/queries/categories";
+import { getFeaturedCoupons } from "@/lib/queries/homepage";
+import { ArrowUp } from "lucide-react";
 
 export const revalidate = 300;
 
@@ -182,6 +187,51 @@ export default async function CouponPage({ params }: PageProps) {
   const faqItems = couponFaq(couponTemplateInput);
   const faqJsonLd = buildFaqJsonLd(faqItems);
 
+  // Never-empty related rail: same-store coupons first; if this store has only
+  // this one coupon, fall back to coupons in the same category, then featured —
+  // so the page never dead-ends on an empty "other coupons" section.
+  const relatedFromStore = related.length > 0;
+  let relatedRail = related;
+  if (!relatedFromStore) {
+    const catId = categories[0]?.id;
+    const fallback = catId
+      ? await getCouponsByCategory(catId)
+      : await getFeaturedCoupons(8);
+    relatedRail = fallback.filter((c) => c.id !== coupon.id).slice(0, 4);
+  }
+
+  // HowTo JSON-LD — built from the same redeem steps the page renders, so AI
+  // answer engines (and Google's HowTo surfaces) get the exact procedure. Only
+  // for live, coded offers (free-shipping/expired have no steps to follow).
+  const redeemSteps = howToRedeemSteps(couponTemplateInput);
+  const howToJsonLd =
+    !isExpired && redeemSteps.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          name: `كيف تستخدم ${coupon.title_ar}`,
+          inLanguage: "ar",
+          step: redeemSteps.map((s, i) => ({
+            "@type": "HowToStep",
+            position: i + 1,
+            name: s.title,
+            text: s.body,
+          })),
+        }
+      : null;
+
+  // Speakable — flags the offer headline + editor's-verdict block for voice /
+  // generative answer surfaces (AEO/GEO).
+  const speakableJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    url: `${BASE_URL}/coupons/${coupon.slug}`,
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: ["#page-hero-heading", "[data-speakable]"],
+    },
+  };
+
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -226,6 +276,16 @@ export default async function CouponPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      {howToJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }}
+        />
+      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableJsonLd) }}
       />
       <PageHero
         variant="subtle"
@@ -324,7 +384,7 @@ export default async function CouponPage({ params }: PageProps) {
           )}
         </div>
 
-        <div className="pt-2">
+        <div id="get-code" className="scroll-mt-24 pt-2">
           {isExpired ? (
             <div className="flex items-start gap-3 rounded-2xl border border-white/20 bg-white/10 px-5 py-4">
               <AlertCircle
@@ -388,68 +448,96 @@ export default async function CouponPage({ params }: PageProps) {
         </div>
       </PageHero>
 
-      {/* Compact offer-facts card. The hero already surfaces expiry + verify
-          date, so this is the at-a-glance numeric summary (usage count, plus
-          min-order / max-discount when the offer carries them). The richer
-          how-to-use steps now live in <CouponLongCopy> below. */}
+      {/* Symmetrical 2-column body: sticky action/trust sidebar + editorial main
+          column. On mobile the sidebar stacks first (facts → trust → savings →
+          get-code) right under the hero, then the long-form editorial. */}
       <Section size="lg" spacing="lg">
-        <div className="flex flex-col gap-6">
-          <div className="border-brand-gold/30 bg-cream-dark/20 rounded-2xl border p-5 md:p-6">
-            <h2 className="font-display text-charcoal mb-4 text-base font-bold">
-              تفاصيل الكوبون
-            </h2>
-            <dl className="font-body grid grid-cols-2 gap-x-6 gap-y-4 text-sm sm:grid-cols-4">
-              {coupon.min_order != null && (
-                <div className="flex flex-col gap-1">
-                  <dt className="text-warm-brown-light">الحد الأدنى</dt>
-                  <dd className="text-charcoal font-semibold">
-                    {coupon.min_order} ريال
-                  </dd>
-                </div>
-              )}
-              {coupon.max_discount != null && (
-                <div className="flex flex-col gap-1">
-                  <dt className="text-warm-brown-light">أقصى خصم</dt>
-                  <dd className="text-charcoal font-semibold">
-                    {coupon.max_discount} ريال
-                  </dd>
-                </div>
-              )}
-              {coupon.expires_at && (
-                <div className="flex flex-col gap-1">
-                  <dt className="text-warm-brown-light">ينتهي في</dt>
-                  <dd className="text-charcoal font-semibold">
-                    {formatDate(coupon.expires_at)}
-                  </dd>
-                </div>
-              )}
-              <div className="flex flex-col gap-1">
-                <dt className="text-warm-brown-light">عدد الاستخدامات</dt>
-                <dd className="text-charcoal font-semibold">
-                  {coupon.reveal_count}
-                </dd>
-              </div>
-            </dl>
-          </div>
-
-          {!isExpired && coupon.verification_note && (
-            <div className="border-brand-gold/30 bg-cream-dark/30 rounded-2xl border p-5 md:p-6">
-              <h2 className="font-display text-charcoal mb-2 text-base font-bold">
-                ملاحظة من فريق التحقق
+        <div className="grid gap-10 lg:grid-cols-[320px_1fr] lg:items-start">
+          {/* ── Sticky sidebar ─────────────────────────────────────── */}
+          <aside className="flex flex-col gap-5 lg:sticky lg:top-24">
+            {/* Offer facts */}
+            <div className="border-brand-gold/30 bg-cream-dark/20 rounded-2xl border p-5">
+              <h2 className="font-display text-charcoal mb-4 text-base font-bold">
+                تفاصيل الكوبون
               </h2>
-              <p className="font-body text-warm-brown text-sm leading-relaxed">
-                {coupon.verification_note}
-              </p>
+              <dl className="font-body grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
+                {coupon.min_order != null && (
+                  <div className="flex flex-col gap-1">
+                    <dt className="text-warm-brown-light">الحد الأدنى</dt>
+                    <dd className="text-charcoal font-semibold">{coupon.min_order} ريال</dd>
+                  </div>
+                )}
+                {coupon.max_discount != null && (
+                  <div className="flex flex-col gap-1">
+                    <dt className="text-warm-brown-light">أقصى خصم</dt>
+                    <dd className="text-charcoal font-semibold">{coupon.max_discount} ريال</dd>
+                  </div>
+                )}
+                {coupon.expires_at && (
+                  <div className="flex flex-col gap-1">
+                    <dt className="text-warm-brown-light">ينتهي في</dt>
+                    <dd className="text-charcoal font-semibold">
+                      {formatDate(coupon.expires_at)}
+                    </dd>
+                  </div>
+                )}
+                <div className="flex flex-col gap-1">
+                  <dt className="text-warm-brown-light">عدد الاستخدامات</dt>
+                  {/* "جديد" instead of a bare 0 — a fresh, unused offer should
+                      read as new, not unloved. */}
+                  <dd className="text-charcoal font-semibold">
+                    {coupon.reveal_count > 0
+                      ? coupon.reveal_count.toLocaleString("en-US")
+                      : "جديد"}
+                  </dd>
+                </div>
+              </dl>
             </div>
-          )}
+
+            <CouponTrustSignals
+              revealCount={coupon.reveal_count}
+              lastVerifiedAt={coupon.last_verified_at}
+              successRate={coupon.success_rate}
+            />
+
+            {!isExpired && (
+              <CouponSavingsWidget
+                discountType={coupon.discount_type}
+                discountValue={coupon.discount_value}
+                maxDiscount={coupon.max_discount}
+              />
+            )}
+
+            {!isExpired && (
+              <a
+                href="#get-code"
+                className="bg-brand-gold text-charcoal hover:bg-brand-gold-dark hover:text-cream font-display inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold shadow-gold transition-colors"
+              >
+                <ArrowUp className="h-4 w-4" aria-hidden />
+                احصل على الكود
+              </a>
+            )}
+
+            {!isExpired && coupon.verification_note && (
+              <div className="border-brand-gold/30 bg-cream-dark/30 rounded-2xl border p-5">
+                <h2 className="font-display text-charcoal mb-2 text-base font-bold">
+                  ملاحظة من فريق التحقق
+                </h2>
+                <p className="font-body text-warm-brown text-sm leading-relaxed">
+                  {coupon.verification_note}
+                </p>
+              </div>
+            )}
+          </aside>
+
+          {/* ── Editorial main column ──────────────────────────────── */}
+          <div className="min-w-0">
+            {/* SEO long-copy + EEAT editor verdict — flow mode (no Section
+                wrappers) so it sits cleanly beside the sticky sidebar. */}
+            <CouponLongCopy {...couponTemplateInput} isExpired={isExpired} />
+          </div>
         </div>
       </Section>
-
-      {/* SEO long-copy — about the offer, how to redeem, terms, savings tactics.
-          Template-generated from coupon-templates.ts; takes 415 coupon pages
-          from ~40 words to 1,000+. Uses admin description_ar for the about
-          block when present (descriptionOverride). */}
-      <CouponLongCopy {...couponTemplateInput} isExpired={isExpired} />
 
       <StoreFaq
         title={`الأسئلة الشائعة عن عرض ${storeName}`}
@@ -479,12 +567,16 @@ export default async function CouponPage({ params }: PageProps) {
         </Section>
       )}
 
-      {related.length > 0 && (
+      {relatedRail.length > 0 && (
         <Section tone="muted" spacing="lg">
           <SectionHeader
-            title={`كوبونات أخرى من ${storeName}`}
+            title={
+              relatedFromStore
+                ? `كوبونات أخرى من ${storeName}`
+                : "كوبونات مختارة قد تهمّك"
+            }
             cta={
-              coupon.store
+              relatedFromStore && coupon.store
                 ? {
                     href: `/stores/${coupon.store.slug}`,
                     label: `كل كوبونات ${storeName}`,
@@ -494,7 +586,7 @@ export default async function CouponPage({ params }: PageProps) {
             as="h2"
           />
           <div className="stagger-children grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {related.map((c) => (
+            {relatedRail.map((c) => (
               <CouponCard key={c.id} coupon={c} />
             ))}
           </div>
@@ -506,7 +598,7 @@ export default async function CouponPage({ params }: PageProps) {
         title="متاجر مشابهة"
         subtitle={`متاجر أخرى في نفس فئات ${storeName} قد تجد فيها عروضاً.`}
         cta={{ href: "/stores", label: "كل المتاجر" }}
-        tone={related.length > 0 ? "default" : "muted"}
+        tone={relatedRail.length > 0 ? "default" : "muted"}
       />
     </main>
   );
