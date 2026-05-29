@@ -141,8 +141,11 @@ export function CouponRevealHero({
   }
 
   return (
+    // Gold (not primary/red) — this CTA sits on the brand-red hero, so a red
+    // button blends into the background. Gold is the only high-contrast accent
+    // on red and keeps every CTA on the page visually consistent.
     <Button
-      variant="primary"
+      variant="gold"
       size="lg"
       onClick={handleReveal}
       disabled={loading}
