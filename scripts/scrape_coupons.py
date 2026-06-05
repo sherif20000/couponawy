@@ -17,10 +17,9 @@ import asyncio
 import json
 import os
 import re
-import time
 from pathlib import Path
 
-from crawl4ai import AsyncWebCrawler
+from crawl4ai import AsyncWebCrawler, CrawlerRunConfig, CacheMode
 from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
 from supabase import create_client, Client
 
@@ -75,11 +74,15 @@ def load_env() -> None:
     if not env_path.exists():
         return
     for line in env_path.read_text(encoding="utf-8").splitlines():
-        if "=" not in line:
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
             continue
         key, _, rest = line.partition("=")
         key = key.strip()
         value = rest.strip()
+        # Strip a single pair of matching surrounding quotes, if present.
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in ("\"", "'"):
+            value = value[1:-1]
         if key:
             os.environ.setdefault(key, value)
 
@@ -140,36 +143,36 @@ def slugify(text: str) -> str:
     Convert text to a URL-safe slug (ported faithfully from the original JS):
       - lowercase
       - replace whitespace runs with '-'
-      - strip everything except \\w, Arabic range U+0600–U+06FF, and '-'
+      - strip everything except ASCII [a-zA-Z0-9_], Arabic range U+0600–U+06FF,
+        and '-'  (ASCII set chosen to match the JS \\w byte-for-byte; Python's
+        \\w is Unicode-aware and would otherwise keep extra letters)
       - truncate to 100 chars
     """
     if not text:
         return ""
     text = text.lower()
     text = re.sub(r"\s+", "-", text)
-    text = re.sub(r"[^\w\u0600-\u06FF-]", "", text)
+    text = re.sub(r"[^a-zA-Z0-9_\u0600-\u06FF-]", "", text)
     return text[:100]
 
 
 # ─── Scraper ──────────────────────────────────────────────────────────────────
 
 
-async def scrape_coupons(slug: str) -> list[dict]:
+async def scrape_coupons(crawler: AsyncWebCrawler, slug: str) -> list[dict]:
     """
     Scrape couponava.com/store/{slug}/ using crawl4ai's JsonCssExtractionStrategy.
     Returns a list of raw coupon dicts (code, title_ar, discount_display).
     Returns an empty list when the page yields no structured results.
     """
     url = f"https://couponava.com/store/{slug}/"
-    strategy = JsonCssExtractionStrategy(EXTRACTION_SCHEMA, verbose=False)
+    config = CrawlerRunConfig(
+        extraction_strategy=JsonCssExtractionStrategy(EXTRACTION_SCHEMA),
+        cache_mode=CacheMode.BYPASS,
+        delay_before_return_html=2.0,  # let JS-rendered content settle
+    )
 
-    async with AsyncWebCrawler(verbose=False) as crawler:
-        result = await crawler.arun(
-            url=url,
-            extraction_strategy=strategy,
-            wait_for=2,           # seconds — let JS-rendered content settle
-            bypass_cache=True,
-        )
+    result = await crawler.arun(url=url, config=config)
 
     if not result.success or not result.extracted_content:
         return []
@@ -217,66 +220,64 @@ async def main() -> None:
     skipped = 0
     failed = 0
 
-    for i, store in enumerate(to_scrape):
-        progress = f"[{i + 1}/{len(to_scrape)}]"
+    # Launch ONE headless browser for the whole run (not one per store).
+    async with AsyncWebCrawler(verbose=False) as crawler:
+        for i, store in enumerate(to_scrape):
+            progress = f"[{i + 1}/{len(to_scrape)}]"
 
-        try:
-            raw_coupons = await scrape_coupons(store["slug"])
+            try:
+                raw_coupons = await scrape_coupons(crawler, store["slug"])
 
-            if not raw_coupons:
-                print(f"{progress} {store['slug']} — no coupons found, skipping")
-                skipped += 1
-            else:
-                coupons_to_insert = []
-                for c in raw_coupons:
-                    code = (c.get("code") or "").strip()
-                    if not code or not (2 <= len(code) <= 30):
-                        continue
-                    discount_type, discount_value = parse_discount(
-                        c.get("discount_display")
-                    )
-                    coupons_to_insert.append(
-                        {
-                            "store_id": store["id"],
-                            "code": code.upper(),
-                            "title_ar": c.get("title_ar") or f"كوبون خصم {store['name_ar']}",
-                            "discount_display": c.get("discount_display") or None,
-                            "discount_type": discount_type,
-                            "discount_value": discount_value,
-                            "destination_url": store["website_url"],
-                            "status": "active",
-                            "slug": slugify(f"{store['slug']}-{code}"),
-                        }
-                    )
-
-                if not coupons_to_insert:
-                    print(
-                        f"{progress} {store['slug']} — codes extracted but all filtered out"
-                    )
+                if not raw_coupons:
+                    print(f"{progress} {store['slug']} — no coupons found, skipping")
                     skipped += 1
                 else:
-                    upsert_resp = (
-                        supabase.table("coupons")
-                        .upsert(
+                    coupons_to_insert = []
+                    for c in raw_coupons:
+                        code = (c.get("code") or "").strip()
+                        if not code or not (2 <= len(code) <= 30):
+                            continue
+                        discount_type, discount_value = parse_discount(
+                            c.get("discount_display")
+                        )
+                        coupons_to_insert.append(
+                            {
+                                "store_id": store["id"],
+                                "code": code.upper(),
+                                "title_ar": c.get("title_ar") or f"كوبون خصم {store['name_ar']}",
+                                "discount_display": c.get("discount_display") or None,
+                                "discount_type": discount_type,
+                                "discount_value": discount_value,
+                                "destination_url": store["website_url"],
+                                "status": "active",
+                                "slug": slugify(f"{store['slug']}-{code}"),
+                            }
+                        )
+
+                    if not coupons_to_insert:
+                        print(
+                            f"{progress} {store['slug']} — codes extracted but all filtered out"
+                        )
+                        skipped += 1
+                    else:
+                        supabase.table("coupons").upsert(
                             coupons_to_insert,
                             on_conflict="slug",
                             ignore_duplicates=True,
+                        ).execute()
+                        # supabase-py raises on error; if we get here it succeeded
+                        print(
+                            f"{progress} {store['slug']} — inserted {len(coupons_to_insert)} coupons"
                         )
-                        .execute()
-                    )
-                    # supabase-py raises on error; if we get here it succeeded
-                    print(
-                        f"{progress} {store['slug']} — inserted {len(coupons_to_insert)} coupons"
-                    )
-                    inserted += len(coupons_to_insert)
+                        inserted += len(coupons_to_insert)
 
-        except Exception as err:
-            print(f"{progress} {store['slug']} — scrape error: {err}")
-            failed += 1
+            except Exception as err:
+                print(f"{progress} {store['slug']} — scrape error: {err}")
+                failed += 1
 
-        # Rate limit: ~1.5s between store requests to be respectful
-        if i < len(to_scrape) - 1:
-            time.sleep(1.5)
+            # Rate limit: ~1.5s between store requests to be respectful
+            if i < len(to_scrape) - 1:
+                await asyncio.sleep(1.5)
 
     print("\n─────────────────────────────────")
     print("Done.")
