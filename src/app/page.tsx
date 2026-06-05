@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import {
   getFeaturedCoupons,
   getFeaturedStores,
+  getHomepageTierStores,
   getFeaturedCategories,
   getExpiringSoonCoupons,
   getTrendingCoupons,
@@ -37,7 +38,6 @@ import { getPreferredCountry } from "@/lib/utils/country";
 
 // force-dynamic so the country cookie is read per-request for personalised results
 export const dynamic = "force-dynamic";
-
 
 export const metadata: Metadata = {
   title: {
@@ -61,7 +61,6 @@ export const metadata: Metadata = {
   },
 };
 
-
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -81,14 +80,26 @@ const websiteJsonLd = {
 export default async function Home() {
   const countryCode = await getPreferredCountry();
 
-  const [coupons, expiringSoon, trending, stores, categories, categoryCounts] = await Promise.all([
+  const [
+    coupons,
+    expiringSoon,
+    trending,
+    tierStores,
+    categories,
+    categoryCounts,
+  ] = await Promise.all([
     getFeaturedCoupons(8, countryCode),
     getExpiringSoonCoupons(4, countryCode),
     getTrendingCoupons(8, countryCode),
-    getFeaturedStores(10),
+    getHomepageTierStores(),
     getFeaturedCategories(10),
     getCategoryCouponCounts(),
   ]);
+  const hasTierStores =
+    tierStores.hero.length > 0 ||
+    tierStores.featured.length > 0 ||
+    tierStores.rising.length > 0;
+  const fallbackStores = hasTierStores ? [] : await getFeaturedStores(10);
 
   // Filter out coupons already shown in the featured section to avoid duplicates
   const featuredIds = new Set(coupons.map((c) => c.id));
@@ -103,10 +114,45 @@ export default async function Home() {
       <HeroSection />
       {categories.length > 0 && <CategoryFilterStrip categories={categories} />}
       <FeaturedCouponsSection coupons={coupons} />
-      {expiringSoon.length > 0 && <ExpiringSoonSection coupons={expiringSoon} />}
-      {trendingFiltered.length > 0 && <TrendingCouponsSection coupons={trendingFiltered} />}
-      <StoresSection stores={stores} />
-      <CategoriesSection categories={categories} categoryCounts={categoryCounts} />
+      {expiringSoon.length > 0 && (
+        <ExpiringSoonSection coupons={expiringSoon} />
+      )}
+      {trendingFiltered.length > 0 && (
+        <TrendingCouponsSection coupons={trendingFiltered} />
+      )}
+      {hasTierStores ? (
+        <>
+          {tierStores.hero.length > 0 && (
+            <TierStoresSection
+              title="أبرز المتاجر"
+              subtitle="منصات رائدة يفضّلها المتسوقون"
+              stores={tierStores.hero}
+              prominence="hero"
+            />
+          )}
+          {tierStores.featured.length > 0 && (
+            <TierStoresSection
+              title="متاجر مميزة"
+              subtitle="متاجر مختارة بعناية لعروض موثوقة"
+              stores={tierStores.featured}
+            />
+          )}
+          {tierStores.rising.length > 0 && (
+            <TierStoresSection
+              title="متاجر صاعدة"
+              subtitle="منصات تنمو بسرعة وتستحق المتابعة"
+              stores={tierStores.rising}
+              showRisingBadge
+            />
+          )}
+        </>
+      ) : (
+        <StoresSection stores={fallbackStores} />
+      )}
+      <CategoriesSection
+        categories={categories}
+        categoryCounts={categoryCounts}
+      />
     </main>
   );
 }
@@ -279,6 +325,79 @@ function StoresSection({
   );
 }
 
+function RisingBadge() {
+  return (
+    <span className="font-accent inline-flex items-center gap-1 rounded-full bg-brand-gold px-2 py-0.5 text-[11px] font-semibold text-charcoal">
+      <TrendingUp className="h-3 w-3" aria-hidden />
+      صاعد
+    </span>
+  );
+}
+
+function TierStoresSection({
+  title,
+  subtitle,
+  stores,
+  prominence = "default",
+  showRisingBadge = false,
+}: {
+  title: string;
+  subtitle: string;
+  stores: Awaited<ReturnType<typeof getFeaturedStores>>;
+  prominence?: "hero" | "default";
+  showRisingBadge?: boolean;
+}) {
+  const isHero = prominence === "hero";
+
+  return (
+    <Section tone="muted" spacing="lg">
+      <SectionHeader
+        title={title}
+        subtitle={subtitle}
+        cta={{ href: "/stores", label: "كل المتاجر" }}
+      />
+      <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
+        {stores.map((store) => (
+          <Link
+            key={store.id}
+            href={`/stores/${store.slug}`}
+            className={cn(
+              "group flex flex-col items-center gap-2.5",
+              showRisingBadge &&
+                "rounded-2xl border border-brand-gold/25 bg-cream px-4 py-3 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-red/40 hover:shadow-md",
+            )}
+            title={store.name_ar}
+          >
+            <div
+              className={cn(
+                "bg-cream ring-brand-gold/25 group-hover:ring-brand-red/40 flex shrink-0 items-center justify-center overflow-hidden rounded-full shadow-sm ring-2 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:shadow-md",
+                isHero
+                  ? "h-24 w-24 md:h-28 md:w-28"
+                  : "h-[72px] w-[72px] md:h-20 md:w-20",
+              )}
+            >
+              <StoreLogo
+                logoUrl={store.logo_url}
+                nameAr={store.name_ar}
+                size="lg"
+              />
+            </div>
+            {showRisingBadge && <RisingBadge />}
+            <span
+              className={cn(
+                "font-display text-charcoal group-hover:text-brand-red truncate text-center font-semibold transition-colors",
+                isHero ? "w-24 text-sm" : "w-20 text-[13px]",
+              )}
+            >
+              {store.name_ar}
+            </span>
+          </Link>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
   electronics: ShoppingBag,
   fashion: Shirt,
@@ -324,7 +443,7 @@ function CategoriesSection({
                 className={cn(
                   "group bg-cream border-brand-gold/25 hover:border-brand-red/40 active:scale-[0.97]",
                   "flex flex-col items-center justify-center gap-2 rounded-2xl border p-5 shadow-sm",
-                  "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                  "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
                 )}
               >
                 <div className="bg-brand-red/8 group-hover:bg-brand-red/15 flex h-12 w-12 items-center justify-center rounded-xl transition-colors">
@@ -448,4 +567,3 @@ function ExpiringSoonSection({
     </Section>
   );
 }
-
