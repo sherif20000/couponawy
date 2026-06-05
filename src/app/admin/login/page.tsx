@@ -13,9 +13,11 @@ export default async function AdminLoginPage({ searchParams }: Props) {
       ? "البريد الإلكتروني أو كلمة المرور غير صحيحة."
       : error === "missing_fields"
         ? "يرجى إدخال البريد الإلكتروني وكلمة المرور."
-        : error
-          ? "حدث خطأ. حاول مرة أخرى."
-          : null;
+        : error === "forbidden"
+          ? "ليس لديك صلاحية الوصول إلى لوحة الإدارة."
+          : error
+            ? "حدث خطأ. حاول مرة أخرى."
+            : null;
 
   return (
     <div className="min-h-screen bg-cream flex items-center justify-center p-4">
