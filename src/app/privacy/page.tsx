@@ -23,134 +23,133 @@ export default function PrivacyPage() {
       />
 
       <Section size="md" spacing="lg">
-          <div className="font-body text-warm-brown space-y-8 text-sm leading-relaxed max-w-2xl">
+        <div className="font-body text-warm-brown space-y-8 text-sm leading-relaxed max-w-2xl">
+          <p>
+            نحن في كوبوناوي نحترم خصوصيتك ونلتزم بحماية بياناتك الشخصية. توضّح
+            هذه السياسة ما نجمعه وكيف نستخدمه وكيف نحميه.
+          </p>
 
-            <p>
-              نحن في كوبوناوي نحترم خصوصيتك ونلتزم بحماية بياناتك الشخصية.
-              توضّح هذه السياسة ما نجمعه وكيف نستخدمه وكيف نحميه.
+          <section>
+            <h2 className="font-display text-charcoal text-base font-bold mb-2">
+              1. ما البيانات التي نجمعها؟
+            </h2>
+            <ul className="space-y-2 list-disc list-inside">
+              <li>
+                <strong className="text-charcoal">بيانات الاستخدام:</strong>{" "}
+                الصفحات التي تزورها، الكوبونات التي تكشف عنها، التوقيت والمتصفح
+                ونظام التشغيل — بشكل مجمّع وغير مرتبط بهويتك.
+              </li>
+              <li>
+                <strong className="text-charcoal">
+                  نماذج الاتصال والإبلاغ:
+                </strong>{" "}
+                إذا أرسلت رسالة أو أبلغت عن كوبون، نحتفظ بالبيانات التي أدخلتها
+                (الاسم اختياري، الموضوع، الرسالة) لمعالجة استفسارك.
+              </li>
+              <li>
+                <strong className="text-charcoal">
+                  ملفات تعريف الارتباط (Cookies):
+                </strong>{" "}
+                نستخدم كوكيز وظيفية لتحسين تجربتك (مثل تذكّر تفضيلاتك) وكوكيز
+                تحليلية مجهولة الهوية لفهم كيفية استخدام الموقع.
+              </li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="font-display text-charcoal text-base font-bold mb-2">
+              2. كيف نستخدم بياناتك؟
+            </h2>
+            <ul className="space-y-2 list-disc list-inside">
+              <li>تحسين المنصة وتطوير محتواها.</li>
+              <li>الرد على استفساراتك وطلبات الدعم.</li>
+              <li>التحقق من تقارير الكوبونات المعطوبة وإصلاحها بسرعة.</li>
+              <li>
+                تحليل الاستخدام بصورة مجمّعة لفهم العروض الأكثر نفعاً
+                للمستخدمين.
+              </li>
+            </ul>
+            <p className="mt-3">
+              <strong className="text-charcoal">لا نبيع بياناتك</strong> ولا
+              نشاركها مع أطراف ثالثة لأغراض تسويقية.
             </p>
+          </section>
 
-            <section>
-              <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                1. ما البيانات التي نجمعها؟
-              </h2>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>
-                  <strong className="text-charcoal">بيانات الاستخدام:</strong>{" "}
-                  الصفحات التي تزورها، الكوبونات التي تكشف عنها، التوقيت
-                  والمتصفح ونظام التشغيل — بشكل مجمّع وغير مرتبط بهويتك.
-                </li>
-                <li>
-                  <strong className="text-charcoal">نماذج الاتصال والإبلاغ:</strong>{" "}
-                  إذا أرسلت رسالة أو أبلغت عن كوبون، نحتفظ بالبيانات التي
-                  أدخلتها (الاسم اختياري، الموضوع، الرسالة) لمعالجة استفسارك.
-                </li>
-                <li>
-                  <strong className="text-charcoal">ملفات تعريف الارتباط (Cookies):</strong>{" "}
-                  نستخدم كوكيز وظيفية لتحسين تجربتك (مثل تذكّر تفضيلاتك)
-                  وكوكيز تحليلية مجهولة الهوية لفهم كيفية استخدام الموقع.
-                </li>
-              </ul>
-            </section>
+          <section>
+            <h2 className="font-display text-charcoal text-base font-bold mb-2">
+              3. الروابط التابعة (Affiliate Links)
+            </h2>
+            <p>
+              بعض الروابط على كوبوناوي هي روابط تابعة — أي أننا قد نحصل على
+              عمولة صغيرة عند إتمامك عملية شراء عبرها، دون أي تكلفة إضافية عليك.
+              هذه العمولات تساعدنا على إبقاء المنصة مجانية للجميع.
+            </p>
+          </section>
 
-            <section>
-              <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                2. كيف نستخدم بياناتك؟
-              </h2>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>تحسين المنصة وتطوير محتواها.</li>
-                <li>الرد على استفساراتك وطلبات الدعم.</li>
-                <li>
-                  التحقق من تقارير الكوبونات المعطوبة وإصلاحها بسرعة.
-                </li>
-                <li>
-                  تحليل الاستخدام بصورة مجمّعة لفهم العروض الأكثر نفعاً
-                  للمستخدمين.
-                </li>
-              </ul>
-              <p className="mt-3">
-                <strong className="text-charcoal">لا نبيع بياناتك</strong> ولا
-                نشاركها مع أطراف ثالثة لأغراض تسويقية.
-              </p>
-            </section>
+          <section>
+            <h2 className="font-display text-charcoal text-base font-bold mb-2">
+              4. مشاركة البيانات مع أطراف ثالثة
+            </h2>
+            <p>
+              قد نشارك بيانات مجهولة الهوية مع مزوّدي خدمات تحليل البيانات (مثل
+              أدوات قياس حركة الموقع). لا نشارك أي بيانات تعريفية شخصية مع أي
+              طرف ثالث دون موافقتك الصريحة، إلا إذا اقتضى ذلك التزام قانوني.
+            </p>
+          </section>
 
-            <section>
-              <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                3. الروابط التابعة (Affiliate Links)
-              </h2>
-              <p>
-                بعض الروابط على كوبوناوي هي روابط تابعة — أي أننا قد نحصل على
-                عمولة صغيرة عند إتمامك عملية شراء عبرها، دون أي تكلفة إضافية
-                عليك. هذه العمولات تساعدنا على إبقاء المنصة مجانية للجميع.
-              </p>
-            </section>
+          <section>
+            <h2 className="font-display text-charcoal text-base font-bold mb-2">
+              5. حماية البيانات
+            </h2>
+            <p>
+              نستخدم بنية تحتية آمنة مع تشفير البيانات أثناء النقل (HTTPS).
+              بيانات النماذج المُدخَلة محمية بسياسات وصول صارمة ولا يمكن الوصول
+              إليها إلا من فريق الإدارة.
+            </p>
+          </section>
 
-            <section>
-              <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                4. مشاركة البيانات مع أطراف ثالثة
-              </h2>
-              <p>
-                قد نشارك بيانات مجهولة الهوية مع مزوّدي خدمات تحليل البيانات
-                (مثل أدوات قياس حركة الموقع). لا نشارك أي بيانات تعريفية
-                شخصية مع أي طرف ثالث دون موافقتك الصريحة، إلا إذا اقتضى ذلك
-                التزام قانوني.
-              </p>
-            </section>
+          <section>
+            <h2 className="font-display text-charcoal text-base font-bold mb-2">
+              6. حقوقك
+            </h2>
+            <ul className="space-y-2 list-disc list-inside">
+              <li>طلب الاطلاع على البيانات التي نحتفظ بها عنك.</li>
+              <li>طلب تصحيح أو حذف بياناتك.</li>
+              <li>الاعتراض على معالجة بياناتك في أي وقت.</li>
+            </ul>
+            <p className="mt-3">
+              لممارسة أي من هذه الحقوق، راسلنا على{" "}
+              <a
+                href="mailto:privacy@couponawy.com"
+                className="text-brand-red hover:text-brand-red-dark font-semibold transition-colors"
+              >
+                privacy@couponawy.com
+              </a>
+            </p>
+          </section>
 
-            <section>
-              <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                5. حماية البيانات
-              </h2>
-              <p>
-                نستخدم بنية تحتية آمنة مع تشفير البيانات أثناء النقل
-                (HTTPS). بيانات النماذج المُدخَلة محمية بسياسات وصول
-                صارمة ولا يمكن الوصول إليها إلا من فريق الإدارة.
-              </p>
-            </section>
+          <section>
+            <h2 className="font-display text-charcoal text-base font-bold mb-2">
+              7. التغييرات على هذه السياسة
+            </h2>
+            <p>
+              قد نحدّث هذه السياسة من وقت لآخر. سنعلمك بأي تغييرات جوهرية عبر
+              إشعار على الموقع. استمرارك في استخدام كوبوناوي بعد نشر التحديثات
+              يعني موافقتك على السياسة الجديدة.
+            </p>
+          </section>
 
-            <section>
-              <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                6. حقوقك
-              </h2>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>طلب الاطلاع على البيانات التي نحتفظ بها عنك.</li>
-                <li>طلب تصحيح أو حذف بياناتك.</li>
-                <li>الاعتراض على معالجة بياناتك في أي وقت.</li>
-              </ul>
-              <p className="mt-3">
-                لممارسة أي من هذه الحقوق، راسلنا على{" "}
-                <a
-                  href="mailto:privacy@couponawy.com"
-                  className="text-brand-red hover:text-brand-red-dark font-semibold transition-colors"
-                >
-                  privacy@couponawy.com
-                </a>
-              </p>
-            </section>
-
-            <section>
-              <h2 className="font-display text-charcoal text-base font-bold mb-2">
-                7. التغييرات على هذه السياسة
-              </h2>
-              <p>
-                قد نحدّث هذه السياسة من وقت لآخر. سنعلمك بأي تغييرات جوهرية
-                عبر إشعار على الموقع. استمرارك في استخدام كوبوناوي بعد نشر
-                التحديثات يعني موافقتك على السياسة الجديدة.
-              </p>
-            </section>
-
-            <div className="border-t border-brand-gold/20 pt-6">
-              <p>
-                لأي استفسار يتعلق بهذه السياسة:{" "}
-                <a
-                  href="mailto:privacy@couponawy.com"
-                  className="text-brand-red hover:text-brand-red-dark font-semibold transition-colors"
-                >
-                  privacy@couponawy.com
-                </a>
-              </p>
-            </div>
-
+          <div className="border-t border-brand-gold/20 pt-6">
+            <p>
+              لأي استفسار يتعلق بهذه السياسة:{" "}
+              <a
+                href="mailto:privacy@couponawy.com"
+                className="text-brand-red hover:text-brand-red-dark font-semibold transition-colors"
+              >
+                privacy@couponawy.com
+              </a>
+            </p>
+          </div>
         </div>
       </Section>
     </main>

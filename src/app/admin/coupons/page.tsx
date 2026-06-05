@@ -47,7 +47,7 @@ export default async function CouponsPage({ searchParams }: Props) {
     page,
     search,
     storeId,
-    status
+    status,
   );
   const totalPages = Math.ceil(total / perPage);
 
@@ -60,7 +60,7 @@ export default async function CouponsPage({ searchParams }: Props) {
       ...overrides,
     };
     const qs = new URLSearchParams(
-      Object.entries(merged).map(([k, v]) => [k, String(v)])
+      Object.entries(merged).map(([k, v]) => [k, String(v)]),
     ).toString();
     return qs ? `?${qs}` : "";
   }
@@ -77,7 +77,9 @@ export default async function CouponsPage({ searchParams }: Props) {
           <div className="flex items-center gap-3 flex-wrap">
             <form method="GET" className="flex items-center gap-2">
               {/* Preserve storeId as hidden input if set */}
-              {storeId && <input type="hidden" name="store_id" value={storeId} />}
+              {storeId && (
+                <input type="hidden" name="store_id" value={storeId} />
+              )}
 
               <input
                 name="search"
@@ -121,7 +123,10 @@ export default async function CouponsPage({ searchParams }: Props) {
             </thead>
             <tbody>
               {coupons.map((coupon) => {
-                const store = coupon.store as { id: string; name_ar: string } | null;
+                const store = coupon.store as {
+                  id: string;
+                  name_ar: string;
+                } | null;
                 const canToggle = coupon.status !== "expired";
 
                 return (
@@ -145,7 +150,11 @@ export default async function CouponsPage({ searchParams }: Props) {
                             "use server";
                             await toggleCouponStatus(
                               coupon.id,
-                              coupon.status as "active" | "paused" | "draft" | "expired"
+                              coupon.status as
+                                | "active"
+                                | "paused"
+                                | "draft"
+                                | "expired",
                             );
                           }}
                         >
@@ -153,7 +162,8 @@ export default async function CouponsPage({ searchParams }: Props) {
                             type="submit"
                             title="اضغط لتغيير الحالة"
                             className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium cursor-pointer hover:opacity-75 transition-opacity ${
-                              statusColors[coupon.status] ?? "bg-gray-100 text-gray-600"
+                              statusColors[coupon.status] ??
+                              "bg-gray-100 text-gray-600"
                             }`}
                           >
                             {statusLabels[coupon.status] ?? coupon.status}
@@ -162,16 +172,22 @@ export default async function CouponsPage({ searchParams }: Props) {
                       ) : (
                         <span
                           className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-                            statusColors[coupon.status] ?? "bg-gray-100 text-gray-600"
+                            statusColors[coupon.status] ??
+                            "bg-gray-100 text-gray-600"
                           }`}
                         >
                           {statusLabels[coupon.status] ?? coupon.status}
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-warm-brown/60 text-xs" dir="ltr">
+                    <td
+                      className="px-4 py-3 text-warm-brown/60 text-xs"
+                      dir="ltr"
+                    >
                       {coupon.expires_at
-                        ? new Date(coupon.expires_at).toLocaleDateString("ar-SA-u-nu-latn")
+                        ? new Date(coupon.expires_at).toLocaleDateString(
+                            "ar-SA-u-nu-latn",
+                          )
                         : "—"}
                     </td>
                     <td className="px-4 py-3 text-warm-brown/60 text-xs">

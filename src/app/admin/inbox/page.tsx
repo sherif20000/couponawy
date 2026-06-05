@@ -53,7 +53,9 @@ export default async function AdminInboxPage({ searchParams }: Props) {
                     <span className="truncate block">{m.subject}</span>
                   </td>
                   <td className="px-4 py-3 text-warm-brown/80 max-w-[360px]">
-                    <span className="text-xs whitespace-pre-wrap break-words">{m.message}</span>
+                    <span className="text-xs whitespace-pre-wrap break-words">
+                      {m.message}
+                    </span>
                   </td>
                   <td
                     className="px-4 py-3 text-warm-brown/50 text-xs whitespace-nowrap"

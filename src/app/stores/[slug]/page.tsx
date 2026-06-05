@@ -47,13 +47,11 @@ export async function generateMetadata({
   const store = await getStoreBySlug(slug);
   if (!store) return { title: "المتجر غير موجود" };
 
-  const title =
-    store.meta_title ?? `كوبونات ${store.name_ar} وعروض الخصم`;
+  const title = store.meta_title ?? `كوبونات ${store.name_ar} وعروض الخصم`;
   const description =
     store.meta_description ??
     store.short_description_ar ??
     `أحدث كوبونات ${store.name_ar} وأكواد خصم مجرّبة ومحدّثة يومياً من كوبوناوي.`;
-
 
   // If admin uploaded a custom og_image we use it. Otherwise generate one on the
   // edge via /api/og?title=…&store=…&type=store.
@@ -75,7 +73,6 @@ export async function generateMetadata({
     twitter: { card: "summary_large_image", images: [ogImage] },
   };
 }
-
 
 export default async function StorePage({ params }: PageProps) {
   const { slug } = await params;
@@ -121,7 +118,8 @@ export default async function StorePage({ params }: PageProps) {
     inLanguage: "ar-SA",
     areaServed: ["SA", "AE", "KW", "BH", "OM", "QA"],
     currenciesAccepted: ["SAR", "AED", "KWD", "BHD", "OMR", "QAR"],
-    paymentAccepted: "Credit Card, Debit Card, Apple Pay, Mada, Tabby, Tamara, Cash on Delivery",
+    paymentAccepted:
+      "Credit Card, Debit Card, Apple Pay, Mada, Tabby, Tamara, Cash on Delivery",
     ...(store.logo_url ? { logo: store.logo_url } : {}),
     ...(store.short_description_ar
       ? { description: store.short_description_ar }
@@ -161,7 +159,12 @@ export default async function StorePage({ params }: PageProps) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "المتاجر", item: `${BASE_URL}/stores` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "المتاجر",
+        item: `${BASE_URL}/stores`,
+      },
       {
         "@type": "ListItem",
         position: 3,

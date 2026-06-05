@@ -10,7 +10,10 @@ export type FeaturedCoupon = Coupon & {
   store: Pick<Store, "id" | "slug" | "name_ar" | "logo_url"> | null;
 };
 
-export async function getFeaturedCoupons(limit = 8, countryCode?: string): Promise<FeaturedCoupon[]> {
+export async function getFeaturedCoupons(
+  limit = 8,
+  countryCode?: string,
+): Promise<FeaturedCoupon[]> {
   const supabase = createPublicClient();
 
   let baseQuery = supabase
@@ -54,10 +57,15 @@ export async function getFeaturedStores(limit = 8): Promise<Store[]> {
   return data ?? [];
 }
 
-export async function getExpiringSoonCoupons(limit = 8, countryCode?: string): Promise<FeaturedCoupon[]> {
+export async function getExpiringSoonCoupons(
+  limit = 8,
+  countryCode?: string,
+): Promise<FeaturedCoupon[]> {
   const supabase = createPublicClient();
   const now = new Date().toISOString();
-  const sevenDays = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+  const sevenDays = new Date(
+    Date.now() + 7 * 24 * 60 * 60 * 1000,
+  ).toISOString();
 
   let baseQuery = supabase
     .from("coupons")
@@ -84,7 +92,9 @@ export async function getExpiringSoonCoupons(limit = 8, countryCode?: string): P
   return (data ?? []) as FeaturedCoupon[];
 }
 
-export async function getExclusiveCoupons(limit = 50): Promise<FeaturedCoupon[]> {
+export async function getExclusiveCoupons(
+  limit = 50,
+): Promise<FeaturedCoupon[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("coupons")
@@ -111,7 +121,11 @@ export async function getDealsOfTheDay(limit = 50): Promise<FeaturedCoupon[]> {
   const ksaNow = new Date(now.getTime() + ksaOffset * 60 * 1000);
   // Midnight KSA today
   const ksaMidnight = new Date(
-    Date.UTC(ksaNow.getUTCFullYear(), ksaNow.getUTCMonth(), ksaNow.getUTCDate())
+    Date.UTC(
+      ksaNow.getUTCFullYear(),
+      ksaNow.getUTCMonth(),
+      ksaNow.getUTCDate(),
+    ),
   );
   // Convert back to UTC for the DB query
   const startOfDayUTC = new Date(ksaMidnight.getTime() - ksaOffset * 60 * 1000);
@@ -132,7 +146,10 @@ export async function getDealsOfTheDay(limit = 50): Promise<FeaturedCoupon[]> {
   return (data ?? []) as FeaturedCoupon[];
 }
 
-export async function getTrendingCoupons(limit = 8, countryCode?: string): Promise<FeaturedCoupon[]> {
+export async function getTrendingCoupons(
+  limit = 8,
+  countryCode?: string,
+): Promise<FeaturedCoupon[]> {
   const supabase = createPublicClient();
 
   let baseQuery = supabase

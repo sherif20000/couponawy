@@ -14,7 +14,6 @@ import { BASE_URL } from "@/lib/utils/site";
 // per request. Individual store detail pages retain their own ISR.
 export const dynamic = "force-dynamic";
 
-
 export const metadata: Metadata = {
   title: "جميع المتاجر",
   description:
@@ -40,7 +39,7 @@ export default async function StoresPage({ searchParams }: Props) {
     page,
     PER_PAGE,
     countryCode,
-    q || undefined
+    q || undefined,
   );
   const totalPages = Math.ceil(total / PER_PAGE);
   // Preserve search term across pagination so users don't lose their query on next/prev
@@ -51,7 +50,12 @@ export default async function StoresPage({ searchParams }: Props) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "المتاجر", item: `${BASE_URL}/stores` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "المتاجر",
+        item: `${BASE_URL}/stores`,
+      },
     ],
   };
 
@@ -63,10 +67,7 @@ export default async function StoresPage({ searchParams }: Props) {
       />
       <PageHero
         variant="subtle"
-        breadcrumbs={[
-          { href: "/", label: "الرئيسية" },
-          { label: "المتاجر" },
-        ]}
+        breadcrumbs={[{ href: "/", label: "الرئيسية" }, { label: "المتاجر" }]}
         title="جميع المتاجر"
         subtitle={`${toArabicNumerals(total)} ${pluralizeStore(total)} · كوبونات مجرّبة ومحدّثة يومياً`}
       >
@@ -112,9 +113,7 @@ export default async function StoresPage({ searchParams }: Props) {
           <div className="mt-10 flex items-center justify-center gap-3">
             {page > 1 && (
               <Button asChild variant="primary" size="sm">
-                <Link href={`/stores?page=${page - 1}${qSuffix}`}>
-                  السابق
-                </Link>
+                <Link href={`/stores?page=${page - 1}${qSuffix}`}>السابق</Link>
               </Button>
             )}
             <span className="font-body text-warm-brown text-sm">

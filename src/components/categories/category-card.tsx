@@ -37,12 +37,17 @@ const iconMap: Record<string, LucideIcon> = {
   services: Briefcase,
 };
 
-export function CategoryCard({ category, couponCount, className }: CategoryCardProps) {
+export function CategoryCard({
+  category,
+  couponCount,
+  className,
+}: CategoryCardProps) {
   const Icon = iconMap[category.slug] ?? Tag;
 
-  const ariaLabel = couponCount !== undefined && couponCount > 0
-    ? `${category.name_ar} — ${couponCount} كوبون`
-    : category.name_ar;
+  const ariaLabel =
+    couponCount !== undefined && couponCount > 0
+      ? `${category.name_ar} — ${couponCount} كوبون`
+      : category.name_ar;
 
   return (
     <Link
@@ -50,7 +55,7 @@ export function CategoryCard({ category, couponCount, className }: CategoryCardP
       aria-label={ariaLabel}
       className={cn(
         "group bg-cream-dark/30 border-brand-gold/20 hover:border-brand-red/40 hover:bg-brand-red/5 relative flex flex-col items-center gap-3 rounded-2xl border p-6 transition-all duration-200 hover:-translate-y-0.5",
-        className
+        className,
       )}
     >
       {/* Coupon count badge */}

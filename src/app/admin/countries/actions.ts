@@ -7,7 +7,10 @@ import type { Database } from "@/types/database";
 
 type CountryStatus = Database["public"]["Enums"]["country_status"];
 
-export async function toggleCountryStatus(code: string, currentStatus: CountryStatus) {
+export async function toggleCountryStatus(
+  code: string,
+  currentStatus: CountryStatus,
+) {
   const supabase = createAdminClient();
 
   // Cycle: active → coming_soon → disabled → active
@@ -38,12 +41,22 @@ export async function updateCountry(code: string, formData: FormData) {
   const flag_emoji = (formData.get("flag_emoji") as string) || null;
   const currency = formData.get("currency") as string;
   const currency_symbol = formData.get("currency_symbol") as string;
-  const status = ((formData.get("status") as string) || "coming_soon") as CountryStatus;
+  const status = ((formData.get("status") as string) ||
+    "coming_soon") as CountryStatus;
   const display_order = parseInt(formData.get("display_order") as string) || 0;
 
   const { error } = await supabase
     .from("countries")
-    .update({ name_ar, name_en, hreflang, flag_emoji, currency, currency_symbol, status, display_order })
+    .update({
+      name_ar,
+      name_en,
+      hreflang,
+      flag_emoji,
+      currency,
+      currency_symbol,
+      status,
+      display_order,
+    })
     .eq("code", code);
 
   if (error) {
@@ -75,7 +88,8 @@ export async function createCountry(formData: FormData) {
   const flag_emoji = (formData.get("flag_emoji") as string) || null;
   const currency = (formData.get("currency") as string) || "USD";
   const currency_symbol = (formData.get("currency_symbol") as string) || "$";
-  const status = ((formData.get("status") as string) || "coming_soon") as CountryStatus;
+  const status = ((formData.get("status") as string) ||
+    "coming_soon") as CountryStatus;
   const display_order = parseInt(formData.get("display_order") as string) || 0;
 
   const { error } = await supabase.from("countries").insert({

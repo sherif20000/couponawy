@@ -70,14 +70,14 @@ export function PageHero({
         // it's the visual signature; subtle/dark are utility heroes used on listing pages.
         variant === "brand" ? "py-16 md:py-24" : "py-10 md:py-14",
         variantMap[variant],
-        className
+        className,
       )}
     >
       <Container size="xl" className="relative z-10">
         <div
           className={cn(
             "flex flex-col gap-6",
-            aside ? "md:flex-row md:items-center md:gap-10" : ""
+            aside ? "md:flex-row md:items-center md:gap-10" : "",
           )}
         >
           <div className="flex flex-1 flex-col gap-4">
@@ -98,7 +98,9 @@ export function PageHero({
                           {crumb.label}
                         </Link>
                       ) : (
-                        <span className={isLast ? "text-white" : "text-white/80"}>
+                        <span
+                          className={isLast ? "text-white" : "text-white/80"}
+                        >
                           {crumb.label}
                         </span>
                       )}
@@ -122,7 +124,7 @@ export function PageHero({
                 // text-balance evens out multi-line headlines (long Arabic
                 // coupon/store titles) instead of leaving a lonely last word.
                 "font-display text-balance font-black text-white",
-                as === "h1" ? "text-headline-lg" : "text-headline-md"
+                as === "h1" ? "text-headline-lg" : "text-headline-md",
               )}
             >
               {title}

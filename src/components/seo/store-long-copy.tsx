@@ -26,7 +26,10 @@ type Props = StoreTemplateInput & {
 // newlines, then renders **bold** runs inside each paragraph. Avoids pulling
 // react-markdown into the bundle for what is essentially "paragraphs + bold".
 export function ProseFromText({ text }: { text: string }) {
-  const paragraphs = text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const paragraphs = text
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
   return (
     <div className="font-body text-warm-brown max-w-3xl space-y-4 text-base leading-relaxed">
       {paragraphs.map((p, i) => {
@@ -41,7 +44,7 @@ export function ProseFromText({ text }: { text: string }) {
                 </strong>
               ) : (
                 <span key={j}>{part}</span>
-              )
+              ),
             )}
           </p>
         );

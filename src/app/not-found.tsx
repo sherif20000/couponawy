@@ -4,7 +4,8 @@ import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
   title: "الصفحة غير موجودة",
-  description: "الصفحة التي تبحث عنها غير موجودة. تصفّح المتاجر والكوبونات على كوبوناوي.",
+  description:
+    "الصفحة التي تبحث عنها غير موجودة. تصفّح المتاجر والكوبونات على كوبوناوي.",
   // Tell crawlers not to index this 'not-found' shell. Next.js 16 + Vercel
   // ISR currently returns HTTP 200 when notFound() fires from a dynamically-
   // rendered detail page (soft-404), and the only reliable way to stop
@@ -27,7 +28,8 @@ export default function NotFound() {
           الصفحة غير موجودة
         </h1>
         <p className="font-body text-warm-brown mx-auto mb-10 max-w-sm text-base">
-          يبدو أن الأستاذ أبو عبدالله لم يمر من هنا. هذه الصفحة غير موجودة أو تم نقلها.
+          يبدو أن الأستاذ أبو عبدالله لم يمر من هنا. هذه الصفحة غير موجودة أو تم
+          نقلها.
         </p>
 
         {/* Actions */}

@@ -10,11 +10,9 @@ export async function createCategory(formData: FormData) {
 
   const name_ar = formData.get("name_ar") as string;
   const name_en = (formData.get("name_en") as string) || null;
-  const slug =
-    (formData.get("slug") as string) || slugify(name_en || name_ar);
+  const slug = (formData.get("slug") as string) || slugify(name_en || name_ar);
   const icon = (formData.get("icon") as string) || null;
-  const display_order =
-    parseInt(formData.get("display_order") as string) || 0;
+  const display_order = parseInt(formData.get("display_order") as string) || 0;
 
   const { error } = await supabase.from("categories").insert({
     name_ar,
@@ -34,11 +32,9 @@ export async function updateCategory(id: string, formData: FormData) {
 
   const name_ar = formData.get("name_ar") as string;
   const name_en = (formData.get("name_en") as string) || null;
-  const slug =
-    (formData.get("slug") as string) || slugify(name_en || name_ar);
+  const slug = (formData.get("slug") as string) || slugify(name_en || name_ar);
   const icon = (formData.get("icon") as string) || null;
-  const display_order =
-    parseInt(formData.get("display_order") as string) || 0;
+  const display_order = parseInt(formData.get("display_order") as string) || 0;
   // Editorial override fields. Empty → null so the public page falls back
   // to programmatic template output.
   const editorial_intro_ar =

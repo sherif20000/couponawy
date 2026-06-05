@@ -21,7 +21,11 @@ export function Container({
 }: ContainerProps) {
   return (
     <Comp
-      className={cn("mx-auto w-full px-4 sm:px-6 lg:px-8", sizeMap[size], className)}
+      className={cn(
+        "mx-auto w-full px-4 sm:px-6 lg:px-8",
+        sizeMap[size],
+        className,
+      )}
       {...props}
     />
   );

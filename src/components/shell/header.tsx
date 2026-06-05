@@ -78,7 +78,11 @@ export async function Header() {
           <div className="flex-1 overflow-hidden">
             <div className="animate-ticker-rtl inline-flex whitespace-nowrap">
               {[0, 1].map((copy) => (
-                <span key={copy} className="inline-flex items-center" aria-hidden={copy === 1}>
+                <span
+                  key={copy}
+                  className="inline-flex items-center"
+                  aria-hidden={copy === 1}
+                >
                   {tickerItems.map((item, i) => {
                     const inner = (
                       <span className="inline-flex items-center gap-2.5 px-5">
@@ -94,7 +98,9 @@ export async function Header() {
                         <span className="font-mono text-brand-gold/60 text-[11px] uppercase tracking-wider">
                           {item.code}
                         </span>
-                        <span className="text-brand-gold/30 select-none">·</span>
+                        <span className="text-brand-gold/30 select-none">
+                          ·
+                        </span>
                       </span>
                     );
                     return item.slug ? (
@@ -106,7 +112,10 @@ export async function Header() {
                         {inner}
                       </Link>
                     ) : (
-                      <span key={`${copy}-${i}`} className="inline-flex items-center">
+                      <span
+                        key={`${copy}-${i}`}
+                        className="inline-flex items-center"
+                      >
                         {inner}
                       </span>
                     );
@@ -120,7 +129,10 @@ export async function Header() {
 
       {/* ── Main nav — solid brand red ─────────────────────────── */}
       <header className="bg-brand-red w-full shadow-brand">
-        <Container size="xl" className="flex h-16 items-center justify-between gap-4">
+        <Container
+          size="xl"
+          className="flex h-16 items-center justify-between gap-4"
+        >
           <div className="flex items-center gap-8">
             <Link href="/" aria-label="كوبوناوي">
               <Logo className="text-2xl" inverted />
@@ -151,9 +163,7 @@ export async function Header() {
           <div className="flex items-center gap-2">
             <SearchInput />
 
-            {countries.length > 0 && (
-              <CountrySwitcher countries={countries} />
-            )}
+            {countries.length > 0 && <CountrySwitcher countries={countries} />}
 
             <MobileMenuDrawer countries={countries} />
           </div>

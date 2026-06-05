@@ -7,7 +7,7 @@ export type ContactResult =
   | { success: false; error: string };
 
 export async function submitContactMessage(
-  formData: FormData
+  formData: FormData,
 ): Promise<ContactResult> {
   const name = (formData.get("name") as string).trim() || null;
   const subject = (formData.get("subject") as string).trim();
@@ -20,7 +20,10 @@ export async function submitContactMessage(
     return { success: false, error: "يرجى كتابة رسالتك." };
   }
   if (message.length > 2000) {
-    return { success: false, error: "الرسالة طويلة جداً (الحد الأقصى 2000 حرف)." };
+    return {
+      success: false,
+      error: "الرسالة طويلة جداً (الحد الأقصى 2000 حرف).",
+    };
   }
 
   const supabase = await createClient();

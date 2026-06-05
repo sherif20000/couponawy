@@ -14,15 +14,15 @@ export async function middleware(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
+            request.cookies.set(name, value),
           );
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options),
           );
         },
       },
-    }
+    },
   );
 
   // Refresh session — do not remove or move this
@@ -32,11 +32,7 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  if (
-    !user &&
-    pathname.startsWith("/admin") &&
-    pathname !== "/admin/login"
-  ) {
+  if (!user && pathname.startsWith("/admin") && pathname !== "/admin/login") {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 

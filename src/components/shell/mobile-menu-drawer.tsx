@@ -30,7 +30,9 @@ export function MobileMenuDrawer({ countries = [], currentCode }: Props) {
   const [open, setOpen] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState("");
   const [countryPending, setCountryPending] = React.useState(false);
-  const [code, setCode] = React.useState<string>(currentCode ?? DEFAULT_COUNTRY);
+  const [code, setCode] = React.useState<string>(
+    currentCode ?? DEFAULT_COUNTRY,
+  );
   const router = useRouter();
 
   // Read the country cookie client-side once mounted. See country-client.ts
@@ -75,10 +77,13 @@ export function MobileMenuDrawer({ countries = [], currentCode }: Props) {
   React.useEffect(() => {
     if (!open) return;
 
-    const FOCUSABLE = 'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])';
+    const FOCUSABLE =
+      'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])';
     function getFocusable() {
       const drawer = document.getElementById("mobile-nav");
-      return drawer ? Array.from(drawer.querySelectorAll<HTMLElement>(FOCUSABLE)) : [];
+      return drawer
+        ? Array.from(drawer.querySelectorAll<HTMLElement>(FOCUSABLE))
+        : [];
     }
 
     function onKey(e: KeyboardEvent) {
@@ -145,7 +150,9 @@ export function MobileMenuDrawer({ countries = [], currentCode }: Props) {
       <div
         onClick={() => setOpen(false)}
         className={`fixed inset-0 z-50 bg-charcoal/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
-          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          open
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         }`}
         aria-hidden
       />
@@ -179,7 +186,10 @@ export function MobileMenuDrawer({ countries = [], currentCode }: Props) {
         <div className="border-brand-gold/20 border-b px-5 py-4">
           <form onSubmit={handleSearch} role="search">
             <div className="border-brand-gold/30 bg-cream-dark/60 focus-within:border-brand-red/50 focus-within:bg-cream flex items-center gap-2.5 rounded-xl border px-4 py-2.5 transition-colors">
-              <Search className="text-warm-brown-light h-4 w-4 shrink-0" aria-hidden />
+              <Search
+                className="text-warm-brown-light h-4 w-4 shrink-0"
+                aria-hidden
+              />
               <input
                 ref={searchRef}
                 type="search"
@@ -194,7 +204,10 @@ export function MobileMenuDrawer({ countries = [], currentCode }: Props) {
         </div>
 
         {/* Nav links */}
-        <nav aria-label="التنقّل الرئيسي" className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
+        <nav
+          aria-label="التنقّل الرئيسي"
+          className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4"
+        >
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -242,7 +255,10 @@ export function MobileMenuDrawer({ countries = [], currentCode }: Props) {
                     )}
                     <span>{country.name_ar}</span>
                     {isSelected && (
-                      <Check className="text-brand-red h-3 w-3 shrink-0" aria-hidden />
+                      <Check
+                        className="text-brand-red h-3 w-3 shrink-0"
+                        aria-hidden
+                      />
                     )}
                   </button>
                 );

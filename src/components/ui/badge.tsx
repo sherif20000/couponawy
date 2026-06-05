@@ -12,20 +12,19 @@ const badgeVariants = cva(
         outline: "border border-brand-red/30 bg-transparent text-brand-red",
         cream: "bg-cream-dark text-warm-brown",
         danger: "bg-danger text-cream",
-        exclusive:
-          "bg-brand-gold-dark text-cream shadow-gold",
-        inverted:
-          "border border-white/30 bg-transparent text-white",
+        exclusive: "bg-brand-gold-dark text-cream shadow-gold",
+        inverted: "border border-white/30 bg-transparent text-white",
       },
     },
     defaultVariants: {
       variant: "primary",
     },
-  }
+  },
 );
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
+  extends
+    React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, ...props }: BadgeProps) {

@@ -15,7 +15,11 @@ export default async function NewStorePage({ searchParams }: Props) {
       <div className="p-6 max-w-2xl space-y-4">
         {sp.error && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-3">
-            <p className="text-red-700 text-sm">حدث خطأ أثناء الإنشاء. تأكد من عدم تكرار الـ slug وحاول مجدداً.</p>
+            <p className="text-red-700 text-sm">
+              {sp.error === "missing_url"
+                ? "رابط الموقع مطلوب ويجب أن يبدأ بـ http:// أو https://."
+                : "حدث خطأ أثناء الإنشاء. تأكد من عدم تكرار الـ slug وحاول مجدداً."}
+            </p>
           </div>
         )}
         <StoreForm action={createStore} submitLabel="إنشاء المتجر" />

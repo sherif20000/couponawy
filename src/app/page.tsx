@@ -38,7 +38,6 @@ import { getPreferredCountry } from "@/lib/utils/country";
 // force-dynamic so the country cookie is read per-request for personalised results
 export const dynamic = "force-dynamic";
 
-
 export const metadata: Metadata = {
   title: {
     absolute: "كوبوناوي — كوبونات وعروض موثوقة من الأستاذ أبو عبدالله",
@@ -61,7 +60,6 @@ export const metadata: Metadata = {
   },
 };
 
-
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -81,14 +79,15 @@ const websiteJsonLd = {
 export default async function Home() {
   const countryCode = await getPreferredCountry();
 
-  const [coupons, expiringSoon, trending, stores, categories, categoryCounts] = await Promise.all([
-    getFeaturedCoupons(8, countryCode),
-    getExpiringSoonCoupons(4, countryCode),
-    getTrendingCoupons(8, countryCode),
-    getFeaturedStores(10),
-    getFeaturedCategories(10),
-    getCategoryCouponCounts(),
-  ]);
+  const [coupons, expiringSoon, trending, stores, categories, categoryCounts] =
+    await Promise.all([
+      getFeaturedCoupons(8, countryCode),
+      getExpiringSoonCoupons(4, countryCode),
+      getTrendingCoupons(8, countryCode),
+      getFeaturedStores(10),
+      getFeaturedCategories(10),
+      getCategoryCouponCounts(),
+    ]);
 
   // Filter out coupons already shown in the featured section to avoid duplicates
   const featuredIds = new Set(coupons.map((c) => c.id));
@@ -103,10 +102,17 @@ export default async function Home() {
       <HeroSection />
       {categories.length > 0 && <CategoryFilterStrip categories={categories} />}
       <FeaturedCouponsSection coupons={coupons} />
-      {expiringSoon.length > 0 && <ExpiringSoonSection coupons={expiringSoon} />}
-      {trendingFiltered.length > 0 && <TrendingCouponsSection coupons={trendingFiltered} />}
+      {expiringSoon.length > 0 && (
+        <ExpiringSoonSection coupons={expiringSoon} />
+      )}
+      {trendingFiltered.length > 0 && (
+        <TrendingCouponsSection coupons={trendingFiltered} />
+      )}
       <StoresSection stores={stores} />
-      <CategoriesSection categories={categories} categoryCounts={categoryCounts} />
+      <CategoriesSection
+        categories={categories}
+        categoryCounts={categoryCounts}
+      />
     </main>
   );
 }
@@ -324,7 +330,7 @@ function CategoriesSection({
                 className={cn(
                   "group bg-cream border-brand-gold/25 hover:border-brand-red/40 active:scale-[0.97]",
                   "flex flex-col items-center justify-center gap-2 rounded-2xl border p-5 shadow-sm",
-                  "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                  "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
                 )}
               >
                 <div className="bg-brand-red/8 group-hover:bg-brand-red/15 flex h-12 w-12 items-center justify-center rounded-xl transition-colors">
@@ -448,4 +454,3 @@ function ExpiringSoonSection({
     </Section>
   );
 }
-

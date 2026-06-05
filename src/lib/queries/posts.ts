@@ -41,7 +41,7 @@ const ARTICLE_LIST_FIELDS =
  * still add the same filter explicitly so the query is self-documenting.
  */
 export async function getPublishedArticles(
-  limit = 24
+  limit = 24,
 ): Promise<ArticleListItem[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
@@ -85,7 +85,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
 export async function getRelatedArticles(
   excludeId: string,
   tags: string[] | null,
-  limit = 3
+  limit = 3,
 ): Promise<ArticleListItem[]> {
   const supabase = createPublicClient();
 
@@ -158,7 +158,9 @@ export async function getPublishedGuides(limit = 24): Promise<GuideListItem[]> {
   return data ?? [];
 }
 
-export async function getGuideBySlug(slug: string): Promise<BuyingGuide | null> {
+export async function getGuideBySlug(
+  slug: string,
+): Promise<BuyingGuide | null> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("buying_guides")

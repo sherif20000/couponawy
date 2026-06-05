@@ -86,105 +86,103 @@ export async function GET(req: NextRequest) {
   }
 
   return new ImageResponse(
-    (
+    <div
+      // Direction RTL because Arabic. Background is the brand red gradient
+      // (matches the homepage hero) so OG cards feel native to the brand.
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        padding: "72px",
+        background:
+          "radial-gradient(ellipse at 80% 20%, oklch(46% 0.25 26) 0%, oklch(10% 0.02 26) 75%)",
+        color: "#fff",
+        fontFamily: "Tajawal",
+        direction: "rtl",
+      }}
+    >
+      {/* Brand mark — top-right (RTL: visually right, logically start) */}
       <div
-        // Direction RTL because Arabic. Background is the brand red gradient
-        // (matches the homepage hero) so OG cards feel native to the brand.
         style={{
-          height: "100%",
-          width: "100%",
           display: "flex",
-          flexDirection: "column",
-          padding: "72px",
-          background:
-            "radial-gradient(ellipse at 80% 20%, oklch(46% 0.25 26) 0%, oklch(10% 0.02 26) 75%)",
-          color: "#fff",
-          fontFamily: "Tajawal",
-          direction: "rtl",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        {/* Brand mark — top-right (RTL: visually right, logically start) */}
-        <div
+        <span
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            fontSize: 28,
+            fontWeight: 800,
+            letterSpacing: "-0.02em",
+            color: "#dca700",
           }}
         >
+          {SITE_NAME}
+        </span>
+        <span
+          style={{
+            fontSize: 18,
+            padding: "8px 18px",
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.10)",
+            color: badge.color,
+            fontWeight: 700,
+          }}
+        >
+          {badge.label}
+        </span>
+      </div>
+
+      {/* Spacer pushes title block toward the bottom-center for cinematic framing */}
+      <div style={{ flex: 1 }} />
+
+      {/* Title block */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+          maxWidth: "100%",
+        }}
+      >
+        <span
+          style={{
+            fontSize: title.length > 60 ? 56 : 72,
+            fontWeight: 900,
+            lineHeight: 1.15,
+            letterSpacing: "-0.02em",
+            color: "#fff",
+          }}
+        >
+          {title}
+        </span>
+        {subtitle && (
           <span
             style={{
               fontSize: 28,
-              fontWeight: 800,
-              letterSpacing: "-0.02em",
-              color: "#dca700",
+              fontWeight: 600,
+              lineHeight: 1.4,
+              color: "rgba(255,255,255,0.75)",
             }}
           >
-            {SITE_NAME}
+            {subtitle}
           </span>
-          <span
-            style={{
-              fontSize: 18,
-              padding: "8px 18px",
-              borderRadius: 999,
-              background: "rgba(255,255,255,0.10)",
-              color: badge.color,
-              fontWeight: 700,
-            }}
-          >
-            {badge.label}
-          </span>
-        </div>
-
-        {/* Spacer pushes title block toward the bottom-center for cinematic framing */}
-        <div style={{ flex: 1 }} />
-
-        {/* Title block */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 20,
-            maxWidth: "100%",
-          }}
-        >
-          <span
-            style={{
-              fontSize: title.length > 60 ? 56 : 72,
-              fontWeight: 900,
-              lineHeight: 1.15,
-              letterSpacing: "-0.02em",
-              color: "#fff",
-            }}
-          >
-            {title}
-          </span>
-          {subtitle && (
-            <span
-              style={{
-                fontSize: 28,
-                fontWeight: 600,
-                lineHeight: 1.4,
-                color: "rgba(255,255,255,0.75)",
-              }}
-            >
-              {subtitle}
-            </span>
-          )}
-        </div>
-
-        {/* Footer URL */}
-        <div
-          style={{
-            marginTop: 36,
-            fontSize: 22,
-            color: "rgba(255,255,255,0.55)",
-            fontWeight: 500,
-          }}
-        >
-          couponawy.com
-        </div>
+        )}
       </div>
-    ),
+
+      {/* Footer URL */}
+      <div
+        style={{
+          marginTop: 36,
+          fontSize: 22,
+          color: "rgba(255,255,255,0.55)",
+          fontWeight: 500,
+        }}
+      >
+        couponawy.com
+      </div>
+    </div>,
     {
       width: 1200,
       height: 630,
@@ -196,8 +194,18 @@ export async function GET(req: NextRequest) {
       fonts:
         tajawalBold && tajawalRegular
           ? [
-              { name: "Tajawal", data: tajawalBold, style: "normal", weight: 700 },
-              { name: "Tajawal", data: tajawalRegular, style: "normal", weight: 400 },
+              {
+                name: "Tajawal",
+                data: tajawalBold,
+                style: "normal",
+                weight: 700,
+              },
+              {
+                name: "Tajawal",
+                data: tajawalRegular,
+                style: "normal",
+                weight: 400,
+              },
             ]
           : undefined,
       // Cache aggressively at the edge — these images change rarely (only when
@@ -206,6 +214,6 @@ export async function GET(req: NextRequest) {
         "Cache-Control":
           "public, immutable, no-transform, max-age=31536000, s-maxage=31536000",
       },
-    }
+    },
   );
 }

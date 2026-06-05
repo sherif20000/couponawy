@@ -50,8 +50,7 @@ type CouponCardProps = {
 //
 // Non-Brandfetch URLs pass through untouched (e.g. legacy stores still on
 // their own CDN).
-const BRANDFETCH_CLIENT_ID =
-  process.env.NEXT_PUBLIC_BRANDFETCH_CLIENT_ID ?? "";
+const BRANDFETCH_CLIENT_ID = process.env.NEXT_PUBLIC_BRANDFETCH_CLIENT_ID ?? "";
 
 function smallLogoUrl(url: string): string {
   if (!url.includes("cdn.brandfetch.io/")) return url;
@@ -82,7 +81,7 @@ function formatExpiryDate(iso: string): string {
 // admin verify-queue); falls back to updated_at for legacy/import rows.
 function freshnessState(
   lastVerifiedAt: string | null,
-  updatedAt: string | null
+  updatedAt: string | null,
 ): "today" | "week" | "old" | null {
   const ref = lastVerifiedAt ?? updatedAt;
   if (!ref) return null;
@@ -194,7 +193,11 @@ function CouponTypeTag({ kind }: { kind: CouponKind }) {
 // than "a strip of distinct deals". The spec was explicit on this — see
 // "Bold doesn't mean loud" in design principles.
 
-export function CouponCard({ coupon, className, variant = "featured" }: CouponCardProps) {
+export function CouponCard({
+  coupon,
+  className,
+  variant = "featured",
+}: CouponCardProps) {
   const [revealed, setRevealed] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
@@ -203,12 +206,15 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
   const hasCode = coupon.discount_type !== "free_shipping";
   const kind = resolveKind(coupon.discount_type);
   const showTrendingPill =
-    variant === "trending" && typeof coupon.reveal_count === "number" && coupon.reveal_count > 0;
+    variant === "trending" &&
+    typeof coupon.reveal_count === "number" &&
+    coupon.reveal_count > 0;
 
   // last_verified_at lives on the row but the generated Database type isn't
   // refreshed yet — defensive read avoids a build error.
   const lastVerifiedAt =
-    (coupon as unknown as { last_verified_at?: string | null }).last_verified_at ?? null;
+    (coupon as unknown as { last_verified_at?: string | null })
+      .last_verified_at ?? null;
   const fresh = freshnessState(lastVerifiedAt, coupon.updated_at);
 
   // Fires the click tracking RPC. Extracted so reveal AND the explicit
@@ -318,7 +324,7 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
     <Card
       className={cn(
         "group relative flex h-full flex-col bg-cream border border-brand-gold/20 rounded-2xl shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-red/30 hover:shadow-md",
-        className
+        className,
       )}
     >
       <CardContent className="flex flex-1 flex-col gap-3 p-5">
@@ -468,7 +474,7 @@ export function CouponCard({ coupon, className, variant = "featured" }: CouponCa
                   onClick={handleCopy}
                   className={cn(
                     "border-brand-gold bg-brand-gold/10 hover:bg-brand-gold/20 group/code flex items-center justify-between gap-2 rounded-xl border-2 border-dashed p-3 transition-colors",
-                    copied && "animate-gold-flash"
+                    copied && "animate-gold-flash",
                   )}
                   aria-label="نسخ الكود"
                 >

@@ -25,7 +25,9 @@ export function CountrySwitcher({ countries, currentCode }: Props) {
   const [pending, setPending] = React.useState(false);
   // Initial value: prop if supplied (legacy server-provided), else default.
   // useEffect below upgrades to the real cookie value once mounted.
-  const [code, setCode] = React.useState<string>(currentCode ?? DEFAULT_COUNTRY);
+  const [code, setCode] = React.useState<string>(
+    currentCode ?? DEFAULT_COUNTRY,
+  );
   const router = useRouter();
   const triggerRef = React.useRef<HTMLButtonElement>(null);
   const menuRef = React.useRef<HTMLDivElement>(null);
@@ -136,7 +138,10 @@ export function CountrySwitcher({ countries, currentCode }: Props) {
               )}
               <span className="flex-1 text-right">{country.name_ar}</span>
               {country.code === code && (
-                <Check className="text-brand-red h-3.5 w-3.5 shrink-0" aria-hidden />
+                <Check
+                  className="text-brand-red h-3.5 w-3.5 shrink-0"
+                  aria-hidden
+                />
               )}
             </button>
           ))}

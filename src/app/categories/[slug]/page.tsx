@@ -31,7 +31,6 @@ export const revalidate = 300;
 // category slug not pre-rendered by generateStaticParams.
 export const dynamicParams = false;
 
-
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
@@ -70,30 +69,44 @@ export default async function CategoryPage({ params }: Props) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "الأقسام", item: `${BASE_URL}/categories` },
-      { "@type": "ListItem", position: 3, name: category.name_ar, item: categoryUrl },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "الأقسام",
+        item: `${BASE_URL}/categories`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: category.name_ar,
+        item: categoryUrl,
+      },
     ],
   };
 
-  const itemListJsonLd = coupons.length > 0
-    ? {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        name: `كوبونات ${category.name_ar}`,
-        url: categoryUrl,
-        numberOfItems: coupons.length,
-        itemListElement: coupons.slice(0, 10).map((coupon, index) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          url: `${BASE_URL}/coupons/${coupon.slug}`,
-          name: coupon.title_ar,
-        })),
-      }
-    : null;
+  const itemListJsonLd =
+    coupons.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: `كوبونات ${category.name_ar}`,
+          url: categoryUrl,
+          numberOfItems: coupons.length,
+          itemListElement: coupons.slice(0, 10).map((coupon, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: `${BASE_URL}/coupons/${coupon.slug}`,
+            name: coupon.title_ar,
+          })),
+        }
+      : null;
 
   // Derive top stores from coupons (no extra DB roundtrip).
   // Dedupe by store.id, preserve order so featured stores appear first.
-  const topStoresMap = new Map<string, NonNullable<typeof coupons[number]["store"]>>();
+  const topStoresMap = new Map<
+    string,
+    NonNullable<(typeof coupons)[number]["store"]>
+  >();
   for (const coupon of coupons) {
     if (coupon.store && !topStoresMap.has(coupon.store.id)) {
       topStoresMap.set(coupon.store.id, coupon.store);
@@ -147,7 +160,8 @@ export default async function CategoryPage({ params }: Props) {
         ]}
         title={`كوبونات ${category.name_ar}`}
         subtitle={
-          category.description_ar ?? `${coupons.length} كوبون نشط في قسم ${category.name_ar}`
+          category.description_ar ??
+          `${coupons.length} كوبون نشط في قسم ${category.name_ar}`
         }
       />
 

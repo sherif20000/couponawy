@@ -1,5 +1,8 @@
 import { cookies } from "next/headers";
-import { COUNTRY_COOKIE, DEFAULT_COUNTRY } from "@/app/actions/country-constants";
+import {
+  COUNTRY_COOKIE,
+  DEFAULT_COUNTRY,
+} from "@/app/actions/country-constants";
 
 /**
  * Reads the user's preferred country from the request cookie.

@@ -39,7 +39,11 @@ function TocList({ items }: { items: TocItem[] }) {
  * <PostBody> from the same extractToc() output. Renders nothing for short pages
  * (< 3 headings) where a TOC adds noise rather than value.
  */
-export function ArticleToc({ items, title = "محتويات الموضوع", className }: Props) {
+export function ArticleToc({
+  items,
+  title = "محتويات الموضوع",
+  className,
+}: Props) {
   if (items.length < 3) return null;
 
   return (

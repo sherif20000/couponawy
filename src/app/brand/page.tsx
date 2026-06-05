@@ -44,11 +44,15 @@ function Swatch({
       style={{ background: `var(--color-${token})` }}
     >
       <div className="font-display text-lg font-bold">--color-{token}</div>
-      <div className={`mt-1 font-mono text-xs ${inverted ? "text-white/70" : "text-charcoal/60"}`}>
+      <div
+        className={`mt-1 font-mono text-xs ${inverted ? "text-white/70" : "text-charcoal/60"}`}
+      >
         {oklch}
       </div>
       {hex && (
-        <div className={`font-mono text-[11px] ${inverted ? "text-white/50" : "text-charcoal/45"}`}>
+        <div
+          className={`font-mono text-[11px] ${inverted ? "text-white/50" : "text-charcoal/45"}`}
+        >
           ≈ {hex}
         </div>
       )}
@@ -123,7 +127,9 @@ function CouponCardV1Current() {
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
             <div className="bg-cream ring-brand-gold/30 flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full ring-2">
-              <span className="font-display text-brand-red text-sm font-bold">نو</span>
+              <span className="font-display text-brand-red text-sm font-bold">
+                نو
+              </span>
             </div>
             <div className="flex min-w-0 flex-col gap-1">
               <span className="font-display text-charcoal text-sm font-bold">
@@ -189,7 +195,9 @@ function CouponCardV2Featured() {
       <div className="bg-gradient-to-br from-brand-red to-brand-red-dark px-6 pb-5 pt-12">
         <div className="flex items-end justify-between gap-4">
           <div className="bg-cream ring-cream/40 flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-4">
-            <span className="font-display text-brand-red text-xl font-bold">نو</span>
+            <span className="font-display text-brand-red text-xl font-bold">
+              نو
+            </span>
           </div>
           <div className="text-cream flex flex-col items-end leading-none">
             <span className="font-display text-5xl font-extrabold">
@@ -238,7 +246,9 @@ function CouponCardV3Editorial() {
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="bg-cream-dark ring-brand-gold/20 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full ring-1">
-              <span className="font-display text-brand-red text-xs font-bold">نو</span>
+              <span className="font-display text-brand-red text-xs font-bold">
+                نو
+              </span>
             </div>
             <div className="flex flex-col">
               <span className="font-display text-charcoal text-sm font-bold leading-tight">
@@ -260,7 +270,9 @@ function CouponCardV3Editorial() {
           <span className="font-display text-brand-red text-5xl font-extrabold leading-none">
             {sampleCoupon.discount_display}
           </span>
-          <span className="font-accent text-warm-brown text-sm">خصم على الإلكترونيات</span>
+          <span className="font-accent text-warm-brown text-sm">
+            خصم على الإلكترونيات
+          </span>
         </div>
 
         <h3 className="font-display text-charcoal text-base font-bold leading-snug">
@@ -300,7 +312,8 @@ function HeroV1BoldRed() {
             وفّر في كل عملية تسوّق
           </h1>
           <p className="font-body text-cream/85 max-w-md text-base leading-relaxed md:text-lg">
-            أكواد خصم حقيقية ومُحقّقة يومياً من أكبر المتاجر العربية والعالمية. انسخ الكود واحصل على خصمك فوراً.
+            أكواد خصم حقيقية ومُحقّقة يومياً من أكبر المتاجر العربية والعالمية.
+            انسخ الكود واحصل على خصمك فوراً.
           </p>
           <div className="bg-white/10 ring-white/20 flex items-center gap-2 rounded-2xl p-1 ring-1 backdrop-blur">
             <input
@@ -330,7 +343,9 @@ function HeroV1BoldRed() {
             <div className="bg-cream text-charcoal w-64 rounded-2xl p-4 shadow-xl">
               <div className="mb-3 flex items-center gap-2">
                 <div className="bg-brand-gold/20 flex h-8 w-8 items-center justify-center rounded-full">
-                  <span className="font-display text-brand-red text-[11px] font-bold">نو</span>
+                  <span className="font-display text-brand-red text-[11px] font-bold">
+                    نو
+                  </span>
                 </div>
                 <span className="font-display text-sm font-bold">نون</span>
                 <span className="bg-success/15 text-success ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold">
@@ -341,7 +356,9 @@ function HeroV1BoldRed() {
                 خصم 20% على الإلكترونيات
               </p>
               <div className="mt-3 flex items-baseline justify-between">
-                <span className="font-display text-brand-red text-2xl font-extrabold">20%</span>
+                <span className="font-display text-brand-red text-2xl font-extrabold">
+                  20%
+                </span>
                 <span className="text-warm-brown-light text-[10px]">خصم</span>
               </div>
             </div>
@@ -350,7 +367,9 @@ function HeroV1BoldRed() {
             <div className="bg-cream text-charcoal w-64 rounded-2xl p-4 shadow-xl">
               <div className="mb-3 flex items-center gap-2">
                 <div className="bg-brand-gold/20 flex h-8 w-8 items-center justify-center rounded-full">
-                  <span className="font-display text-brand-red text-[11px] font-bold">أم</span>
+                  <span className="font-display text-brand-red text-[11px] font-bold">
+                    أم
+                  </span>
                 </div>
                 <span className="font-display text-sm font-bold">أمازون</span>
                 <span className="bg-success/15 text-success ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold">
@@ -361,7 +380,9 @@ function HeroV1BoldRed() {
                 شحن مجاني + خصم 15%
               </p>
               <div className="mt-3 flex items-baseline justify-between">
-                <span className="font-display text-brand-red text-2xl font-extrabold">15%</span>
+                <span className="font-display text-brand-red text-2xl font-extrabold">
+                  15%
+                </span>
                 <span className="text-warm-brown-light text-[10px]">+ شحن</span>
               </div>
             </div>
@@ -388,7 +409,8 @@ function HeroV2CreamSplit() {
             <span className="text-brand-red">عمليّة تسوّق</span>
           </h1>
           <p className="font-body text-warm-brown max-w-md text-base leading-relaxed md:text-lg">
-            أكواد خصم حقيقية ومُحقّقة يومياً من أكبر المتاجر العربية والعالمية. انسخ الكود واحصل على خصمك فوراً.
+            أكواد خصم حقيقية ومُحقّقة يومياً من أكبر المتاجر العربية والعالمية.
+            انسخ الكود واحصل على خصمك فوراً.
           </p>
           <div className="bg-white border-brand-gold/40 shadow-brand flex items-center gap-2 rounded-2xl border p-1.5">
             <input
@@ -414,10 +436,30 @@ function HeroV2CreamSplit() {
 
         <div className="grid grid-cols-2 gap-3">
           {[
-            { name: "نون", code: "NOON15", disc: "15%", color: "from-yellow-400 to-yellow-500" },
-            { name: "شي ان", code: "SH25", disc: "25%", color: "from-black to-gray-800" },
-            { name: "أمازون", code: "AMZ50", disc: "50ر.س", color: "from-orange-500 to-orange-600" },
-            { name: "نمشي", code: "NM30", disc: "30%", color: "from-rose-500 to-rose-600" },
+            {
+              name: "نون",
+              code: "NOON15",
+              disc: "15%",
+              color: "from-yellow-400 to-yellow-500",
+            },
+            {
+              name: "شي ان",
+              code: "SH25",
+              disc: "25%",
+              color: "from-black to-gray-800",
+            },
+            {
+              name: "أمازون",
+              code: "AMZ50",
+              disc: "50ر.س",
+              color: "from-orange-500 to-orange-600",
+            },
+            {
+              name: "نمشي",
+              code: "NM30",
+              disc: "30%",
+              color: "from-rose-500 to-rose-600",
+            },
           ].map((c) => (
             <div
               key={c.code}
@@ -431,8 +473,12 @@ function HeroV2CreamSplit() {
                 </span>
               </div>
               <div className="flex items-baseline justify-between">
-                <span className="font-display text-charcoal text-sm font-bold">{c.name}</span>
-                <span className="font-display text-brand-red text-lg font-extrabold">{c.disc}</span>
+                <span className="font-display text-charcoal text-sm font-bold">
+                  {c.name}
+                </span>
+                <span className="font-display text-brand-red text-lg font-extrabold">
+                  {c.disc}
+                </span>
               </div>
               <span className="text-warm-brown-light font-mono text-[10px] uppercase tracking-wider">
                 {c.code}
@@ -456,7 +502,10 @@ function TickerV1Current() {
     { icon: "💰", text: "وفّر على كل طلب" },
   ];
   return (
-    <div className="overflow-hidden rounded-xl py-1.5" style={{ background: "oklch(8% 0.005 26)" }}>
+    <div
+      className="overflow-hidden rounded-xl py-1.5"
+      style={{ background: "oklch(8% 0.005 26)" }}
+    >
       <div className="animate-ticker-rtl inline-flex whitespace-nowrap">
         {[0, 1].map((copy) => (
           <span key={copy} className="inline-flex items-center gap-0">
@@ -465,7 +514,9 @@ function TickerV1Current() {
                 <span className="font-body text-brand-gold px-5 text-[13px] font-bold tracking-wide">
                   {item.icon}&nbsp;{item.text}
                 </span>
-                <span className="text-brand-gold/30 select-none text-xs">·</span>
+                <span className="text-brand-gold/30 select-none text-xs">
+                  ·
+                </span>
               </span>
             ))}
           </span>
@@ -479,12 +530,20 @@ function TickerV2LiveDeals() {
   const deals = [
     { store: "نون", code: "NOON25", disc: "25%", category: "إلكترونيات" },
     { store: "شي ان", code: "SH40", disc: "40%", category: "أزياء" },
-    { store: "أمازون", code: "FREESHIP", disc: "شحن مجاني", category: "كل الأقسام" },
+    {
+      store: "أمازون",
+      code: "FREESHIP",
+      disc: "شحن مجاني",
+      category: "كل الأقسام",
+    },
     { store: "نمشي", code: "EXTRA30", disc: "30%", category: "ملابس" },
     { store: "صيدلية النهدي", code: "NH15", disc: "15%", category: "العناية" },
   ];
   return (
-    <div className="overflow-hidden rounded-xl py-2" style={{ background: "oklch(8% 0.005 26)" }}>
+    <div
+      className="overflow-hidden rounded-xl py-2"
+      style={{ background: "oklch(8% 0.005 26)" }}
+    >
       <div className="animate-ticker-rtl inline-flex whitespace-nowrap">
         {[0, 1].map((copy) => (
           <span key={copy} className="inline-flex items-center">
@@ -496,7 +555,9 @@ function TickerV2LiveDeals() {
                 <span className="font-display text-brand-gold text-xs font-bold">
                   {d.store}
                 </span>
-                <span className="text-cream font-body text-xs">{d.category}</span>
+                <span className="text-cream font-body text-xs">
+                  {d.category}
+                </span>
                 <span className="font-mono text-brand-gold/70 text-[11px] uppercase">
                   {d.code}
                 </span>
@@ -534,7 +595,10 @@ function TickerV3Compact() {
           {[0, 1].map((copy) => (
             <span key={copy} className="inline-flex items-center">
               {items.map((t, i) => (
-                <span key={i} className="font-body text-brand-gold/90 px-4 text-xs font-semibold">
+                <span
+                  key={i}
+                  className="font-body text-brand-gold/90 px-4 text-xs font-semibold"
+                >
                   {t}
                 </span>
               ))}
@@ -562,9 +626,10 @@ export default function BrandPage() {
               The Brand System
             </h1>
             <p className="font-body text-cream/80 max-w-2xl text-base leading-relaxed">
-              Single source of truth for couponawy v2. Sprint 1 picks are <strong>locked</strong>:
-              ticker V2 (live deals), coupon card V2 (featured), hero V1 (bold red full-bleed).
-              Every page below the hero now uses these as the standard primitives.
+              Single source of truth for couponawy v2. Sprint 1 picks are{" "}
+              <strong>locked</strong>: ticker V2 (live deals), coupon card V2
+              (featured), hero V1 (bold red full-bleed). Every page below the
+              hero now uses these as the standard primitives.
             </p>
             <div className="mt-3 flex flex-wrap gap-3 text-sm">
               <Link
@@ -581,19 +646,58 @@ export default function BrandPage() {
       {/* ── COLOR PALETTE ──────────────────────────────────────────── */}
       <Section eyebrow="Tokens" title="Color palette" status="locked">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <Swatch token="brand-red" oklch="oklch(49% 0.25 26)" hex="#C40C2C" inverted />
-          <Swatch token="brand-red-dark" oklch="oklch(41% 0.25 26)" hex="#A50924" inverted />
+          <Swatch
+            token="brand-red"
+            oklch="oklch(49% 0.25 26)"
+            hex="#C40C2C"
+            inverted
+          />
+          <Swatch
+            token="brand-red-dark"
+            oklch="oklch(41% 0.25 26)"
+            hex="#A50924"
+            inverted
+          />
           <Swatch token="brand-gold" oklch="oklch(86% 0.19 94)" hex="#F5BE2A" />
-          <Swatch token="brand-gold-dark" oklch="oklch(72% 0.17 88)" hex="#C8961B" inverted />
+          <Swatch
+            token="brand-gold-dark"
+            oklch="oklch(72% 0.17 88)"
+            hex="#C8961B"
+            inverted
+          />
           <Swatch token="cream" oklch="oklch(99% 0.004 90)" hex="#FEFCF7" />
-          <Swatch token="cream-dark" oklch="oklch(96% 0.005 90)" hex="#F4F1E8" />
-          <Swatch token="charcoal" oklch="oklch(14% 0.010 80)" hex="#1A1812" inverted />
-          <Swatch token="warm-brown" oklch="oklch(45% 0.012 75)" hex="#615345" inverted />
+          <Swatch
+            token="cream-dark"
+            oklch="oklch(96% 0.005 90)"
+            hex="#F4F1E8"
+          />
+          <Swatch
+            token="charcoal"
+            oklch="oklch(14% 0.010 80)"
+            hex="#1A1812"
+            inverted
+          />
+          <Swatch
+            token="warm-brown"
+            oklch="oklch(45% 0.012 75)"
+            hex="#615345"
+            inverted
+          />
         </div>
         <p className="text-warm-brown font-body mt-6 text-sm">
-          Semantic: <code className="bg-cream-dark rounded px-1.5 py-0.5 text-xs">--color-danger</code> = brand-red ·
-          <code className="bg-cream-dark mx-1 rounded px-1.5 py-0.5 text-xs">--color-success</code> = oklch(50% 0.19 145) ·
-          <code className="bg-cream-dark rounded px-1.5 py-0.5 text-xs">--color-warning</code> = brand-gold.
+          Semantic:{" "}
+          <code className="bg-cream-dark rounded px-1.5 py-0.5 text-xs">
+            --color-danger
+          </code>{" "}
+          = brand-red ·
+          <code className="bg-cream-dark mx-1 rounded px-1.5 py-0.5 text-xs">
+            --color-success
+          </code>{" "}
+          = oklch(50% 0.19 145) ·
+          <code className="bg-cream-dark rounded px-1.5 py-0.5 text-xs">
+            --color-warning
+          </code>{" "}
+          = brand-gold.
         </p>
       </Section>
 
@@ -604,49 +708,76 @@ export default function BrandPage() {
             <h1 className="font-display text-charcoal text-6xl font-extrabold">
               عنوان رئيسي
             </h1>
-            <span className="font-mono text-warm-brown text-xs">text-6xl · font-extrabold (800)</span>
+            <span className="font-mono text-warm-brown text-xs">
+              text-6xl · font-extrabold (800)
+            </span>
           </div>
           <div className="border-brand-gold/20 flex items-baseline justify-between gap-4 border-b pb-4">
-            <h2 className="font-display text-charcoal text-4xl font-extrabold">عنوان قسم</h2>
-            <span className="font-mono text-warm-brown text-xs">text-4xl · font-extrabold (800)</span>
+            <h2 className="font-display text-charcoal text-4xl font-extrabold">
+              عنوان قسم
+            </h2>
+            <span className="font-mono text-warm-brown text-xs">
+              text-4xl · font-extrabold (800)
+            </span>
           </div>
           <div className="border-brand-gold/20 flex items-baseline justify-between gap-4 border-b pb-4">
-            <h3 className="font-display text-charcoal text-2xl font-bold">عنوان فرعي</h3>
-            <span className="font-mono text-warm-brown text-xs">text-2xl · font-bold (700)</span>
+            <h3 className="font-display text-charcoal text-2xl font-bold">
+              عنوان فرعي
+            </h3>
+            <span className="font-mono text-warm-brown text-xs">
+              text-2xl · font-bold (700)
+            </span>
           </div>
           <div className="border-brand-gold/20 flex items-baseline justify-between gap-4 border-b pb-4">
             <p className="font-body text-charcoal text-base leading-relaxed">
-              نصّ المتن — يقرأ بسهولة على الموبايل والسطح المكتبي. عرض السطر مثاليّ بين 45 و 75 حرفاً.
+              نصّ المتن — يقرأ بسهولة على الموبايل والسطح المكتبي. عرض السطر
+              مثاليّ بين 45 و 75 حرفاً.
             </p>
-            <span className="font-mono text-warm-brown shrink-0 text-xs">text-base · font-regular (400)</span>
+            <span className="font-mono text-warm-brown shrink-0 text-xs">
+              text-base · font-regular (400)
+            </span>
           </div>
           <div className="flex items-baseline justify-between gap-4">
             <span className="font-accent text-warm-brown-light text-xs uppercase tracking-widest">
               نص فوقي · EYEBROW
             </span>
-            <span className="font-mono text-warm-brown text-xs">text-xs · uppercase · tracking-widest</span>
+            <span className="font-mono text-warm-brown text-xs">
+              text-xs · uppercase · tracking-widest
+            </span>
           </div>
         </div>
       </Section>
 
       {/* ── MOVABLE BAR (TICKER) — LOCKED V2 ──────────────────────── */}
-      <Section eyebrow="The movable bar" title="Ticker strip · V2 Live deals" status="locked">
+      <Section
+        eyebrow="The movable bar"
+        title="Ticker strip · V2 Live deals"
+        status="locked"
+      >
         <div className="flex flex-col gap-3">
           <TickerV2LiveDeals />
           <p className="text-warm-brown font-body text-sm">
-            <strong>Shipped:</strong> the live header ticker now pulls the top 5 active coupons from the DB on every
-            request (server-rendered, no flash). Each tile is clickable → coupon detail page. The static
-            &quot;مباشر&quot; (LIVE) anchor on the right stays put while the deals scroll RTL. Cron-refreshed inventory means
-            the ticker is always current.
+            <strong>Shipped:</strong> the live header ticker now pulls the top 5
+            active coupons from the DB on every request (server-rendered, no
+            flash). Each tile is clickable → coupon detail page. The static
+            &quot;مباشر&quot; (LIVE) anchor on the right stays put while the
+            deals scroll RTL. Cron-refreshed inventory means the ticker is
+            always current.
           </p>
         </div>
       </Section>
 
       {/* ── BUTTONS ────────────────────────────────────────────────── */}
-      <Section eyebrow="Primitives" title="Buttons · variants × sizes × states" status="locked">
+      <Section
+        eyebrow="Primitives"
+        title="Buttons · variants × sizes × states"
+        status="locked"
+      >
         <div className="flex flex-col gap-8">
           <div>
-            <h4 className="font-display text-charcoal mb-3 text-sm font-bold">Variants</h4>
+            <h4 className="font-display text-charcoal mb-3 text-sm font-bold">
+              Variants
+            </h4>
             <div className="flex flex-wrap items-center gap-3">
               <Button variant="primary">إظهار الكود</Button>
               <Button variant="gold">اذهب للمتجر</Button>
@@ -656,7 +787,9 @@ export default function BrandPage() {
             </div>
           </div>
           <div>
-            <h4 className="font-display text-charcoal mb-3 text-sm font-bold">Sizes</h4>
+            <h4 className="font-display text-charcoal mb-3 text-sm font-bold">
+              Sizes
+            </h4>
             <div className="flex flex-wrap items-center gap-3">
               <Button size="sm">صغير</Button>
               <Button size="md">متوسط</Button>
@@ -664,10 +797,14 @@ export default function BrandPage() {
             </div>
           </div>
           <div>
-            <h4 className="font-display text-charcoal mb-3 text-sm font-bold">States</h4>
+            <h4 className="font-display text-charcoal mb-3 text-sm font-bold">
+              States
+            </h4>
             <div className="flex flex-wrap items-center gap-3">
               <Button>عادي</Button>
-              <Button className="hover:bg-brand-red-dark">Hover (مرّر فوقه)</Button>
+              <Button className="hover:bg-brand-red-dark">
+                Hover (مرّر فوقه)
+              </Button>
               <Button disabled>معطّل</Button>
               <Button variant="primary">
                 <Tag className="h-4 w-4" />
@@ -713,46 +850,66 @@ export default function BrandPage() {
       </Section>
 
       {/* ── COUPON CARD — LOCKED V2 ────────────────────────────────── */}
-      <Section eyebrow="Components" title="Coupon card · V2 Featured" status="locked">
+      <Section
+        eyebrow="Components"
+        title="Coupon card · V2 Featured"
+        status="locked"
+      >
         <div className="grid gap-6 md:grid-cols-3">
           <div className="flex flex-col gap-2">
-            <h4 className="font-display text-charcoal text-sm font-bold">Standard card</h4>
+            <h4 className="font-display text-charcoal text-sm font-bold">
+              Standard card
+            </h4>
             <p className="text-warm-brown-light font-body text-xs">
-              Used everywhere: homepage, store pages, category pages, search results.
+              Used everywhere: homepage, store pages, category pages, search
+              results.
             </p>
             <CouponCardV2Featured />
           </div>
           <div className="flex flex-col gap-2">
-            <h4 className="font-display text-charcoal text-sm font-bold">With exclusive</h4>
+            <h4 className="font-display text-charcoal text-sm font-bold">
+              With exclusive
+            </h4>
             <p className="text-warm-brown-light font-body text-xs">
               Gold ribbon top-left when <code>is_exclusive = true</code>.
             </p>
             <CouponCardV2Featured />
           </div>
           <div className="flex flex-col gap-2">
-            <h4 className="font-display text-charcoal text-sm font-bold">Freshness pill</h4>
+            <h4 className="font-display text-charcoal text-sm font-bold">
+              Freshness pill
+            </h4>
             <p className="text-warm-brown-light font-body text-xs">
-              Green pulse pill appears top-right when <code>updated_at</code> is ≤24h old. Sprint 3 replaces with real
+              Green pulse pill appears top-right when <code>updated_at</code> is
+              ≤24h old. Sprint 3 replaces with real
               <code>last_verified_at</code>.
             </p>
             <CouponCardV2Featured />
           </div>
         </div>
         <p className="text-warm-brown font-body mt-6 text-sm">
-          <strong>Shipped:</strong> the production <code>&lt;CouponCard&gt;</code> component now matches this design.
-          One unified card across every surface — no V1, no V3. All existing callers (8 homepage slots, store pages,
-          category pages, search, related-coupons) automatically pick up the new visual.
+          <strong>Shipped:</strong> the production{" "}
+          <code>&lt;CouponCard&gt;</code> component now matches this design. One
+          unified card across every surface — no V1, no V3. All existing callers
+          (8 homepage slots, store pages, category pages, search,
+          related-coupons) automatically pick up the new visual.
         </p>
       </Section>
 
       {/* ── HERO — LOCKED V1 ─────────────────────────────────────── */}
-      <Section eyebrow="Components" title="Homepage hero · V1 Bold red full-bleed" status="locked">
+      <Section
+        eyebrow="Components"
+        title="Homepage hero · V1 Bold red full-bleed"
+        status="locked"
+      >
         <HeroV1BoldRed />
         <p className="text-warm-brown font-body mt-6 text-sm">
-          <strong>Shipped:</strong> the homepage now leads with this hero. Brand-red full-bleed, gold CTA,
-          search-first, trust pills, floating coupon stack on the right populated from the top 3 real featured
-          coupons. The cards rotate subtly and stagger their fade-up. Mobile drops the floating stack and keeps the
-          hero short to push users to the featured-coupons grid below.
+          <strong>Shipped:</strong> the homepage now leads with this hero.
+          Brand-red full-bleed, gold CTA, search-first, trust pills, floating
+          coupon stack on the right populated from the top 3 real featured
+          coupons. The cards rotate subtly and stagger their fade-up. Mobile
+          drops the floating stack and keeps the hero short to push users to the
+          featured-coupons grid below.
         </p>
       </Section>
 
@@ -784,10 +941,16 @@ export default function BrandPage() {
       </Section>
 
       {/* ── SPACING / RADIUS / SHADOW ─────────────────────────────── */}
-      <Section eyebrow="Tokens" title="Spacing · radius · shadow" status="locked">
+      <Section
+        eyebrow="Tokens"
+        title="Spacing · radius · shadow"
+        status="locked"
+      >
         <div className="grid gap-6 md:grid-cols-3">
           <div className="bg-white border-brand-gold/20 rounded-2xl border p-6">
-            <h4 className="font-display text-charcoal mb-4 text-sm font-bold">Radius</h4>
+            <h4 className="font-display text-charcoal mb-4 text-sm font-bold">
+              Radius
+            </h4>
             <div className="flex flex-col gap-3">
               {[
                 { name: "rounded-md (8px)", cls: "rounded-md" },
@@ -797,26 +960,41 @@ export default function BrandPage() {
               ].map((r) => (
                 <div key={r.name} className="flex items-center gap-3">
                   <div className={`bg-brand-red h-10 w-16 ${r.cls}`} />
-                  <span className="font-mono text-warm-brown text-xs">{r.name}</span>
+                  <span className="font-mono text-warm-brown text-xs">
+                    {r.name}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
           <div className="bg-white border-brand-gold/20 rounded-2xl border p-6">
-            <h4 className="font-display text-charcoal mb-4 text-sm font-bold">Shadows</h4>
+            <h4 className="font-display text-charcoal mb-4 text-sm font-bold">
+              Shadows
+            </h4>
             <div className="flex flex-col gap-4">
               <div className="bg-cream rounded-xl p-4 shadow-sm">shadow-sm</div>
-              <div className="bg-cream shadow-brand rounded-xl p-4">shadow-brand</div>
-              <div className="bg-cream shadow-gold rounded-xl p-4">shadow-gold</div>
+              <div className="bg-cream shadow-brand rounded-xl p-4">
+                shadow-brand
+              </div>
+              <div className="bg-cream shadow-gold rounded-xl p-4">
+                shadow-gold
+              </div>
             </div>
           </div>
           <div className="bg-white border-brand-gold/20 rounded-2xl border p-6">
-            <h4 className="font-display text-charcoal mb-4 text-sm font-bold">Spacing scale</h4>
+            <h4 className="font-display text-charcoal mb-4 text-sm font-bold">
+              Spacing scale
+            </h4>
             <div className="flex flex-col gap-2">
               {[2, 3, 4, 6, 8, 10, 12].map((s) => (
                 <div key={s} className="flex items-center gap-3">
-                  <div className="bg-brand-gold h-3 rounded" style={{ width: `${s * 4}px` }} />
-                  <span className="font-mono text-warm-brown text-xs">{s} · {s * 4}px</span>
+                  <div
+                    className="bg-brand-gold h-3 rounded"
+                    style={{ width: `${s * 4}px` }}
+                  />
+                  <span className="font-mono text-warm-brown text-xs">
+                    {s} · {s * 4}px
+                  </span>
                 </div>
               ))}
             </div>
@@ -867,14 +1045,19 @@ export default function BrandPage() {
       </Section>
 
       {/* ── SPRINT 1 CLOSED · SPRINT 2 NEXT ──────────────────────── */}
-      <Section eyebrow="Sprint 1 closed" title="What ships next" status="preview">
+      <Section
+        eyebrow="Sprint 1 closed"
+        title="What ships next"
+        status="preview"
+      >
         <div className="bg-charcoal text-cream rounded-3xl p-8 md:p-10">
           <div className="mb-8 flex flex-wrap items-baseline gap-4">
             <span className="bg-success/15 text-success border-success/30 font-accent rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-wider">
               ✓ Sprint 1 complete
             </span>
             <span className="text-cream/60 font-body text-sm">
-              Ticker V2 · Coupon card V2 · Hero V1 — all live on preview, ready to merge to main
+              Ticker V2 · Coupon card V2 · Hero V1 — all live on preview, ready
+              to merge to main
             </span>
           </div>
 
@@ -882,8 +1065,9 @@ export default function BrandPage() {
             Sprint 2 · Daily-Fresh Coupon Engine
           </h3>
           <p className="text-cream/80 font-body mb-6 max-w-2xl text-base leading-relaxed">
-            Solves the &quot;no real updated daily/weekly mechanism&quot; gap. After Sprint 2, coupons can never silently
-            rot — every code has a visible freshness signal, and a cron job verifies inventory nightly.
+            Solves the &quot;no real updated daily/weekly mechanism&quot; gap.
+            After Sprint 2, coupons can never silently rot — every code has a
+            visible freshness signal, and a cron job verifies inventory nightly.
           </p>
 
           <ol className="flex flex-col gap-5">
@@ -893,11 +1077,13 @@ export default function BrandPage() {
               </span>
               <div>
                 <strong className="font-display text-lg">
-                  DB migration: <code>last_verified_at</code>, <code>verified_by</code>
+                  DB migration: <code>last_verified_at</code>,{" "}
+                  <code>verified_by</code>
                 </strong>
                 <p className="text-cream/70 font-body mt-1 text-sm">
-                  Real verification timestamps replace the <code>updated_at</code> proxy currently powering the
-                  freshness pill on coupon cards.
+                  Real verification timestamps replace the{" "}
+                  <code>updated_at</code> proxy currently powering the freshness
+                  pill on coupon cards.
                 </p>
               </div>
             </li>
@@ -906,10 +1092,13 @@ export default function BrandPage() {
                 2
               </span>
               <div>
-                <strong className="font-display text-lg">Nightly scrape cron</strong>
+                <strong className="font-display text-lg">
+                  Nightly scrape cron
+                </strong>
                 <p className="text-cream/70 font-body mt-1 text-sm">
-                  <code>/api/cron/scrape-coupons</code> at 03:00 UTC. Adds new codes, marks dupes, bumps verified-at.
-                  Never deletes — only archives via the existing expire-coupons cron.
+                  <code>/api/cron/scrape-coupons</code> at 03:00 UTC. Adds new
+                  codes, marks dupes, bumps verified-at. Never deletes — only
+                  archives via the existing expire-coupons cron.
                 </p>
               </div>
             </li>
@@ -918,10 +1107,13 @@ export default function BrandPage() {
                 3
               </span>
               <div>
-                <strong className="font-display text-lg">Admin verify-queue</strong>
+                <strong className="font-display text-lg">
+                  Admin verify-queue
+                </strong>
                 <p className="text-cream/70 font-body mt-1 text-sm">
-                  New <code>/admin/verify-queue</code> sorted by oldest verified-at. One-click manual verify bumps the
-                  timestamp, optionally pins.
+                  New <code>/admin/verify-queue</code> sorted by oldest
+                  verified-at. One-click manual verify bumps the timestamp,
+                  optionally pins.
                 </p>
               </div>
             </li>
@@ -930,9 +1122,12 @@ export default function BrandPage() {
                 4
               </span>
               <div>
-                <strong className="font-display text-lg">Sunday hand-test ritual</strong>
+                <strong className="font-display text-lg">
+                  Sunday hand-test ritual
+                </strong>
                 <p className="text-cream/70 font-body mt-1 text-sm">
-                  30-min weekly process: verify the top 50 by clicks. Documented in PLAYBOOK.
+                  30-min weekly process: verify the top 50 by clicks. Documented
+                  in PLAYBOOK.
                 </p>
               </div>
             </li>
@@ -940,8 +1135,8 @@ export default function BrandPage() {
 
           <div className="border-cream/15 mt-8 border-t pt-6">
             <p className="text-cream/70 font-body text-sm">
-              Sprint 2 starts the moment you say &quot;merge sprint-1-design and start sprint 2&quot;. ETA: 5 working days
-              once kicked off.
+              Sprint 2 starts the moment you say &quot;merge sprint-1-design and
+              start sprint 2&quot;. ETA: 5 working days once kicked off.
             </p>
           </div>
         </div>

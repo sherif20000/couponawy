@@ -9,7 +9,10 @@ interface Props {
   searchParams: Promise<{ error?: string }>;
 }
 
-export default async function EditCategoryPage({ params, searchParams }: Props) {
+export default async function EditCategoryPage({
+  params,
+  searchParams,
+}: Props) {
   const { id } = await params;
   const sp = await searchParams;
   const category = await getCategoryById(id);
@@ -24,11 +27,16 @@ export default async function EditCategoryPage({ params, searchParams }: Props) 
       <div className="p-6 max-w-xl">
         {sp.error && (
           <div className="mb-4 bg-red-50 border border-red-200 rounded-xl p-3">
-            <p className="text-red-700 text-sm">حدث خطأ أثناء الحفظ. حاول مرة أخرى.</p>
+            <p className="text-red-700 text-sm">
+              حدث خطأ أثناء الحفظ. حاول مرة أخرى.
+            </p>
           </div>
         )}
 
-        <form action={boundAction} className="bg-white rounded-xl border border-charcoal/8 p-6 space-y-4">
+        <form
+          action={boundAction}
+          className="bg-white rounded-xl border border-charcoal/8 p-6 space-y-4"
+        >
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-charcoal mb-1.5">

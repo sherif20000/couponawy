@@ -89,7 +89,9 @@ export default async function StoresPage({ searchParams }: Props) {
                         />
                       </div>
                       <div>
-                        <p className="font-medium text-charcoal">{store.name_ar}</p>
+                        <p className="font-medium text-charcoal">
+                          {store.name_ar}
+                        </p>
                         {store.name_en && (
                           <p className="text-xs text-warm-brown/60" dir="ltr">
                             {store.name_en}
@@ -101,7 +103,8 @@ export default async function StoresPage({ searchParams }: Props) {
                   <td className="px-4 py-3">
                     <span
                       className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-                        statusColors[store.status] ?? "bg-gray-100 text-gray-600"
+                        statusColors[store.status] ??
+                        "bg-gray-100 text-gray-600"
                       }`}
                     >
                       {statusLabels[store.status] ?? store.status}
@@ -110,7 +113,10 @@ export default async function StoresPage({ searchParams }: Props) {
                   <td className="px-4 py-3 text-warm-brown/60">
                     {store.is_featured ? "✓" : "—"}
                   </td>
-                  <td className="px-4 py-3 text-warm-brown/60 font-mono text-xs" dir="ltr">
+                  <td
+                    className="px-4 py-3 text-warm-brown/60 font-mono text-xs"
+                    dir="ltr"
+                  >
                     {store.slug}
                   </td>
                   <td className="px-4 py-3">

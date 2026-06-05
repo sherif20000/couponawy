@@ -27,7 +27,9 @@ try {
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!SUPABASE_URL || !SERVICE_KEY) {
-  console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+  console.error(
+    "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+  );
   process.exit(1);
 }
 
@@ -248,8 +250,7 @@ const articles = [
   {
     slug: "iherb-beginners-guide",
     title_ar: "دليل المبتدئين للتسوّق من اي هيرب — كل ما تحتاج معرفته",
-    excerpt_ar:
-      "الشحن، الجمارك، كوبونات الخصم، والمنتجات الأكثر مبيعاً للعرب.",
+    excerpt_ar: "الشحن، الجمارك، كوبونات الخصم، والمنتجات الأكثر مبيعاً للعرب.",
     read_time_minutes: 6,
     tags: ["iherb", "vitamins", "guide"],
     body_ar: `إذا كنت تشتري فيتامينات أو مكمّلات غذائية أو منتجات صحية، فعاجلاً أم آجلاً ستسمع عن **اي هيرب** (iHerb). الموقع الأمريكي يبيع آلاف المنتجات الصحية بأسعار أرخص بكثير من نظيراتها في الصيدليات السعودية.
@@ -328,8 +329,7 @@ const articles = [
   {
     slug: "best-time-flights-arabs",
     title_ar: "أفضل وقت لحجز الطيران بأرخص الأسعار للمسافر العربي",
-    excerpt_ar:
-      "متى تحجز، وكيف تستخدم كوبونات السفر بشكل صحيح لتوفير حتى ٤٠٪.",
+    excerpt_ar: "متى تحجز، وكيف تستخدم كوبونات السفر بشكل صحيح لتوفير حتى ٤٠٪.",
     read_time_minutes: 6,
     tags: ["travel", "flights", "savings"],
     body_ar: `سعر تذكرة الطيران ليس ثابتاً — قد يتضاعف أو ينخفض إلى النصف في نفس اليوم بناءً على متغيّرات أنت لا تراها. لكن مع بعض القواعد البسيطة، يمكنك دائماً الحصول على سعر قريب من الأدنى.
@@ -663,7 +663,7 @@ const articles = [
 
 async function seed() {
   console.log(
-    `Seeding ${articles.length} articles... (mode: ${FORCE ? "upsert" : "skip-existing"})`
+    `Seeding ${articles.length} articles... (mode: ${FORCE ? "upsert" : "skip-existing"})`,
   );
 
   for (const article of articles) {

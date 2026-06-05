@@ -32,6 +32,7 @@ For the **top 20 rows** (or all "never verified" + "60+ days", whichever is smal
 6. **If it does NOT work** → click **«أرشفة»**. Coupon is paused; admins can review the pause note later.
 
 Tactical notes:
+
 - For stores requiring login (Noon, Amazon SA, etc.) keep a throw-away test account ready.
 - For coupons with `min_order` constraints, add the cheapest item that hits the threshold.
 - If a coupon code is missing entirely (no `code` field), the "verify" is just confirming the destination URL still works and the merchant page still exists.
@@ -76,6 +77,7 @@ For each: status 200, page paints, no console errors. If you see anything weird,
 Vercel runtime logs tab → filter `level=error,fatal`, last 7 days.
 
 Expected baseline:
+
 - **0 AuthApiErrors** (we killed these in PR #17)
 - **0 lookupType:5** from `/api/og` (we killed these in PR #18 by swapping Cairo→Tajawal)
 - **0 expire-coupons 500s** (we killed these in PR #16)

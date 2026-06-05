@@ -151,7 +151,7 @@ async function main() {
   const toScrape = stores.filter((s) => !alreadyScraped.has(s.id));
 
   console.log(
-    `${alreadyScraped.size} stores already have coupons, scraping ${toScrape.length} remaining.\n`
+    `${alreadyScraped.size} stores already have coupons, scraping ${toScrape.length} remaining.\n`,
   );
 
   let inserted = 0;
@@ -176,9 +176,7 @@ async function main() {
             return {
               store_id: store.id,
               code: c.code.trim().toUpperCase(),
-              title_ar:
-                c.title_ar ||
-                `كوبون خصم ${store.name_ar}`,
+              title_ar: c.title_ar || `كوبون خصم ${store.name_ar}`,
               discount_display: c.discount_display || null,
               discount_type: type,
               discount_value: value,
@@ -189,7 +187,9 @@ async function main() {
           });
 
         if (couponsToInsert.length === 0) {
-          console.log(`${progress} ${store.slug} — codes extracted but all filtered out`);
+          console.log(
+            `${progress} ${store.slug} — codes extracted but all filtered out`,
+          );
           skipped++;
         } else {
           const { error: insertErr } = await supabase
@@ -200,11 +200,14 @@ async function main() {
             });
 
           if (insertErr) {
-            console.error(`${progress} ${store.slug} — insert error:`, insertErr.message);
+            console.error(
+              `${progress} ${store.slug} — insert error:`,
+              insertErr.message,
+            );
             failed++;
           } else {
             console.log(
-              `${progress} ${store.slug} — inserted ${couponsToInsert.length} coupons`
+              `${progress} ${store.slug} — inserted ${couponsToInsert.length} coupons`,
             );
             inserted += couponsToInsert.length;
           }

@@ -2,7 +2,15 @@ import Link from "next/link";
 import { StoreLogo } from "@/components/stores/store-logo";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Clock, BadgeCheck, Sparkles, Tag, AlertCircle, Flag, TrendingUp } from "lucide-react";
+import {
+  Clock,
+  BadgeCheck,
+  Sparkles,
+  Tag,
+  AlertCircle,
+  Flag,
+  TrendingUp,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/shell/section";
 import { PageHero } from "@/components/shell/page-hero";
@@ -86,7 +94,6 @@ export async function generateMetadata({
     coupon.description_ar ??
     `${coupon.title_ar} من ${storeName}. كود خصم مجرّب ومحدّث على كوبوناوي.`;
 
-
   // Generate OG card on the edge — title is the offer headline, subtitle is store name.
   // The store logo isn't a great OG image (1:1 ratio, often pixelated), so a branded
   // 1200×630 card communicates "this is a coupon offer from {store}" much better.
@@ -107,12 +114,13 @@ export async function generateMetadata({
   };
 }
 
-
 function buildCouponJsonLd(
-  coupon: NonNullable<Awaited<ReturnType<typeof getCouponBySlug>>>
+  coupon: NonNullable<Awaited<ReturnType<typeof getCouponBySlug>>>,
 ) {
   const storeName = coupon.store?.name_ar ?? "المتجر";
-  const storeUrl = coupon.store ? `${BASE_URL}/stores/${coupon.store.slug}` : undefined;
+  const storeUrl = coupon.store
+    ? `${BASE_URL}/stores/${coupon.store.slug}`
+    : undefined;
 
   const ld: Record<string, unknown> = {
     "@context": "https://schema.org",
@@ -141,7 +149,10 @@ function buildCouponJsonLd(
 
   if (coupon.discount_type === "percentage" && coupon.discount_value != null) {
     ld.description = `خصم ${coupon.discount_value}% ${ld.description}`;
-  } else if (coupon.discount_type === "fixed" && coupon.discount_value != null) {
+  } else if (
+    coupon.discount_type === "fixed" &&
+    coupon.discount_value != null
+  ) {
     ld.description = `خصم ${coupon.discount_value} ريال ${ld.description}`;
   }
 
@@ -165,7 +176,9 @@ export default async function CouponPage({ params }: PageProps) {
   const verifiedOn = formatDate(coupon.last_verified_at);
   const hasCode = coupon.discount_type !== "free_shipping";
   const storeName = coupon.store?.name_ar ?? "المتجر";
-  const isExpired = coupon.status === "expired" || (coupon.expires_at != null && new Date(coupon.expires_at) < new Date());
+  const isExpired =
+    coupon.status === "expired" ||
+    (coupon.expires_at != null && new Date(coupon.expires_at) < new Date());
   const couponJsonLd = buildCouponJsonLd(coupon);
 
   // Template input drives the SEO long-copy + FAQ blocks below. Same shape is
@@ -419,7 +432,7 @@ export default async function CouponPage({ params }: PageProps) {
         <div className="flex flex-wrap items-center gap-4">
           <a
             href={`https://wa.me/?text=${encodeURIComponent(
-              `وجدت عرضاً رائعاً من ${storeName} على كوبوناوي! ${BASE_URL}/coupons/${coupon.slug}`
+              `وجدت عرضاً رائعاً من ${storeName} على كوبوناوي! ${BASE_URL}/coupons/${coupon.slug}`,
             )}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -464,13 +477,17 @@ export default async function CouponPage({ params }: PageProps) {
                 {coupon.min_order != null && (
                   <div className="flex flex-col gap-1">
                     <dt className="text-warm-brown-light">الحد الأدنى</dt>
-                    <dd className="text-charcoal font-semibold">{coupon.min_order} ريال</dd>
+                    <dd className="text-charcoal font-semibold">
+                      {coupon.min_order} ريال
+                    </dd>
                   </div>
                 )}
                 {coupon.max_discount != null && (
                   <div className="flex flex-col gap-1">
                     <dt className="text-warm-brown-light">أقصى خصم</dt>
-                    <dd className="text-charcoal font-semibold">{coupon.max_discount} ريال</dd>
+                    <dd className="text-charcoal font-semibold">
+                      {coupon.max_discount} ريال
+                    </dd>
                   </div>
                 )}
                 {coupon.expires_at && (

@@ -4,7 +4,8 @@ import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
   title: "الكوبون غير موجود",
-  description: "الكوبون الذي تبحث عنه غير موجود. تصفّح جميع الكوبونات على كوبوناوي.",
+  description:
+    "الكوبون الذي تبحث عنه غير موجود. تصفّح جميع الكوبونات على كوبوناوي.",
   // See src/app/not-found.tsx for rationale — noindex blocks Google from
   // indexing the soft-404 body that fires when an unknown coupon slug is
   // visited on the dynamically-rendered /coupons/[slug] route.
@@ -23,7 +24,8 @@ export default function CouponNotFound() {
           الكوبون غير موجود
         </h1>
         <p className="font-body text-warm-brown mx-auto mb-10 max-w-sm text-base">
-          هذا الكوبون غير موجود أو ربما انتهت صلاحيته. ابحث عن كوبونات أخرى من نفس المتجر.
+          هذا الكوبون غير موجود أو ربما انتهت صلاحيته. ابحث عن كوبونات أخرى من
+          نفس المتجر.
         </p>
 
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">

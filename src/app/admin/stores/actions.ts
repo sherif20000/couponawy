@@ -10,13 +10,17 @@ export async function createStore(formData: FormData) {
 
   const name_ar = formData.get("name_ar") as string;
   const name_en = (formData.get("name_en") as string) || name_ar;
-  const slug =
-    (formData.get("slug") as string) || slugify(name_en || name_ar);
+  const slug = (formData.get("slug") as string) || slugify(name_en || name_ar);
   const logo_url = (formData.get("logo_url") as string) || null;
-  const website_url = (formData.get("website_url") as string) || "https://example.com";
-  const short_description_ar = (formData.get("short_description_ar") as string) || null;
+  const website_url = (formData.get("website_url") as string)?.trim();
+  if (!website_url || !/^https?:\/\//i.test(website_url)) {
+    redirect("/admin/stores/new?error=missing_url");
+  }
+  const short_description_ar =
+    (formData.get("short_description_ar") as string) || null;
   const description_ar = (formData.get("description_ar") as string) || null;
-  const status = (formData.get("status") as "active" | "paused" | "archived") || "active";
+  const status =
+    (formData.get("status") as "active" | "paused" | "archived") || "active";
   const is_featured = formData.get("is_featured") === "true";
   const is_verified = formData.get("is_verified") === "true";
   const display_order = parseInt(formData.get("display_order") as string) || 0;
@@ -29,8 +33,10 @@ export async function createStore(formData: FormData) {
   const review_count = reviewCountRaw ? parseInt(reviewCountRaw) : null;
   // Editorial overrides (optional long-form markdown). Empty string → null
   // so the public page falls back to programmatic templates.
-  const editorial_intro_ar = (formData.get("editorial_intro_ar") as string) || null;
-  const seasonal_calendar_ar = (formData.get("seasonal_calendar_ar") as string) || null;
+  const editorial_intro_ar =
+    (formData.get("editorial_intro_ar") as string) || null;
+  const seasonal_calendar_ar =
+    (formData.get("seasonal_calendar_ar") as string) || null;
   const shipping_info_ar = (formData.get("shipping_info_ar") as string) || null;
 
   const { error } = await supabase.from("stores").insert({
@@ -70,13 +76,14 @@ export async function updateStore(id: string, formData: FormData) {
 
   const name_ar = formData.get("name_ar") as string;
   const name_en = (formData.get("name_en") as string) || name_ar;
-  const slug =
-    (formData.get("slug") as string) || slugify(name_en || name_ar);
+  const slug = (formData.get("slug") as string) || slugify(name_en || name_ar);
   const logo_url = (formData.get("logo_url") as string) || null;
   const website_url = (formData.get("website_url") as string) || undefined;
-  const short_description_ar = (formData.get("short_description_ar") as string) || null;
+  const short_description_ar =
+    (formData.get("short_description_ar") as string) || null;
   const description_ar = (formData.get("description_ar") as string) || null;
-  const status = (formData.get("status") as "active" | "paused" | "archived") || "active";
+  const status =
+    (formData.get("status") as "active" | "paused" | "archived") || "active";
   const is_featured = formData.get("is_featured") === "true";
   const is_verified = formData.get("is_verified") === "true";
   const display_order = parseInt(formData.get("display_order") as string) || 0;
@@ -87,8 +94,10 @@ export async function updateStore(id: string, formData: FormData) {
   const rating = ratingRaw ? parseFloat(ratingRaw) : null;
   const reviewCountRaw = formData.get("review_count") as string;
   const review_count = reviewCountRaw ? parseInt(reviewCountRaw) : null;
-  const editorial_intro_ar = (formData.get("editorial_intro_ar") as string) || null;
-  const seasonal_calendar_ar = (formData.get("seasonal_calendar_ar") as string) || null;
+  const editorial_intro_ar =
+    (formData.get("editorial_intro_ar") as string) || null;
+  const seasonal_calendar_ar =
+    (formData.get("seasonal_calendar_ar") as string) || null;
   const shipping_info_ar = (formData.get("shipping_info_ar") as string) || null;
 
   const { error } = await supabase

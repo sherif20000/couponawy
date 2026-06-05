@@ -25,12 +25,16 @@ type LogoProps = {
  * `variant="mark"` returns the icon alone (no wordmark) for tight spots
  * like the mobile drawer trigger.
  */
-export function Logo({ className, variant = "full", inverted = false }: LogoProps) {
+export function Logo({
+  className,
+  variant = "full",
+  inverted = false,
+}: LogoProps) {
   return (
     <span
       className={cn(
         "inline-flex items-center gap-2.5 font-display leading-none",
-        className
+        className,
       )}
     >
       <CouponTicketMark inverted={inverted} />
@@ -38,7 +42,7 @@ export function Logo({ className, variant = "full", inverted = false }: LogoProp
         <span
           className={cn(
             "text-2xl font-extrabold tracking-tight",
-            inverted ? "text-white" : "text-brand-red"
+            inverted ? "text-white" : "text-brand-red",
           )}
         >
           كوبوناوي

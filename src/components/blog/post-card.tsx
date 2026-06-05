@@ -45,7 +45,7 @@ export function PostCard({ post, basePath, tag, className }: PostCardProps) {
     <Card
       className={cn(
         "group flex h-full flex-col overflow-hidden hover:-translate-y-0.5 hover:shadow-lg",
-        className
+        className,
       )}
     >
       <Link href={href} className="flex flex-1 flex-col">

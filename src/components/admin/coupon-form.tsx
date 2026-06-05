@@ -266,7 +266,9 @@ export function CouponForm({ coupon, stores, action, submitLabel }: Props) {
             <option value="false">غير حصري</option>
             <option value="true">حصري</option>
           </select>
-          <p className="text-sm text-warm-brown/60">يُظهر شارة "حصري" على الكارد</p>
+          <p className="text-sm text-warm-brown/60">
+            يُظهر شارة "حصري" على الكارد
+          </p>
         </div>
       </div>
 

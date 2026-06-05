@@ -48,7 +48,10 @@ export function Section({
   ...props
 }: SectionProps) {
   return (
-    <section className={cn(toneMap[tone], spacingMap[spacing], className)} {...props}>
+    <section
+      className={cn(toneMap[tone], spacingMap[spacing], className)}
+      {...props}
+    >
       {bleed ? children : <Container size={size}>{children}</Container>}
     </section>
   );

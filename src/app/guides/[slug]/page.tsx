@@ -9,15 +9,11 @@ import { ArticleToc } from "@/components/content/article-toc";
 import { RelatedCoupons } from "@/components/content/related-coupons";
 import { extractToc } from "@/lib/content/toc";
 import { BASE_URL } from "@/lib/utils/site";
-import {
-  getGuideBySlug,
-  getAllGuideSlugsBuildTime,
-} from "@/lib/queries/posts";
+import { getGuideBySlug, getAllGuideSlugsBuildTime } from "@/lib/queries/posts";
 import { getCouponsByCategory } from "@/lib/queries/categories";
 import { getFeaturedCoupons } from "@/lib/queries/homepage";
 
 export const revalidate = 1800;
-
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -25,7 +21,9 @@ export async function generateStaticParams() {
   return getAllGuideSlugsBuildTime();
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const guide = await getGuideBySlug(slug);
   if (!guide) return { title: "الدليل غير موجود" };
@@ -115,7 +113,12 @@ export default async function GuidePage({ params }: PageProps) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "الدلائل", item: `${BASE_URL}/guides` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "الدلائل",
+        item: `${BASE_URL}/guides`,
+      },
       {
         "@type": "ListItem",
         position: 3,

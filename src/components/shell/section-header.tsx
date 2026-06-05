@@ -61,7 +61,7 @@ export function SectionHeader({
     <div
       className={cn(
         "mb-8 flex flex-wrap items-end justify-between gap-4 md:mb-10",
-        className
+        className,
       )}
     >
       <div className="flex flex-col gap-1.5">
@@ -69,7 +69,7 @@ export function SectionHeader({
           <div
             className={cn(
               "font-accent inline-flex items-center gap-1.5 text-sm font-semibold",
-              eyebrowToneMap[eyebrow.tone ?? "brand"]
+              eyebrowToneMap[eyebrow.tone ?? "brand"],
             )}
           >
             {EyebrowIcon && <EyebrowIcon className="h-4 w-4" aria-hidden />}
@@ -79,7 +79,7 @@ export function SectionHeader({
         <Heading
           className={cn(
             "font-display text-charcoal font-extrabold leading-tight",
-            headingSize
+            headingSize,
           )}
         >
           {title}

@@ -40,12 +40,12 @@ export async function GET(req: NextRequest) {
   } else {
     // Layer 2: Vercel cron user-agent fallback
     console.warn(
-      "[expire-coupons] CRON_SECRET not set — using vercel-cron user-agent fallback. Set CRON_SECRET for stronger auth."
+      "[expire-coupons] CRON_SECRET not set — using vercel-cron user-agent fallback. Set CRON_SECRET for stronger auth.",
     );
     if (!userAgent.startsWith("vercel-cron/")) {
       return NextResponse.json(
         { error: "unauthorized — no CRON_SECRET and not from vercel-cron" },
-        { status: 401 }
+        { status: 401 },
       );
     }
   }
@@ -99,7 +99,7 @@ export async function GET(req: NextRequest) {
 
     console.log(
       `[expire-coupons cron] Expired ${count} coupons:`,
-      revalidatedSlugs.join(", ")
+      revalidatedSlugs.join(", "),
     );
   } else {
     console.log("[expire-coupons cron] No coupons to expire.");

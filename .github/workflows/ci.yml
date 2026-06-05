@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    name: Typecheck & Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Format check
+        run: npm run format:check
+
+      # NOTE: `next build` is intentionally excluded from CI.
+      # The build calls Supabase at build time (generateStaticParams, sitemap.ts)
+      # via createAdminClient(), which requires live SUPABASE_* env secrets.
+      # Running it in CI without those secrets would always false-fail.
+      # tsc --noEmit is the type-safety gate; the build runs only on Vercel.
+
+      # TODO: add ESLint once a Next.js 16-supported flat config is in place.
+      # The repo has no ESLint config today and Next 16 is deprecating `next lint`,
+      # so a lint step is deferred to avoid a fragile or conflicting setup.

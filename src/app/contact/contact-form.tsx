@@ -6,7 +6,7 @@ import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 
 export function ContactForm() {
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">(
-    "idle"
+    "idle",
   );
   const [errorMessage, setErrorMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -63,7 +63,9 @@ export function ContactForm() {
           className="font-display text-charcoal text-sm font-bold"
         >
           الاسم{" "}
-          <span className="font-body text-warm-brown font-normal">(اختياري)</span>
+          <span className="font-body text-warm-brown font-normal">
+            (اختياري)
+          </span>
         </label>
         <input
           id="name"
