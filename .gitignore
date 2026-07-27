@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# consolidation archives (local only, never push)
+_archive/
+planning/
