@@ -28,7 +28,17 @@ loadEnv();
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const FIRECRAWL_KEY = "fc-2a33a223734e4290b1792e78af3488c4";
+const FIRECRAWL_KEY = process.env.FIRECRAWL_KEY;
+
+if (!SUPABASE_URL) {
+  throw new Error("NEXT_PUBLIC_SUPABASE_URL is not set. Add it to .env.local (see README).");
+}
+if (!SUPABASE_SERVICE_KEY) {
+  throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set. Add it to .env.local (see README).");
+}
+if (!FIRECRAWL_KEY) {
+  throw new Error("FIRECRAWL_KEY is not set. Add it to .env.local (see README).");
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
