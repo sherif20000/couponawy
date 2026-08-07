@@ -46,7 +46,11 @@ function freshnessLabel(iso: string | null): string | null {
  * verified freshness, and a success-rate meter. Dynamic proof that the offer is
  * real and active (EEAT trust). Renders nothing if there's no signal to show.
  */
-export function CouponTrustSignals({ revealCount, lastVerifiedAt, successRate }: Props) {
+export function CouponTrustSignals({
+  revealCount,
+  lastVerifiedAt,
+  successRate,
+}: Props) {
   const count = useCountUp(revealCount);
   const fresh = freshnessLabel(lastVerifiedAt);
   const pct = successRate != null ? Math.round(successRate * 100) : null;
@@ -55,7 +59,9 @@ export function CouponTrustSignals({ revealCount, lastVerifiedAt, successRate }:
 
   return (
     <div className="border-brand-gold/30 bg-cream-dark/20 flex flex-col gap-4 rounded-2xl border p-5">
-      <h3 className="font-display text-charcoal text-base font-bold">إشارات الثقة</h3>
+      <h3 className="font-display text-charcoal text-base font-bold">
+        إشارات الثقة
+      </h3>
 
       {revealCount > 0 ? (
         <div className="flex items-center gap-2.5">
@@ -85,7 +91,9 @@ export function CouponTrustSignals({ revealCount, lastVerifiedAt, successRate }:
           <span className="bg-success/12 text-success flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
             <BadgeCheck className="h-4 w-4" aria-hidden />
           </span>
-          <span className="font-body text-warm-brown text-sm">{fresh} من فريقنا</span>
+          <span className="font-body text-warm-brown text-sm">
+            {fresh} من فريقنا
+          </span>
         </div>
       )}
 
@@ -93,7 +101,9 @@ export function CouponTrustSignals({ revealCount, lastVerifiedAt, successRate }:
         <div className="flex flex-col gap-1.5">
           <div className="font-body text-warm-brown flex items-center justify-between text-sm">
             <span>نسبة نجاح الكود</span>
-            <span className="font-display text-numeric-md text-charcoal">{pct}%</span>
+            <span className="font-display text-numeric-md text-charcoal">
+              {pct}%
+            </span>
           </div>
           <div
             className="bg-cream-dark h-2 w-full overflow-hidden rounded-full"
@@ -102,7 +112,10 @@ export function CouponTrustSignals({ revealCount, lastVerifiedAt, successRate }:
             aria-valuemin={0}
             aria-valuemax={100}
           >
-            <div className="bg-success h-full rounded-full" style={{ width: `${pct}%` }} />
+            <div
+              className="bg-success h-full rounded-full"
+              style={{ width: `${pct}%` }}
+            />
           </div>
         </div>
       )}

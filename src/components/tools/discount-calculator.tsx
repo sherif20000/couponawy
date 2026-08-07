@@ -12,7 +12,12 @@ import { Calculator } from "lucide-react";
 // display via toLocaleString(...-nu-latn) per site convention. No new deps.
 
 type Mode = "percent" | "newPrice" | "original";
-type Result = { newPrice: number; original: number; savings: number; percent: number };
+type Result = {
+  newPrice: number;
+  original: number;
+  savings: number;
+  percent: number;
+};
 
 const MODES: { id: Mode; label: string }[] = [
   { id: "percent", label: "احسب السعر بعد الخصم" },
@@ -22,7 +27,13 @@ const MODES: { id: Mode; label: string }[] = [
 
 const PRESETS = [10, 15, 20, 25, 30, 50, 70];
 const PRESET_LABELS: Record<number, string> = {
-  10: "١٠٪", 15: "١٥٪", 20: "٢٠٪", 25: "٢٥٪", 30: "٣٠٪", 50: "٥٠٪", 70: "٧٠٪",
+  10: "١٠٪",
+  15: "١٥٪",
+  20: "٢٠٪",
+  25: "٢٥٪",
+  30: "٣٠٪",
+  50: "٥٠٪",
+  70: "٧٠٪",
 };
 
 function fmt(n: number | null, fractionDigits = 2): string {
@@ -41,14 +52,18 @@ function useCountUp(target: number | null, duration = 400): number | null {
   const rafRef = useRef<number | null>(null);
   useEffect(() => {
     if (target === null || !Number.isFinite(target)) {
-      setDisplay(null); fromRef.current = null; return;
+      setDisplay(null);
+      fromRef.current = null;
+      return;
     }
     const reduced =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const from = fromRef.current ?? target;
     if (reduced || from === target) {
-      setDisplay(target); fromRef.current = target; return;
+      setDisplay(target);
+      fromRef.current = target;
+      return;
     }
     const start = performance.now();
     const tick = (now: number) => {
@@ -59,7 +74,9 @@ function useCountUp(target: number | null, duration = 400): number | null {
       else fromRef.current = target;
     };
     rafRef.current = requestAnimationFrame(tick);
-    return () => { if (rafRef.current !== null) cancelAnimationFrame(rafRef.current); };
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
   }, [target, duration]);
   return display;
 }
@@ -71,26 +88,52 @@ export function DiscountCalculator() {
   const [newPrice, setNewPrice] = useState("");
 
   const result = useMemo<Result | null>(() => {
-    const o = parseFloat(original), p = parseFloat(percent), n = parseFloat(newPrice);
-    if (mode === "percent" && Number.isFinite(o) && Number.isFinite(p) && o > 0 && p >= 0 && p <= 100) {
+    const o = parseFloat(original),
+      p = parseFloat(percent),
+      n = parseFloat(newPrice);
+    if (
+      mode === "percent" &&
+      Number.isFinite(o) &&
+      Number.isFinite(p) &&
+      o > 0 &&
+      p >= 0 &&
+      p <= 100
+    ) {
       const newP = o * (1 - p / 100);
       return { newPrice: newP, savings: o - newP, percent: p, original: o };
     }
-    if (mode === "newPrice" && Number.isFinite(o) && Number.isFinite(n) && o > 0 && n >= 0 && n <= o) {
+    if (
+      mode === "newPrice" &&
+      Number.isFinite(o) &&
+      Number.isFinite(n) &&
+      o > 0 &&
+      n >= 0 &&
+      n <= o
+    ) {
       const s = o - n;
       return { newPrice: n, savings: s, percent: (s / o) * 100, original: o };
     }
-    if (mode === "original" && Number.isFinite(n) && Number.isFinite(p) && n > 0 && p > 0 && p < 100) {
+    if (
+      mode === "original" &&
+      Number.isFinite(n) &&
+      Number.isFinite(p) &&
+      n > 0 &&
+      p > 0 &&
+      p < 100
+    ) {
       const o2 = n / (1 - p / 100);
       return { newPrice: n, savings: o2 - n, percent: p, original: o2 };
     }
     return null;
   }, [mode, original, percent, newPrice]);
 
-  const heroTarget = !result ? null
-    : mode === "percent" ? result.newPrice
-    : mode === "newPrice" ? result.percent
-    : result.original;
+  const heroTarget = !result
+    ? null
+    : mode === "percent"
+      ? result.newPrice
+      : mode === "newPrice"
+        ? result.percent
+        : result.original;
   const animated = useCountUp(heroTarget);
   const savingsPct = result ? Math.min(100, Math.max(0, result.percent)) : 0;
   const modeIndex = MODES.findIndex((m) => m.id === mode);
@@ -103,11 +146,18 @@ export function DiscountCalculator() {
   return (
     <div className="relative bg-cream border border-charcoal/10 rounded-3xl p-6 md:p-10 my-8 shadow-sm overflow-hidden">
       {/* Top accent: 1px gradient from brand-red to brand-gold */}
-      <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-l from-brand-red via-brand-red to-brand-gold" />
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-l from-brand-red via-brand-red to-brand-gold"
+      />
 
       <div className="flex flex-col gap-6">
         {/* Segmented mode control */}
-        <div role="tablist" aria-label="نوع الحساب" className="relative flex w-full rounded-full bg-cream-dark border border-charcoal/10 p-1">
+        <div
+          role="tablist"
+          aria-label="نوع الحساب"
+          className="relative flex w-full rounded-full bg-cream-dark border border-charcoal/10 p-1"
+        >
           <div
             aria-hidden
             className="absolute top-1 bottom-1 rounded-full bg-brand-red shadow-sm transition-transform duration-300 ease-out"
@@ -138,7 +188,9 @@ export function DiscountCalculator() {
         {/* Preset chip row — only when percent input is in scope */}
         {showPresets && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-body text-xs text-warm-brown ms-1">نسب شائعة:</span>
+            <span className="font-body text-xs text-warm-brown ms-1">
+              نسب شائعة:
+            </span>
             {PRESETS.map((p) => {
               const active = Number.isFinite(percentNum) && percentNum === p;
               return (
@@ -159,13 +211,30 @@ export function DiscountCalculator() {
         {/* Inputs grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {(mode === "percent" || mode === "newPrice") && (
-            <RiyalField label="السعر الأصلي" hint="السعر قبل أي خصم" value={original} onChange={setOriginal} placeholder="٢٥٠" />
+            <RiyalField
+              label="السعر الأصلي"
+              hint="السعر قبل أي خصم"
+              value={original}
+              onChange={setOriginal}
+              placeholder="٢٥٠"
+            />
           )}
           {(mode === "newPrice" || mode === "original") && (
-            <RiyalField label="السعر بعد الخصم" hint="السعر النهائي الذي ستدفعه" value={newPrice} onChange={setNewPrice} placeholder="١٨٧.٥" />
+            <RiyalField
+              label="السعر بعد الخصم"
+              hint="السعر النهائي الذي ستدفعه"
+              value={newPrice}
+              onChange={setNewPrice}
+              placeholder="١٨٧.٥"
+            />
           )}
           {(mode === "percent" || mode === "original") && (
-            <PercentField label="نسبة الخصم" hint="من ٠ إلى ١٠٠" value={percent} onChange={setPercent} />
+            <PercentField
+              label="نسبة الخصم"
+              hint="من ٠ إلى ١٠٠"
+              value={percent}
+              onChange={setPercent}
+            />
           )}
         </div>
 
@@ -179,29 +248,56 @@ export function DiscountCalculator() {
           {result && animated !== null ? (
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1">
-                <p className="font-accent text-eyebrow text-warm-brown">النتيجة</p>
-                <p className="font-display font-black text-brand-red text-5xl md:text-6xl leading-tight tabular-nums" dir="rtl">
+                <p className="font-accent text-eyebrow text-warm-brown">
+                  النتيجة
+                </p>
+                <p
+                  className="font-display font-black text-brand-red text-5xl md:text-6xl leading-tight tabular-nums"
+                  dir="rtl"
+                >
                   <span>{heroDisplay}</span>
-                  <span className="text-3xl md:text-4xl font-extrabold text-brand-red/80 ms-2">{heroSuffix}</span>
+                  <span className="text-3xl md:text-4xl font-extrabold text-brand-red/80 ms-2">
+                    {heroSuffix}
+                  </span>
                   <span className="sr-only">
-                    {mode === "percent" && `السعر بعد الخصم ${heroDisplay} ريال، بنسبة خصم ${fmt(result.percent, 1)}٪`}
+                    {mode === "percent" &&
+                      `السعر بعد الخصم ${heroDisplay} ريال، بنسبة خصم ${fmt(result.percent, 1)}٪`}
                     {mode === "newPrice" && `نسبة الخصم ${heroDisplay} بالمئة`}
                     {mode === "original" && `السعر الأصلي ${heroDisplay} ريال`}
                   </span>
                 </p>
                 <p className="font-body text-sm md:text-base text-charcoal/80 leading-relaxed">
-                  {mode === "percent" && (<>
-                    وفّرت <span className="font-display font-bold text-brand-red">{fmt(result.savings)} ريال</span>{" "}
-                    <span className="text-warm-brown">({fmt(result.percent, 1)}٪)</span>
-                  </>)}
-                  {mode === "newPrice" && (<>
-                    أنت توفّر <span className="font-display font-bold text-brand-red">{fmt(result.savings)} ريال</span>{" "}
-                    على <span className="font-display font-bold text-charcoal">{fmt(result.original)} ريال</span>
-                  </>)}
-                  {mode === "original" && (<>
-                    السعر الأصلي قبل الخصم — قارنه مع{" "}
-                    <span className="font-display font-bold text-brand-red">{fmt(result.newPrice)} ريال</span>
-                  </>)}
+                  {mode === "percent" && (
+                    <>
+                      وفّرت{" "}
+                      <span className="font-display font-bold text-brand-red">
+                        {fmt(result.savings)} ريال
+                      </span>{" "}
+                      <span className="text-warm-brown">
+                        ({fmt(result.percent, 1)}٪)
+                      </span>
+                    </>
+                  )}
+                  {mode === "newPrice" && (
+                    <>
+                      أنت توفّر{" "}
+                      <span className="font-display font-bold text-brand-red">
+                        {fmt(result.savings)} ريال
+                      </span>{" "}
+                      على{" "}
+                      <span className="font-display font-bold text-charcoal">
+                        {fmt(result.original)} ريال
+                      </span>
+                    </>
+                  )}
+                  {mode === "original" && (
+                    <>
+                      السعر الأصلي قبل الخصم — قارنه مع{" "}
+                      <span className="font-display font-bold text-brand-red">
+                        {fmt(result.newPrice)} ريال
+                      </span>
+                    </>
+                  )}
                 </p>
               </div>
 
@@ -209,7 +305,9 @@ export function DiscountCalculator() {
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between text-xs font-body text-warm-brown">
                   <span>نسبة التوفير من السعر الأصلي</span>
-                  <span className="font-display font-bold text-charcoal tabular-nums">{fmt(result.percent, 1)}٪</span>
+                  <span className="font-display font-bold text-charcoal tabular-nums">
+                    {fmt(result.percent, 1)}٪
+                  </span>
                 </div>
                 <div
                   className="h-2.5 w-full rounded-full bg-cream-dark overflow-hidden"
@@ -219,7 +317,10 @@ export function DiscountCalculator() {
                   aria-valuemax={100}
                   aria-label="نسبة التوفير"
                 >
-                  <div className="h-full rounded-full bg-brand-red transition-[width] duration-500 ease-out" style={{ width: `${savingsPct}%` }} />
+                  <div
+                    className="h-full rounded-full bg-brand-red transition-[width] duration-500 ease-out"
+                    style={{ width: `${savingsPct}%` }}
+                  />
                 </div>
               </div>
             </div>
@@ -228,7 +329,9 @@ export function DiscountCalculator() {
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-red/10 text-brand-red">
                 <Calculator className="h-6 w-6" aria-hidden />
               </div>
-              <p className="font-body text-sm text-warm-brown">أدخل القيم لرؤية النتيجة</p>
+              <p className="font-body text-sm text-warm-brown">
+                أدخل القيم لرؤية النتيجة
+              </p>
             </div>
           )}
         </div>
@@ -249,39 +352,74 @@ export function DiscountCalculator() {
 }
 
 function RiyalField({
-  label, hint, value, onChange, placeholder,
-}: { label: string; hint?: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
+  label,
+  hint,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  hint?: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+}) {
   return (
     <label className="flex flex-col gap-2">
-      <span className="font-body text-sm font-semibold text-charcoal">{label}</span>
+      <span className="font-body text-sm font-semibold text-charcoal">
+        {label}
+      </span>
       <div className="relative">
         <input
-          type="number" inputMode="decimal" step="any" min={0}
+          type="number"
+          inputMode="decimal"
+          step="any"
+          min={0}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           dir="ltr"
           className="font-display w-full h-12 ps-3 pe-16 rounded-xl border border-charcoal/15 bg-white text-lg font-bold text-charcoal tabular-nums placeholder:text-warm-brown-light placeholder:font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-red/40 focus:border-brand-red transition-colors"
         />
-        <span className="absolute end-3 top-1/2 -translate-y-1/2 font-body text-sm font-semibold text-warm-brown pointer-events-none">ريال</span>
+        <span className="absolute end-3 top-1/2 -translate-y-1/2 font-body text-sm font-semibold text-warm-brown pointer-events-none">
+          ريال
+        </span>
       </div>
-      {hint && <span className="font-body text-xs text-warm-brown">{hint}</span>}
+      {hint && (
+        <span className="font-body text-xs text-warm-brown">{hint}</span>
+      )}
     </label>
   );
 }
 
 function PercentField({
-  label, hint, value, onChange,
-}: { label: string; hint?: string; value: string; onChange: (v: string) => void }) {
+  label,
+  hint,
+  value,
+  onChange,
+}: {
+  label: string;
+  hint?: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   const parsed = parseFloat(value);
-  const sliderValue = Number.isFinite(parsed) ? Math.min(100, Math.max(0, parsed)) : 0;
+  const sliderValue = Number.isFinite(parsed)
+    ? Math.min(100, Math.max(0, parsed))
+    : 0;
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
-        <span className="font-body text-sm font-semibold text-charcoal">{label}</span>
+        <span className="font-body text-sm font-semibold text-charcoal">
+          {label}
+        </span>
         <div className="relative">
           <input
-            type="number" inputMode="decimal" step="any" min={0} max={100}
+            type="number"
+            inputMode="decimal"
+            step="any"
+            min={0}
+            max={100}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="٢٥"
@@ -289,17 +427,24 @@ function PercentField({
             aria-label={label}
             className="font-display w-28 h-12 ps-3 pe-9 rounded-xl border border-charcoal/15 bg-white text-lg font-bold text-charcoal tabular-nums text-end placeholder:text-warm-brown-light placeholder:font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-red/40 focus:border-brand-red transition-colors"
           />
-          <span className="absolute end-3 top-1/2 -translate-y-1/2 font-body text-sm font-semibold text-warm-brown pointer-events-none">٪</span>
+          <span className="absolute end-3 top-1/2 -translate-y-1/2 font-body text-sm font-semibold text-warm-brown pointer-events-none">
+            ٪
+          </span>
         </div>
       </div>
       <input
-        type="range" min={0} max={100} step={1}
+        type="range"
+        min={0}
+        max={100}
+        step={1}
         value={sliderValue}
         onChange={(e) => onChange(e.target.value)}
         aria-label={label}
         className="dc-slider focus-visible:outline-none"
       />
-      {hint && <span className="font-body text-xs text-warm-brown">{hint}</span>}
+      {hint && (
+        <span className="font-body text-xs text-warm-brown">{hint}</span>
+      )}
     </div>
   );
 }

@@ -31,8 +31,8 @@ export default function ContactPage() {
 
       <Section size="sm" spacing="lg">
         <p className="font-body text-warm-brown mb-8 text-sm leading-relaxed md:text-base">
-          هل لديك سؤال أو اقتراح؟ أرسل لنا رسالة وسنرد في أقرب وقت ممكن.
-          يمكنك أيضاً مراسلتنا مباشرةً على{" "}
+          هل لديك سؤال أو اقتراح؟ أرسل لنا رسالة وسنرد في أقرب وقت ممكن. يمكنك
+          أيضاً مراسلتنا مباشرةً على{" "}
           <a
             href="mailto:hello@couponawy.com"
             className="text-brand-red hover:text-brand-red-dark font-semibold transition-colors"

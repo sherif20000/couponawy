@@ -27,7 +27,9 @@ export default async function EditCouponPage({ params, searchParams }: Props) {
       <div className="p-6 max-w-2xl space-y-4">
         {sp.error && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-3">
-            <p className="text-red-700 text-sm">حدث خطأ أثناء الحفظ. تأكد من عدم تكرار الـ slug وحاول مجدداً.</p>
+            <p className="text-red-700 text-sm">
+              حدث خطأ أثناء الحفظ. تأكد من عدم تكرار الـ slug وحاول مجدداً.
+            </p>
           </div>
         )}
         <CouponForm

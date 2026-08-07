@@ -68,7 +68,12 @@ export default async function SavingsCalculatorPage() {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "أدوات", item: `${BASE_URL}/tools` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "أدوات",
+        item: `${BASE_URL}/tools`,
+      },
       {
         "@type": "ListItem",
         position: 3,

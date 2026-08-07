@@ -4,7 +4,8 @@ import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
   title: "المتجر غير موجود",
-  description: "المتجر الذي تبحث عنه غير موجود. تصفّح جميع المتاجر على كوبوناوي.",
+  description:
+    "المتجر الذي تبحث عنه غير موجود. تصفّح جميع المتاجر على كوبوناوي.",
   // See src/app/not-found.tsx for rationale — noindex blocks Google from
   // indexing the soft-404 body that fires when an unknown store slug is
   // visited on the dynamically-rendered /stores/[slug] route.
@@ -23,7 +24,8 @@ export default function StoreNotFound() {
           المتجر غير موجود
         </h1>
         <p className="font-body text-warm-brown mx-auto mb-10 max-w-sm text-base">
-          هذا المتجر غير موجود أو ربما تم إيقافه. تصفّح المتاجر المتاحة للعثور على ما تريد.
+          هذا المتجر غير موجود أو ربما تم إيقافه. تصفّح المتاجر المتاحة للعثور
+          على ما تريد.
         </p>
 
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">

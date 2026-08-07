@@ -48,7 +48,7 @@ export function StoreGrid({ stores, query = "", total }: StoreGridProps) {
               key={store.id}
               href={`/stores/${store.slug}`}
               className={cn(
-                "group border-brand-gold/20 bg-cream hover:border-brand-red/40 hover:shadow-md flex flex-col items-center gap-3 rounded-2xl border p-5 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.97]"
+                "group border-brand-gold/20 bg-cream hover:border-brand-red/40 hover:shadow-md flex flex-col items-center gap-3 rounded-2xl border p-5 text-center shadow-sm transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.97]",
               )}
             >
               <div className="bg-cream-dark ring-brand-gold/30 group-hover:ring-brand-red/40 flex h-16 w-16 items-center justify-center overflow-hidden rounded-full ring-2 transition-all duration-200">

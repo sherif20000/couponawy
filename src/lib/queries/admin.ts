@@ -54,9 +54,12 @@ export async function getAdminStores(page = 1, search = "") {
 
   let query = supabase
     .from("stores")
-    .select("id, slug, name_ar, name_en, status, is_featured, logo_url, created_at", {
-      count: "exact",
-    })
+    .select(
+      "id, slug, name_ar, name_en, status, is_featured, logo_url, created_at",
+      {
+        count: "exact",
+      },
+    )
     .order("created_at", { ascending: false })
     .range(from, from + perPage - 1);
 
@@ -73,7 +76,7 @@ export async function getAdminCoupons(
   page = 1,
   search = "",
   storeId = "",
-  status = ""
+  status = "",
 ) {
   const supabase = createAdminClient();
   const perPage = 20;
@@ -83,7 +86,7 @@ export async function getAdminCoupons(
     .from("coupons")
     .select(
       "id, slug, title_ar, discount_display, status, expires_at, reveal_count, is_featured, store:stores(id, name_ar)",
-      { count: "exact" }
+      { count: "exact" },
     )
     .order("created_at", { ascending: false })
     .range(from, from + perPage - 1);
@@ -265,7 +268,7 @@ export async function getContactMessages(page = 1): Promise<{
 export async function getStaleCoupons(
   page = 1,
   search = "",
-  staleness: "all" | "never" | "30d" | "60d" | "90d" = "all"
+  staleness: "all" | "never" | "30d" | "60d" | "90d" = "all",
 ) {
   const supabase = createAdminClient();
   const perPage = 30;
@@ -277,7 +280,7 @@ export async function getStaleCoupons(
     .from("coupons")
     .select(
       "id, slug, title_ar, code, status, expires_at, last_verified_at, verified_by, store:stores(id, name_ar, slug)",
-      { count: "exact" }
+      { count: "exact" },
     )
     .eq("status", "active")
     .order("last_verified_at", { ascending: true, nullsFirst: true })
@@ -296,11 +299,11 @@ export async function getStaleCoupons(
     } else {
       const days = staleness === "30d" ? 30 : staleness === "60d" ? 60 : 90;
       const threshold = new Date(
-        Date.now() - days * 24 * 60 * 60 * 1000
+        Date.now() - days * 24 * 60 * 60 * 1000,
       ).toISOString();
       // Either never verified OR verified before threshold
       query = query.or(
-        `last_verified_at.is.null,last_verified_at.lt.${threshold}`
+        `last_verified_at.is.null,last_verified_at.lt.${threshold}`,
       );
     }
   }

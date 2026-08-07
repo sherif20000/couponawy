@@ -66,5 +66,5 @@ await sharp(Buffer.from(svg))
 
 const stats = await sharp(out).metadata();
 console.log(
-  `Wrote ${out} — ${stats.width}×${stats.height} ${stats.format} (${Math.round((stats.size ?? 0) / 1024)}KB)`
+  `Wrote ${out} — ${stats.width}×${stats.height} ${stats.format} (${Math.round((stats.size ?? 0) / 1024)}KB)`,
 );

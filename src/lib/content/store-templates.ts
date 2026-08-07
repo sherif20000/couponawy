@@ -102,13 +102,18 @@ export function shippingInfoCopy({
   const country = countryPhrase(countryCode);
   // Per-country delivery/payment specifics. Generic enough not to make false
   // claims about each individual store, factual enough to be useful.
-  const deliveryDays = countryCode === "SA" ? "1-3 أيام داخل المدن الكبرى" :
-    countryCode === "AE" ? "24-48 ساعة في الإمارات السبع" :
-    countryCode === "KW" ? "1-2 يوم داخل الكويت" :
-    "1-4 أيام داخل دول الخليج";
-  const codNote = countryCode && ["SA","AE","KW","QA","BH","OM"].includes(countryCode)
-    ? `الدفع عند الاستلام متاح في معظم المدن الرئيسية في ${country}`
-    : "الدفع عند الاستلام يعتمد على دولتك ومنطقتك";
+  const deliveryDays =
+    countryCode === "SA"
+      ? "1-3 أيام داخل المدن الكبرى"
+      : countryCode === "AE"
+        ? "24-48 ساعة في الإمارات السبع"
+        : countryCode === "KW"
+          ? "1-2 يوم داخل الكويت"
+          : "1-4 أيام داخل دول الخليج";
+  const codNote =
+    countryCode && ["SA", "AE", "KW", "QA", "BH", "OM"].includes(countryCode)
+      ? `الدفع عند الاستلام متاح في معظم المدن الرئيسية في ${country}`
+      : "الدفع عند الاستلام يعتمد على دولتك ومنطقتك";
 
   return `
 عندما تطلب من متجر ${nameAr} في ${country}، تختلف تجربة الشحن والدفع قليلاً عن المتاجر الأخرى. لذلك جمعنا أهم النقاط في مكان واحد حتى لا تضطر للبحث عنها في أكثر من صفحة.
@@ -142,11 +147,12 @@ export function seasonalCalendarCopy({
   if (seasonalCalendarOverride?.trim()) return seasonalCalendarOverride.trim();
 
   // Category-aware framing — fashion stores peak differently from electronics.
-  const peakHint = topCategoryAr === "إلكترونيات"
-    ? "تجد أفضل عروض الأجهزة والإلكترونيات"
-    : topCategoryAr === "أزياء"
-    ? "تتصدّر الأزياء والإكسسوارات قائمة الخصومات"
-    : "تنخفض الأسعار في معظم الفئات";
+  const peakHint =
+    topCategoryAr === "إلكترونيات"
+      ? "تجد أفضل عروض الأجهزة والإلكترونيات"
+      : topCategoryAr === "أزياء"
+        ? "تتصدّر الأزياء والإكسسوارات قائمة الخصومات"
+        : "تنخفض الأسعار في معظم الفئات";
 
   return `
 لمعرفة أفضل وقت للشراء من ${nameAr}، يستحقّ متابعة المواسم السنوية التي تتراوح فيها الخصومات بين الجيدة والاستثنائية. الأسعار في هذه الفترات تنخفض بشكل ملحوظ، والكوبونات الحصرية تكثر، فلا تشتري قبلها إلا للضرورة.

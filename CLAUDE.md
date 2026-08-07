@@ -19,6 +19,7 @@ Anti-personality: clinical, corporate, sleepy, overly minimal, purple-tech-start
 **Vibrant + Editorial Arabic** — Groupon/RetailMeNot energy, designed for Arabic reading patterns and cultural context. Light mode only.
 
 Fresh color system (the existing violet palette and misleading token names are wrong — replace entirely):
+
 - **Primary**: Bold crimson-coral `oklch(52% 0.23 22)` — energy, urgency, deals
 - **Accent**: Warm amber/gold `oklch(72% 0.17 75)` — treasure, value, celebration
 - **Surface**: Warm white (not lavender, not pure white)
@@ -32,4 +33,4 @@ Fresh color system (the existing violet palette and misleading token names are w
 4. **Scan in 3 seconds.** Users identify the best coupon on any page in under 3 seconds.
 5. **Trust through clarity.** Clean surfaces, visible store branding, no dark patterns. Reliability is a competitive advantage.
 
-*Full context in `.impeccable.md` at project root.*
+_Full context in `.impeccable.md` at project root._

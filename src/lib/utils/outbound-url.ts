@@ -24,7 +24,7 @@ export type OutboundContext = {
 
 export function buildOutboundUrl(
   destinationUrl: string,
-  ctx: OutboundContext = {}
+  ctx: OutboundContext = {},
 ): string {
   try {
     const url = new URL(destinationUrl);
@@ -38,7 +38,7 @@ export function buildOutboundUrl(
         "utm_medium",
         ctx.surface === "store_button" || ctx.surface === "store_hero"
           ? "store"
-          : "coupon"
+          : "coupon",
       );
     }
     if (!url.searchParams.has("utm_campaign")) {

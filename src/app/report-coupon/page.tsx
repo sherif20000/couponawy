@@ -34,8 +34,8 @@ export default async function ReportCouponPage({ searchParams }: PageProps) {
 
       <Section size="sm" spacing="lg">
         <p className="font-body text-warm-brown mb-8 text-sm leading-relaxed md:text-base">
-          لاحظت كوبوناً منتهياً أو لا يعمل؟ أخبرنا وسنتحقق منه ونصلحه في
-          أقرب وقت ممكن.
+          لاحظت كوبوناً منتهياً أو لا يعمل؟ أخبرنا وسنتحقق منه ونصلحه في أقرب
+          وقت ممكن.
         </p>
 
         <ReportForm defaultUrl={url} />

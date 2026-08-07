@@ -1,0 +1,7 @@
+# Build outputs and generated files
+.next/
+node_modules/
+package-lock.json
+
+# Supabase generated types
+src/types/database.ts

@@ -12,7 +12,6 @@ import { BASE_URL } from "@/lib/utils/site";
 // Country preference is cookie-driven, so this page renders dynamically per request.
 export const dynamic = "force-dynamic";
 
-
 export const metadata: Metadata = {
   title: "جميع الكوبونات",
   description:
@@ -33,7 +32,11 @@ export default async function CouponsPage({ searchParams }: Props) {
   const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
 
   const countryCode = await getPreferredCountry();
-  const { coupons, total } = await getActiveCouponsPaginated(page, PER_PAGE, countryCode);
+  const { coupons, total } = await getActiveCouponsPaginated(
+    page,
+    PER_PAGE,
+    countryCode,
+  );
   const totalPages = Math.ceil(total / PER_PAGE);
 
   const breadcrumbJsonLd = {
@@ -41,7 +44,12 @@ export default async function CouponsPage({ searchParams }: Props) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "الكوبونات", item: `${BASE_URL}/coupons` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "الكوبونات",
+        item: `${BASE_URL}/coupons`,
+      },
     ],
   };
 
@@ -53,10 +61,7 @@ export default async function CouponsPage({ searchParams }: Props) {
       />
       <PageHero
         variant="subtle"
-        breadcrumbs={[
-          { href: "/", label: "الرئيسية" },
-          { label: "الكوبونات" },
-        ]}
+        breadcrumbs={[{ href: "/", label: "الرئيسية" }, { label: "الكوبونات" }]}
         title="جميع الكوبونات"
         subtitle={`${total.toLocaleString("en-US")} كوبون · مجرّبة ومحدّثة يومياً`}
       />

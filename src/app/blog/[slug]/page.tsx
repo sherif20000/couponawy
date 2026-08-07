@@ -19,14 +19,15 @@ import { toArabicNumerals } from "@/lib/utils";
 
 export const revalidate = 1800;
 
-
 type PageProps = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
   return getAllArticleSlugsBuildTime();
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
   if (!article) return { title: "المقال غير موجود" };
@@ -81,7 +82,8 @@ export default async function ArticlePage({ params }: PageProps) {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: article.title_ar,
-    description: article.excerpt_ar ?? article.meta_description ?? article.title_ar,
+    description:
+      article.excerpt_ar ?? article.meta_description ?? article.title_ar,
     // Never undefined — Google's Article schema requires `image`. Falls back
     // to the same dynamic OG card the meta tags use (Sprint 0 schema fix).
     image:
@@ -114,7 +116,12 @@ export default async function ArticlePage({ params }: PageProps) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "المدونة", item: `${BASE_URL}/blog` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "المدونة",
+        item: `${BASE_URL}/blog`,
+      },
       {
         "@type": "ListItem",
         position: 3,
@@ -146,9 +153,7 @@ export default async function ArticlePage({ params }: PageProps) {
         subtitle={article.excerpt_ar ?? undefined}
       >
         <div className="font-accent flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/70">
-          {article.author_name && (
-            <span>بقلم {article.author_name}</span>
-          )}
+          {article.author_name && <span>بقلم {article.author_name}</span>}
           {article.published_at && (
             <span className="inline-flex items-center gap-1.5">
               <Calendar className="h-3.5 w-3.5" aria-hidden />
@@ -205,7 +210,12 @@ export default async function ArticlePage({ params }: PageProps) {
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((post) => (
-              <PostCard key={post.id} post={post} basePath="/blog" tag="نصيحة" />
+              <PostCard
+                key={post.id}
+                post={post}
+                basePath="/blog"
+                tag="نصيحة"
+              />
             ))}
           </div>
         </Section>

@@ -102,7 +102,8 @@ export function discountNoun(input: CouponTemplateInput): string {
  * Returns the admin override verbatim when descriptionOverride is set.
  */
 export function aboutOfferCopy(input: CouponTemplateInput): string {
-  if (input.descriptionOverride?.trim()) return input.descriptionOverride.trim();
+  if (input.descriptionOverride?.trim())
+    return input.descriptionOverride.trim();
 
   const { titleAr, storeNameAr, discountType } = input;
   const country = countryPhrase(input.countryCode);
@@ -138,7 +139,7 @@ ${mechanic} الأسعار في المتاجر الإلكترونية تتغيّ
  * Returns {title, body} pairs; the renderer handles list semantics.
  */
 export function howToRedeemSteps(
-  input: CouponTemplateInput
+  input: CouponTemplateInput,
 ): Array<{ title: string; body: string }> {
   const { storeNameAr } = input;
   const noun = discountNoun(input);
@@ -280,7 +281,7 @@ export function editorVerdict(input: CouponTemplateInput): {
  * also ask" surface for offer queries.
  */
 export function couponFaq(
-  input: CouponTemplateInput
+  input: CouponTemplateInput,
 ): Array<{ question: string; answer: string }> {
   const { storeNameAr, titleAr } = input;
   const noun = discountNoun(input);

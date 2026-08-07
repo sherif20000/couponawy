@@ -37,12 +37,12 @@ export async function GET(req: NextRequest) {
     }
   } else {
     console.warn(
-      "[archive-stale-coupons] CRON_SECRET not set — using vercel-cron user-agent fallback. Set CRON_SECRET for stronger auth."
+      "[archive-stale-coupons] CRON_SECRET not set — using vercel-cron user-agent fallback. Set CRON_SECRET for stronger auth.",
     );
     if (!userAgent.startsWith("vercel-cron/")) {
       return NextResponse.json(
         { error: "unauthorized — no CRON_SECRET and not from vercel-cron" },
-        { status: 401 }
+        { status: 401 },
       );
     }
   }
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
   // 90-day threshold. Adjust here if business wants a different cadence.
   const STALE_DAYS = 90;
   const threshold = new Date(
-    Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000
+    Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000,
   ).toISOString();
   const now = new Date().toISOString();
 
@@ -123,7 +123,7 @@ export async function GET(req: NextRequest) {
     .join(", ");
 
   console.log(
-    `[archive-stale-coupons] Auto-archived ${stale.length} coupons (threshold ${STALE_DAYS} days). Sample: ${sample}${stale.length > 10 ? "..." : ""}`
+    `[archive-stale-coupons] Auto-archived ${stale.length} coupons (threshold ${STALE_DAYS} days). Sample: ${sample}${stale.length > 10 ? "..." : ""}`,
   );
 
   return NextResponse.json({

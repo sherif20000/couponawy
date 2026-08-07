@@ -18,14 +18,19 @@ export async function createCoupon(formData: FormData) {
     (formData.get("slug") as string) || slugify(title_en || title_ar);
   const code = (formData.get("code") as string) || null;
   const store_id = formData.get("store_id") as string;
-  const destination_url = (formData.get("destination_url") as string) || "https://example.com";
-  const discount_type = ((formData.get("discount_type") as string) || "other") as CouponDiscountType;
+  const destination_url = (formData.get("destination_url") as string)?.trim();
+  if (!destination_url || !/^https?:\/\//i.test(destination_url)) {
+    redirect("/admin/coupons/new?error=missing_url");
+  }
+  const discount_type = ((formData.get("discount_type") as string) ||
+    "other") as CouponDiscountType;
   const discount_value = formData.get("discount_value")
     ? parseFloat(formData.get("discount_value") as string)
     : null;
   const discount_display = (formData.get("discount_display") as string) || null;
   const description_ar = (formData.get("description_ar") as string) || null;
-  const status = ((formData.get("status") as string) || "draft") as CouponStatus;
+  const status = ((formData.get("status") as string) ||
+    "draft") as CouponStatus;
   const is_featured = formData.get("is_featured") === "true";
   const is_exclusive = formData.get("is_exclusive") === "true";
   const expires_at = (formData.get("expires_at") as string) || null;
@@ -68,14 +73,17 @@ export async function updateCoupon(id: string, formData: FormData) {
     (formData.get("slug") as string) || slugify(title_en || title_ar);
   const code = (formData.get("code") as string) || null;
   const store_id = formData.get("store_id") as string;
-  const destination_url = (formData.get("destination_url") as string) || undefined;
-  const discount_type = ((formData.get("discount_type") as string) || "other") as CouponDiscountType;
+  const destination_url =
+    (formData.get("destination_url") as string) || undefined;
+  const discount_type = ((formData.get("discount_type") as string) ||
+    "other") as CouponDiscountType;
   const discount_value = formData.get("discount_value")
     ? parseFloat(formData.get("discount_value") as string)
     : null;
   const discount_display = (formData.get("discount_display") as string) || null;
   const description_ar = (formData.get("description_ar") as string) || null;
-  const status = ((formData.get("status") as string) || "draft") as CouponStatus;
+  const status = ((formData.get("status") as string) ||
+    "draft") as CouponStatus;
   const is_featured = formData.get("is_featured") === "true";
   const is_exclusive = formData.get("is_exclusive") === "true";
   const expires_at = (formData.get("expires_at") as string) || null;
@@ -136,7 +144,10 @@ export async function deleteCoupon(id: string) {
  * Cycles a coupon's status: active → paused, paused → active, draft → active.
  * Expired coupons stay expired — use the edit form to change them.
  */
-export async function toggleCouponStatus(id: string, currentStatus: CouponStatus) {
+export async function toggleCouponStatus(
+  id: string,
+  currentStatus: CouponStatus,
+) {
   const supabase = createAdminClient();
 
   const nextStatus: Partial<Record<CouponStatus, CouponStatus>> = {

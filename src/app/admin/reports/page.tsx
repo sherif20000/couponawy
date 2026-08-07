@@ -47,8 +47,12 @@ export default async function AdminReportsPage({ searchParams }: Props) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-charcoal/8 text-warm-brown text-xs">
-                <th className="text-right px-4 py-3 font-medium">نوع المشكلة</th>
-                <th className="text-right px-4 py-3 font-medium">الكوبون / الرابط</th>
+                <th className="text-right px-4 py-3 font-medium">
+                  نوع المشكلة
+                </th>
+                <th className="text-right px-4 py-3 font-medium">
+                  الكوبون / الرابط
+                </th>
                 <th className="text-right px-4 py-3 font-medium">ملاحظة</th>
                 <th className="text-right px-4 py-3 font-medium">التاريخ</th>
                 <th className="px-4 py-3" />

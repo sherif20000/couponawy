@@ -40,7 +40,9 @@ export async function getAllCategories(): Promise<Category[]> {
   return data ?? [];
 }
 
-export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+export async function getCategoryBySlug(
+  slug: string,
+): Promise<Category | null> {
   // createPublicClient — keeps the /categories/[slug] route statically generable.
   const supabase = createPublicClient();
   const { data, error } = await supabase
@@ -57,7 +59,7 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
 }
 
 export async function getCouponsByCategory(
-  categoryId: string
+  categoryId: string,
 ): Promise<FeaturedCoupon[]> {
   // createPublicClient — keeps the /categories/[slug] route statically generable.
   const supabase = createPublicClient();
@@ -101,7 +103,9 @@ export async function getCouponsByCategory(
  * Now delegates the JOIN + GROUP BY to a stable Postgres function so the wire
  * payload is tiny (one row per category).
  */
-export async function getCategoryCouponCounts(): Promise<Record<string, number>> {
+export async function getCategoryCouponCounts(): Promise<
+  Record<string, number>
+> {
   const supabase = createPublicClient();
 
   const { data, error } = await supabase.rpc("get_category_coupon_counts");
@@ -168,13 +172,13 @@ export const getVisibleCouponIds = cache(
     // RPC returns `uuid[]` which arrives as `string[]`. Coalesce to [] so
     // downstream `.in()` calls treat empty as "no matches", not null.
     return (data as string[] | null) ?? [];
-  }
+  },
 );
 
 export async function getActiveCouponsPaginated(
   page = 1,
   perPage = 24,
-  countryCode?: string
+  countryCode?: string,
 ): Promise<{ coupons: FeaturedCoupon[]; total: number }> {
   const supabase = createPublicClient();
   const from = (page - 1) * perPage;
@@ -189,7 +193,9 @@ export async function getActiveCouponsPaginated(
 
       const { data, count, error } = await supabase
         .from("coupons")
-        .select(`*, store:stores ( id, slug, name_ar, logo_url )`, { count: "exact" })
+        .select(`*, store:stores ( id, slug, name_ar, logo_url )`, {
+          count: "exact",
+        })
         .eq("status", "active")
         .in("id", visibleIds)
         .order("is_featured", { ascending: false })
@@ -207,7 +213,9 @@ export async function getActiveCouponsPaginated(
   // Unfiltered (no country or helper error)
   const { data, count, error } = await supabase
     .from("coupons")
-    .select(`*, store:stores ( id, slug, name_ar, logo_url )`, { count: "exact" })
+    .select(`*, store:stores ( id, slug, name_ar, logo_url )`, {
+      count: "exact",
+    })
     .eq("status", "active")
     .order("is_featured", { ascending: false })
     .order("display_order", { ascending: true })

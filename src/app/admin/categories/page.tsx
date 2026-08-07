@@ -17,7 +17,10 @@ export default async function CategoriesPage() {
           <h2 className="text-sm font-semibold text-warm-brown uppercase tracking-wider mb-4">
             إضافة تصنيف جديد
           </h2>
-          <form action={createCategory} className="bg-white rounded-xl border border-charcoal/8 p-5 space-y-4">
+          <form
+            action={createCategory}
+            className="bg-white rounded-xl border border-charcoal/8 p-5 space-y-4"
+          >
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-warm-brown mb-1">
@@ -86,14 +89,20 @@ export default async function CategoriesPage() {
           </h2>
           <div className="bg-white rounded-xl border border-charcoal/8 divide-y divide-charcoal/5">
             {categories.map((cat) => (
-              <div key={cat.id} className="flex items-center justify-between px-4 py-3">
+              <div
+                key={cat.id}
+                className="flex items-center justify-between px-4 py-3"
+              >
                 <div className="flex items-center gap-3">
-                  {cat.icon && (
-                    <span className="text-lg">{cat.icon}</span>
-                  )}
+                  {cat.icon && <span className="text-lg">{cat.icon}</span>}
                   <div>
-                    <p className="text-sm font-medium text-charcoal">{cat.name_ar}</p>
-                    <p className="text-xs text-warm-brown/50 font-mono" dir="ltr">
+                    <p className="text-sm font-medium text-charcoal">
+                      {cat.name_ar}
+                    </p>
+                    <p
+                      className="text-xs text-warm-brown/50 font-mono"
+                      dir="ltr"
+                    >
                       {cat.slug}
                     </p>
                   </div>

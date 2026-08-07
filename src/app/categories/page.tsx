@@ -11,7 +11,6 @@ import {
 
 export const revalidate = 300;
 
-
 export const metadata: Metadata = {
   title: "جميع الأقسام",
   description:
@@ -32,7 +31,12 @@ export default async function CategoriesPage() {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "الأقسام", item: `${BASE_URL}/categories` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "الأقسام",
+        item: `${BASE_URL}/categories`,
+      },
     ],
   };
 
@@ -44,10 +48,7 @@ export default async function CategoriesPage() {
       />
       <PageHero
         variant="subtle"
-        breadcrumbs={[
-          { href: "/", label: "الرئيسية" },
-          { label: "الأقسام" },
-        ]}
+        breadcrumbs={[{ href: "/", label: "الرئيسية" }, { label: "الأقسام" }]}
         title="جميع الأقسام"
         subtitle={`${categories.length} قسم · اعثر على العرض المناسب لاحتياجك`}
       />

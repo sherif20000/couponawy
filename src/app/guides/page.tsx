@@ -8,7 +8,6 @@ import { BASE_URL } from "@/lib/utils/site";
 
 export const revalidate = 1800;
 
-
 export const metadata: Metadata = {
   title: "دلائل الشراء الذكي",
   description:
@@ -44,7 +43,12 @@ export default async function GuidesIndexPage() {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "الدلائل", item: `${BASE_URL}/guides` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "الدلائل",
+        item: `${BASE_URL}/guides`,
+      },
     ],
   };
 
@@ -62,10 +66,7 @@ export default async function GuidesIndexPage() {
       />
       <PageHero
         variant="subtle"
-        breadcrumbs={[
-          { href: "/", label: "الرئيسية" },
-          { label: "الدلائل" },
-        ]}
+        breadcrumbs={[{ href: "/", label: "الرئيسية" }, { label: "الدلائل" }]}
         title="دلائل الشراء الذكي"
         subtitle={
           guides.length > 0

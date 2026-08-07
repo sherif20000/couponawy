@@ -1,6 +1,9 @@
 "use client";
 
-import { COUNTRY_COOKIE, DEFAULT_COUNTRY } from "@/app/actions/country-constants";
+import {
+  COUNTRY_COOKIE,
+  DEFAULT_COUNTRY,
+} from "@/app/actions/country-constants";
 
 /**
  * Client-side equivalent of getPreferredCountry() from country.ts.

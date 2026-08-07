@@ -33,10 +33,7 @@ export default function HowItWorksPage() {
     <main className="flex flex-1 flex-col">
       <PageHero
         variant="subtle"
-        breadcrumbs={[
-          { href: "/", label: "الرئيسية" },
-          { label: "كيف نعمل" },
-        ]}
+        breadcrumbs={[{ href: "/", label: "الرئيسية" }, { label: "كيف نعمل" }]}
         title="كيف نعمل؟"
         subtitle="ثلاث خطوات وتوفّر على كل طلب"
       />

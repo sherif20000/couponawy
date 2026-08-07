@@ -69,15 +69,27 @@ export function SavingsCalculator() {
     const d = parseFloat(discount);
     const a = parseFloat(activation);
     const valid =
-      Number.isFinite(s) && Number.isFinite(d) && Number.isFinite(a) &&
-      s > 0 && d >= 0 && d <= 100 && a >= 0 && a <= 100;
+      Number.isFinite(s) &&
+      Number.isFinite(d) &&
+      Number.isFinite(a) &&
+      s > 0 &&
+      d >= 0 &&
+      d <= 100 &&
+      a >= 0 &&
+      a <= 100;
     if (!valid) return null;
     const annualSpend = periodMonthly ? s * 12 : s;
     const savings = annualSpend * (d / 100) * (a / 100);
     const weeklyBudget = annualSpend / 52;
     const equivWeeks = weeklyBudget > 0 ? savings / weeklyBudget : 0;
     const maxPossible = annualSpend * (d / 100);
-    return { annualSpend, savings, equivWeeks, leftOnTable: maxPossible - savings, maxPossible };
+    return {
+      annualSpend,
+      savings,
+      equivWeeks,
+      leftOnTable: maxPossible - savings,
+      maxPossible,
+    };
   }, [spend, discount, activation, periodMonthly]);
 
   const savingsAnimated = useCountUp(result ? result.savings : 0);
@@ -91,7 +103,7 @@ export function SavingsCalculator() {
     : 0;
 
   const presetActive = periodMonthly
-    ? PRESETS.find((p) => p.value === parseFloat(spend))?.id ?? null
+    ? (PRESETS.find((p) => p.value === parseFloat(spend))?.id ?? null)
     : null;
 
   return (
@@ -108,10 +120,7 @@ export function SavingsCalculator() {
           <span className="font-display text-sm font-semibold text-charcoal">
             الإنفاق محسوب على:
           </span>
-          <PeriodControl
-            monthly={periodMonthly}
-            onChange={setPeriodMonthly}
-          />
+          <PeriodControl monthly={periodMonthly} onChange={setPeriodMonthly} />
         </div>
 
         {/* Family-size preset chips */}
@@ -119,7 +128,11 @@ export function SavingsCalculator() {
           <span className="font-body text-warm-brown text-xs">
             أو اختر ملف الأسرة بسرعة
           </span>
-          <div className="flex flex-wrap gap-2" role="group" aria-label="ملفات الأسرة الجاهزة">
+          <div
+            className="flex flex-wrap gap-2"
+            role="group"
+            aria-label="ملفات الأسرة الجاهزة"
+          >
             {PRESETS.map((p) => {
               const active = presetActive === p.id;
               return (

@@ -1,4 +1,12 @@
-import { Tag, ShieldCheck, Sparkles, Award, Check, Minus, type LucideIcon } from "lucide-react";
+import {
+  Tag,
+  ShieldCheck,
+  Sparkles,
+  Award,
+  Check,
+  Minus,
+  type LucideIcon,
+} from "lucide-react";
 import { ProseFromText } from "@/components/seo/store-long-copy";
 import {
   aboutOfferCopy,
@@ -34,8 +42,12 @@ function BlockHeading({
           {eyebrow}
         </span>
       )}
-      <h2 className="font-display text-headline-md text-charcoal font-extrabold">{title}</h2>
-      {subtitle && <p className="font-body text-warm-brown-light text-sm">{subtitle}</p>}
+      <h2 className="font-display text-headline-md text-charcoal font-extrabold">
+        {title}
+      </h2>
+      {subtitle && (
+        <p className="font-body text-warm-brown-light text-sm">{subtitle}</p>
+      )}
     </div>
   );
 }
@@ -69,21 +81,39 @@ export function CouponLongCopy(props: Props) {
         data-speakable
         className="border-brand-gold/30 bg-cream-dark/20 rounded-2xl border p-6"
       >
-        <BlockHeading icon={Award} eyebrow="رأي المحرّر" title="هل يستحق هذا العرض؟" />
-        <p className="font-body text-warm-brown text-base leading-relaxed">{verdict.verdict}</p>
+        <BlockHeading
+          icon={Award}
+          eyebrow="رأي المحرّر"
+          title="هل يستحق هذا العرض؟"
+        />
+        <p className="font-body text-warm-brown text-base leading-relaxed">
+          {verdict.verdict}
+        </p>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <ul className="flex flex-col gap-2">
             {verdict.pros.map((p) => (
-              <li key={p} className="font-body text-warm-brown flex items-start gap-2 text-sm leading-relaxed">
-                <Check className="text-success mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+              <li
+                key={p}
+                className="font-body text-warm-brown flex items-start gap-2 text-sm leading-relaxed"
+              >
+                <Check
+                  className="text-success mt-0.5 h-4 w-4 shrink-0"
+                  aria-hidden
+                />
                 <span>{p}</span>
               </li>
             ))}
           </ul>
           <ul className="flex flex-col gap-2">
             {verdict.cons.map((c) => (
-              <li key={c} className="font-body text-warm-brown flex items-start gap-2 text-sm leading-relaxed">
-                <Minus className="text-warm-brown-light mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+              <li
+                key={c}
+                className="font-body text-warm-brown flex items-start gap-2 text-sm leading-relaxed"
+              >
+                <Minus
+                  className="text-warm-brown-light mt-0.5 h-4 w-4 shrink-0"
+                  aria-hidden
+                />
                 <span>{c}</span>
               </li>
             ))}
@@ -108,8 +138,12 @@ export function CouponLongCopy(props: Props) {
                   {(i + 1).toLocaleString("en-US")}
                 </span>
                 <div className="flex flex-col gap-1.5">
-                  <h3 className="font-display text-charcoal text-base font-bold">{step.title}</h3>
-                  <p className="font-body text-warm-brown text-sm leading-relaxed">{step.body}</p>
+                  <h3 className="font-display text-charcoal text-base font-bold">
+                    {step.title}
+                  </h3>
+                  <p className="font-body text-warm-brown text-sm leading-relaxed">
+                    {step.body}
+                  </p>
                 </div>
               </li>
             ))}

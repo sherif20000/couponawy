@@ -38,7 +38,7 @@ function freshnessPill(lastVerifiedAt: string | null) {
     };
   }
   const days = Math.floor(
-    (Date.now() - new Date(lastVerifiedAt).getTime()) / (1000 * 60 * 60 * 24)
+    (Date.now() - new Date(lastVerifiedAt).getTime()) / (1000 * 60 * 60 * 24),
   );
   if (days >= 90) {
     return { label: `${days} يوم`, className: "bg-red-100 text-red-700", days };
@@ -78,7 +78,7 @@ export default async function VerifyQueuePage({ searchParams }: Props) {
   const { coupons, total, perPage } = await getStaleCoupons(
     page,
     search,
-    staleness
+    staleness,
   );
   const totalPages = Math.ceil(total / perPage);
 
@@ -89,7 +89,7 @@ export default async function VerifyQueuePage({ searchParams }: Props) {
       ...overrides,
     };
     const qs = new URLSearchParams(
-      Object.entries(merged).map(([k, v]) => [k, String(v)])
+      Object.entries(merged).map(([k, v]) => [k, String(v)]),
     ).toString();
     return qs ? `?${qs}` : "";
   }
@@ -105,10 +105,7 @@ export default async function VerifyQueuePage({ searchParams }: Props) {
           </p>
           <p className="text-xs text-warm-brown leading-relaxed">
             الكوبونات الأقدم تحقّقاً تظهر أولاً. اضغط
-            <span className="font-medium text-charcoal">
-              {" "}
-              «تحقّقت الآن»{" "}
-            </span>
+            <span className="font-medium text-charcoal"> «تحقّقت الآن» </span>
             بعد أن تجرّب الكود بنفسك على موقع المتجر، أو اضغط
             <span className="font-medium text-charcoal"> «أرشفة» </span>
             لو الكود توقف عن العمل. الكوبونات المتروكة دون تحقّق لمدة ٩٠ يوم
@@ -155,9 +152,11 @@ export default async function VerifyQueuePage({ searchParams }: Props) {
             </thead>
             <tbody>
               {coupons.map((coupon) => {
-                const store = coupon.store as
-                  | { id: string; name_ar: string; slug: string }
-                  | null;
+                const store = coupon.store as {
+                  id: string;
+                  name_ar: string;
+                  slug: string;
+                } | null;
                 const pill = freshnessPill(coupon.last_verified_at);
 
                 return (
@@ -208,7 +207,7 @@ export default async function VerifyQueuePage({ searchParams }: Props) {
                     >
                       {coupon.expires_at
                         ? new Date(coupon.expires_at).toLocaleDateString(
-                            "ar-SA-u-nu-latn"
+                            "ar-SA-u-nu-latn",
                           )
                         : "—"}
                     </td>
@@ -289,7 +288,8 @@ export default async function VerifyQueuePage({ searchParams }: Props) {
               </Link>
             )}
             <span className="text-sm text-warm-brown px-3">
-              {page.toLocaleString("en-US")} / {totalPages.toLocaleString("en-US")}
+              {page.toLocaleString("en-US")} /{" "}
+              {totalPages.toLocaleString("en-US")}
             </span>
             {page < totalPages && (
               <Link

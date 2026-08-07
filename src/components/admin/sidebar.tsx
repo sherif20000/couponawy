@@ -44,7 +44,9 @@ export function AdminSidebar() {
           <span className="text-xl font-display font-bold text-brand-gold">
             كوبوناوي
           </span>
-          <span className="block text-xs text-white/40 mt-0.5">لوحة الإدارة</span>
+          <span className="block text-xs text-white/40 mt-0.5">
+            لوحة الإدارة
+          </span>
         </Link>
       </div>
 

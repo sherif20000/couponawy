@@ -282,7 +282,9 @@ export function StoreForm({ store, action, submitLabel }: Props) {
           <div>
             <label className="block text-sm font-medium text-charcoal mb-1.5">
               التقييم{" "}
-              <span className="text-warm-brown/50 text-xs font-normal">(1–5)</span>
+              <span className="text-warm-brown/50 text-xs font-normal">
+                (1–5)
+              </span>
             </label>
             <input
               name="rating"

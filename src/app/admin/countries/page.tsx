@@ -38,7 +38,10 @@ export default async function CountriesPage() {
           <h2 className="text-sm font-semibold text-warm-brown uppercase tracking-wider mb-4">
             إضافة دولة جديدة
           </h2>
-          <form action={createCountry} className="bg-white rounded-xl border border-charcoal/8 p-5 space-y-4">
+          <form
+            action={createCountry}
+            className="bg-white rounded-xl border border-charcoal/8 p-5 space-y-4"
+          >
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-medium text-warm-brown mb-1">
@@ -171,7 +174,10 @@ export default async function CountriesPage() {
                     <p className="text-sm font-medium text-charcoal">
                       {country.name_ar}
                     </p>
-                    <p className="text-xs text-warm-brown/50 font-mono" dir="ltr">
+                    <p
+                      className="text-xs text-warm-brown/50 font-mono"
+                      dir="ltr"
+                    >
                       {country.code} · {country.currency}
                     </p>
                   </div>

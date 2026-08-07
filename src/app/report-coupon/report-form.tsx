@@ -13,7 +13,7 @@ const ISSUE_TYPES = [
 
 export function ReportForm({ defaultUrl }: { defaultUrl?: string }) {
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">(
-    "idle"
+    "idle",
   );
   const [errorMessage, setErrorMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);

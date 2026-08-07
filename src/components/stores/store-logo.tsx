@@ -63,7 +63,8 @@ export function StoreLogo({ logoUrl, nameAr, size = "md" }: StoreLogoProps) {
         onLoad={(e) => {
           // < 32 catches Brandfetch 1×1 fallbacks for unknown domains AND
           // any remaining S2 16×16 globes that slip through migration.
-          if ((e.target as HTMLImageElement).naturalWidth < 32) setImgError(true);
+          if ((e.target as HTMLImageElement).naturalWidth < 32)
+            setImgError(true);
         }}
       />
     );

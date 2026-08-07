@@ -10,7 +10,6 @@ import { BASE_URL } from "@/lib/utils/site";
 // Revalidate every 30 minutes so newly published posts surface quickly.
 export const revalidate = 1800;
 
-
 export const metadata: Metadata = {
   title: "المدونة — نصائح ومقالات للتسوّق الذكي",
   description:
@@ -50,7 +49,12 @@ export default async function BlogIndexPage() {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "الرئيسية", item: BASE_URL },
-      { "@type": "ListItem", position: 2, name: "المدونة", item: `${BASE_URL}/blog` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "المدونة",
+        item: `${BASE_URL}/blog`,
+      },
     ],
   };
 
@@ -66,10 +70,7 @@ export default async function BlogIndexPage() {
       />
       <PageHero
         variant="subtle"
-        breadcrumbs={[
-          { href: "/", label: "الرئيسية" },
-          { label: "المدونة" },
-        ]}
+        breadcrumbs={[{ href: "/", label: "الرئيسية" }, { label: "المدونة" }]}
         title="المدونة"
         subtitle={
           articles.length > 0

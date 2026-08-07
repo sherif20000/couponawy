@@ -12,17 +12,24 @@ const FILTERS: { id: Filter; label: string; icon: React.ReactNode }[] = [
   { id: "all", label: "الكل", icon: <LayoutGrid className="h-3.5 w-3.5" /> },
   { id: "code", label: "كود خصم", icon: <Percent className="h-3.5 w-3.5" /> },
   { id: "deal", label: "عرض مباشر", icon: <Tag className="h-3.5 w-3.5" /> },
-  { id: "free_shipping", label: "شحن مجاني", icon: <Truck className="h-3.5 w-3.5" /> },
+  {
+    id: "free_shipping",
+    label: "شحن مجاني",
+    icon: <Truck className="h-3.5 w-3.5" />,
+  },
 ];
 
 function matchesFilter(coupon: FeaturedCoupon, filter: Filter): boolean {
   if (filter === "all") return true;
-  if (filter === "free_shipping") return coupon.discount_type === "free_shipping";
+  if (filter === "free_shipping")
+    return coupon.discount_type === "free_shipping";
   // "deal" = bogo + other (non-numeric, non-shipping offer types)
   if (filter === "deal")
     return coupon.discount_type === "bogo" || coupon.discount_type === "other";
   // "code" = percentage + fixed (numeric discount with a code)
-  return coupon.discount_type === "percentage" || coupon.discount_type === "fixed";
+  return (
+    coupon.discount_type === "percentage" || coupon.discount_type === "fixed"
+  );
 }
 
 type Props = {
@@ -39,12 +46,15 @@ export function CouponGridWithFilters({ coupons }: Props) {
     () =>
       FILTERS.reduce<Record<Filter, number>>(
         (acc, f) => {
-          acc[f.id] = f.id === "all" ? coupons.length : coupons.filter((c) => matchesFilter(c, f.id)).length;
+          acc[f.id] =
+            f.id === "all"
+              ? coupons.length
+              : coupons.filter((c) => matchesFilter(c, f.id)).length;
           return acc;
         },
-        { all: 0, code: 0, deal: 0, free_shipping: 0 }
+        { all: 0, code: 0, deal: 0, free_shipping: 0 },
       ),
-    [coupons]
+    [coupons],
   );
 
   return (
@@ -68,7 +78,7 @@ export function CouponGridWithFilters({ coupons }: Props) {
                 "font-accent inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-150",
                 isActive
                   ? "bg-brand-red border-brand-red text-cream shadow-sm"
-                  : "bg-cream border-brand-gold/30 text-warm-brown hover:border-brand-red/40 hover:text-brand-red"
+                  : "bg-cream border-brand-gold/30 text-warm-brown hover:border-brand-red/40 hover:text-brand-red",
               )}
             >
               {f.icon}
@@ -78,7 +88,7 @@ export function CouponGridWithFilters({ coupons }: Props) {
                   "rounded-full px-1.5 py-0.5 text-xs font-bold leading-none",
                   isActive
                     ? "bg-white/20 text-cream"
-                    : "bg-brand-gold/15 text-brand-gold-dark"
+                    : "bg-brand-gold/15 text-brand-gold-dark",
                 )}
               >
                 {counts[f.id]}
@@ -103,7 +113,7 @@ export function CouponGridWithFilters({ coupons }: Props) {
                 ? "sm:grid-cols-2"
                 : filtered.length === 3
                   ? "sm:grid-cols-2 lg:grid-cols-3"
-                  : "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  : "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
           )}
         >
           {filtered.map((coupon) => (

@@ -23,8 +23,7 @@ const cairo = Cairo({
   display: "swap",
 });
 
-const SITE_URL =
-  BASE_URL;
+const SITE_URL = BASE_URL;
 
 // Default OG card — used by any route that doesn't override openGraph.images.
 // /api/og generates a Cairo-set 1200×630 brand-red card on the edge.
@@ -149,7 +148,9 @@ export default function RootLayout({
           الانتقال إلى المحتوى الرئيسي
         </a>
         <Header />
-        <div id="main-content" className="flex flex-1 flex-col">{children}</div>
+        <div id="main-content" className="flex flex-1 flex-col">
+          {children}
+        </div>
         <Footer />
         <Toaster
           position="top-center"

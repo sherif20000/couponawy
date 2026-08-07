@@ -21,7 +21,7 @@ export function Mascot({ className, size = "md" }: MascotProps) {
       className={cn(
         "relative inline-flex items-center justify-center rounded-full bg-brand-red/10 ring-2 ring-brand-gold/40 shadow-gold",
         sizeMap[size],
-        className
+        className,
       )}
       role="img"
       aria-label="الأستاذ أبو عبدالله"

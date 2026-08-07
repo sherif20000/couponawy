@@ -40,7 +40,10 @@ export async function POST(req: NextRequest) {
   const secret = process.env.REVALIDATE_SECRET;
   if (!secret) {
     console.error("[revalidate] REVALIDATE_SECRET env var is not set");
-    return NextResponse.json({ error: "server misconfigured" }, { status: 500 });
+    return NextResponse.json(
+      { error: "server misconfigured" },
+      { status: 500 },
+    );
   }
 
   const authHeader = req.headers.get("authorization") ?? "";
@@ -111,5 +114,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ revalidated });
   }
 
-  return NextResponse.json({ error: "unrecognized payload shape" }, { status: 400 });
+  return NextResponse.json(
+    { error: "unrecognized payload shape" },
+    { status: 400 },
+  );
 }

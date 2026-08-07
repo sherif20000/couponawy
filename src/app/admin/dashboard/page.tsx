@@ -106,10 +106,14 @@ export default async function DashboardPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-charcoal/8 text-warm-brown text-xs">
-                    <th className="text-right px-4 py-3 font-medium">الكوبون</th>
+                    <th className="text-right px-4 py-3 font-medium">
+                      الكوبون
+                    </th>
                     <th className="text-right px-4 py-3 font-medium">المتجر</th>
                     <th className="text-right px-4 py-3 font-medium">الحالة</th>
-                    <th className="text-right px-4 py-3 font-medium">التاريخ</th>
+                    <th className="text-right px-4 py-3 font-medium">
+                      التاريخ
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -129,13 +133,17 @@ export default async function DashboardPage() {
                         <td className="px-4 py-3">
                           <span
                             className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
-                              statusColors[c.status] ?? "bg-gray-100 text-gray-600"
+                              statusColors[c.status] ??
+                              "bg-gray-100 text-gray-600"
                             }`}
                           >
                             {statusLabels[c.status] ?? c.status}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-warm-brown/60 text-xs" dir="ltr">
+                        <td
+                          className="px-4 py-3 text-warm-brown/60 text-xs"
+                          dir="ltr"
+                        >
                           {formatDistanceToNow(new Date(c.created_at), {
                             addSuffix: true,
                             locale: ar,

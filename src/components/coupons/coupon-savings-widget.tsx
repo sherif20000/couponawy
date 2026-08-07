@@ -22,7 +22,11 @@ function fmt(n: number): string {
  * and makes the offer's value concrete. Only renders for percentage/fixed
  * offers (free-shipping/bogo have no cart-proportional figure to compute).
  */
-export function CouponSavingsWidget({ discountType, discountValue, maxDiscount }: Props) {
+export function CouponSavingsWidget({
+  discountType,
+  discountValue,
+  maxDiscount,
+}: Props) {
   const [cart, setCart] = React.useState(300);
 
   if (
@@ -33,7 +37,9 @@ export function CouponSavingsWidget({ discountType, discountValue, maxDiscount }
   }
 
   let saving =
-    discountType === "percentage" ? (cart * discountValue) / 100 : Math.min(discountValue, cart);
+    discountType === "percentage"
+      ? (cart * discountValue) / 100
+      : Math.min(discountValue, cart);
   if (maxDiscount != null && saving > maxDiscount) saving = maxDiscount;
   saving = Math.max(0, Math.min(saving, cart));
   const finalPrice = Math.max(0, cart - saving);
@@ -73,7 +79,9 @@ export function CouponSavingsWidget({ discountType, discountValue, maxDiscount }
           </div>
         </div>
         <div className="text-end">
-          <div className="font-body text-warm-brown-light text-xs">بعد الخصم</div>
+          <div className="font-body text-warm-brown-light text-xs">
+            بعد الخصم
+          </div>
           <div className="font-display text-numeric-md text-charcoal text-lg leading-none">
             {fmt(finalPrice)}
             <span className="ms-1 text-xs font-bold">ريال</span>

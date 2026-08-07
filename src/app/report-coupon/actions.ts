@@ -7,7 +7,7 @@ export type ReportResult =
   | { success: false; error: string };
 
 export async function submitCouponReport(
-  formData: FormData
+  formData: FormData,
 ): Promise<ReportResult> {
   const issue_type = formData.get("issue_type") as string;
   const coupon_url = (formData.get("coupon_url") as string).trim() || null;

@@ -10,7 +10,6 @@ import {
   getAllGuideSlugsBuildTime,
 } from "@/lib/queries/posts";
 
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [storeSlugs, couponSlugs, categorySlugs, articleSlugs, guideSlugs] =
     await Promise.all([
@@ -156,7 +155,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: toDate(updated_at),
       changeFrequency: "daily" as const,
       priority: 0.8,
-    })
+    }),
   );
 
   const couponRoutes: MetadataRoute.Sitemap = couponSlugs.map(
@@ -165,7 +164,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: toDate(updated_at),
       changeFrequency: "daily" as const,
       priority: 0.7,
-    })
+    }),
   );
 
   const categoryRoutes: MetadataRoute.Sitemap = categorySlugs.map(
@@ -174,7 +173,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: toDate(updated_at),
       changeFrequency: "daily" as const,
       priority: 0.6,
-    })
+    }),
   );
 
   const articleRoutes: MetadataRoute.Sitemap = articleSlugs.map(
@@ -183,7 +182,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: toDate(updated_at),
       changeFrequency: "weekly" as const,
       priority: 0.7,
-    })
+    }),
   );
 
   const guideRoutes: MetadataRoute.Sitemap = guideSlugs.map(
@@ -192,7 +191,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: toDate(updated_at),
       changeFrequency: "weekly" as const,
       priority: 0.7,
-    })
+    }),
   );
 
   return [
