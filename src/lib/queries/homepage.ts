@@ -1,16 +1,24 @@
 import { createPublicClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 import { getVisibleCouponIds } from "@/lib/queries/categories";
+import {
+  HOMEPAGE_TIERS,
+  type HomepageTierKey,
+} from "@/lib/content/homepage-tiers";
 
 type Store = Database["public"]["Tables"]["stores"]["Row"];
 type Category = Database["public"]["Tables"]["categories"]["Row"];
 type Coupon = Database["public"]["Tables"]["coupons"]["Row"];
+export type HomepageTierStores = Record<HomepageTierKey, Store[]>;
 
 export type FeaturedCoupon = Coupon & {
   store: Pick<Store, "id" | "slug" | "name_ar" | "logo_url"> | null;
 };
 
-export async function getFeaturedCoupons(limit = 8, countryCode?: string): Promise<FeaturedCoupon[]> {
+export async function getFeaturedCoupons(
+  limit = 8,
+  countryCode?: string,
+): Promise<FeaturedCoupon[]> {
   const supabase = createPublicClient();
 
   let baseQuery = supabase
@@ -54,10 +62,46 @@ export async function getFeaturedStores(limit = 8): Promise<Store[]> {
   return data ?? [];
 }
 
-export async function getExpiringSoonCoupons(limit = 8, countryCode?: string): Promise<FeaturedCoupon[]> {
+export async function getHomepageTierStores(): Promise<HomepageTierStores> {
+  const supabase = createPublicClient();
+  const empty: HomepageTierStores = { hero: [], featured: [], rising: [] };
+  const allSlugs = [...new Set(Object.values(HOMEPAGE_TIERS).flat())];
+
+  const { data, error } = await supabase
+    .from("stores")
+    .select("*")
+    .eq("status", "active")
+    .in("slug", allSlugs);
+
+  if (error) {
+    console.error("[getHomepageTierStores]", error);
+    return empty;
+  }
+
+  const storesBySlug = new Map(
+    (data ?? []).map((store) => [store.slug.toLowerCase(), store]),
+  );
+  const toTierStores = (slugs: readonly string[]) =>
+    slugs
+      .map((slug) => storesBySlug.get(slug.toLowerCase()))
+      .filter((store): store is Store => store !== undefined);
+
+  return {
+    hero: toTierStores(HOMEPAGE_TIERS.hero),
+    featured: toTierStores(HOMEPAGE_TIERS.featured),
+    rising: toTierStores(HOMEPAGE_TIERS.rising),
+  };
+}
+
+export async function getExpiringSoonCoupons(
+  limit = 8,
+  countryCode?: string,
+): Promise<FeaturedCoupon[]> {
   const supabase = createPublicClient();
   const now = new Date().toISOString();
-  const sevenDays = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+  const sevenDays = new Date(
+    Date.now() + 7 * 24 * 60 * 60 * 1000,
+  ).toISOString();
 
   let baseQuery = supabase
     .from("coupons")
@@ -84,7 +128,9 @@ export async function getExpiringSoonCoupons(limit = 8, countryCode?: string): P
   return (data ?? []) as FeaturedCoupon[];
 }
 
-export async function getExclusiveCoupons(limit = 50): Promise<FeaturedCoupon[]> {
+export async function getExclusiveCoupons(
+  limit = 50,
+): Promise<FeaturedCoupon[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("coupons")
@@ -111,7 +157,11 @@ export async function getDealsOfTheDay(limit = 50): Promise<FeaturedCoupon[]> {
   const ksaNow = new Date(now.getTime() + ksaOffset * 60 * 1000);
   // Midnight KSA today
   const ksaMidnight = new Date(
-    Date.UTC(ksaNow.getUTCFullYear(), ksaNow.getUTCMonth(), ksaNow.getUTCDate())
+    Date.UTC(
+      ksaNow.getUTCFullYear(),
+      ksaNow.getUTCMonth(),
+      ksaNow.getUTCDate(),
+    ),
   );
   // Convert back to UTC for the DB query
   const startOfDayUTC = new Date(ksaMidnight.getTime() - ksaOffset * 60 * 1000);
@@ -132,7 +182,10 @@ export async function getDealsOfTheDay(limit = 50): Promise<FeaturedCoupon[]> {
   return (data ?? []) as FeaturedCoupon[];
 }
 
-export async function getTrendingCoupons(limit = 8, countryCode?: string): Promise<FeaturedCoupon[]> {
+export async function getTrendingCoupons(
+  limit = 8,
+  countryCode?: string,
+): Promise<FeaturedCoupon[]> {
   const supabase = createPublicClient();
 
   let baseQuery = supabase
