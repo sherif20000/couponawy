@@ -1,11 +1,13 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { slugify } from "@/lib/utils/slug";
 
 export async function createStore(formData: FormData) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const name_ar = formData.get("name_ar") as string;
@@ -66,6 +68,7 @@ export async function createStore(formData: FormData) {
 }
 
 export async function updateStore(id: string, formData: FormData) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const name_ar = formData.get("name_ar") as string;
@@ -129,6 +132,7 @@ export async function updateStore(id: string, formData: FormData) {
 }
 
 export async function deleteStore(id: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   // Fetch slug before deleting so we can revalidate the public detail page

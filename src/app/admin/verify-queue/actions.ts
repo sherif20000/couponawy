@@ -1,6 +1,7 @@
 "use server";
 
-import { createAdminClient, createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -14,12 +15,7 @@ import { revalidatePath } from "next/cache";
  * a "this admin re-confirmed today" signal that flows to Google.
  */
 export async function markVerifiedNow(couponId: string) {
-  // Get the admin identity from the cookies-aware client (this is a server
-  // action — cookies exist).
-  const auth = await createClient();
-  const {
-    data: { user },
-  } = await auth.auth.getUser();
+  const { user } = await requireAdmin();
 
   // Service-role client for the actual write — bypasses RLS.
   const supabase = createAdminClient();
@@ -53,10 +49,7 @@ export async function markVerifiedNow(couponId: string) {
  * the auto-archive cron.
  */
 export async function archiveCoupon(couponId: string, note?: string) {
-  const auth = await createClient();
-  const {
-    data: { user },
-  } = await auth.auth.getUser();
+  const { user } = await requireAdmin();
 
   const supabase = createAdminClient();
 

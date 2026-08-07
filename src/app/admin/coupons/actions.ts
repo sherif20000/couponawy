@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { slugify } from "@/lib/utils/slug";
@@ -10,6 +11,7 @@ type CouponStatus = Database["public"]["Enums"]["coupon_status"];
 type CouponDiscountType = Database["public"]["Enums"]["coupon_discount_type"];
 
 export async function createCoupon(formData: FormData) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const title_ar = formData.get("title_ar") as string;
@@ -60,6 +62,7 @@ export async function createCoupon(formData: FormData) {
 }
 
 export async function updateCoupon(id: string, formData: FormData) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const title_ar = formData.get("title_ar") as string;
@@ -115,6 +118,7 @@ export async function updateCoupon(id: string, formData: FormData) {
 }
 
 export async function deleteCoupon(id: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   // Fetch slug before deleting so we can revalidate the public detail page
@@ -137,6 +141,7 @@ export async function deleteCoupon(id: string) {
  * Expired coupons stay expired — use the edit form to change them.
  */
 export async function toggleCouponStatus(id: string, currentStatus: CouponStatus) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const nextStatus: Partial<Record<CouponStatus, CouponStatus>> = {

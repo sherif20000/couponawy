@@ -1,11 +1,13 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { slugify } from "@/lib/utils/slug";
 
 export async function createCategory(formData: FormData) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const name_ar = formData.get("name_ar") as string;
@@ -30,6 +32,7 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function updateCategory(id: string, formData: FormData) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const name_ar = formData.get("name_ar") as string;
@@ -72,6 +75,7 @@ export async function updateCategory(id: string, formData: FormData) {
 }
 
 export async function deleteCategory(id: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const { error } = await supabase.from("categories").delete().eq("id", id);

@@ -1,9 +1,11 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { revalidatePath } from "next/cache";
 
 export async function deleteReport(id: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
   const { error } = await supabase
     .from("coupon_reports")

@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { Database } from "@/types/database";
@@ -8,6 +9,7 @@ import type { Database } from "@/types/database";
 type CountryStatus = Database["public"]["Enums"]["country_status"];
 
 export async function toggleCountryStatus(code: string, currentStatus: CountryStatus) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   // Cycle: active → coming_soon → disabled → active
@@ -30,6 +32,7 @@ export async function toggleCountryStatus(code: string, currentStatus: CountrySt
 }
 
 export async function updateCountry(code: string, formData: FormData) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const name_ar = formData.get("name_ar") as string;
@@ -56,6 +59,7 @@ export async function updateCountry(code: string, formData: FormData) {
 }
 
 export async function deleteCountry(code: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const { error } = await supabase.from("countries").delete().eq("code", code);
@@ -66,6 +70,7 @@ export async function deleteCountry(code: string) {
 }
 
 export async function createCountry(formData: FormData) {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const name_ar = formData.get("name_ar") as string;

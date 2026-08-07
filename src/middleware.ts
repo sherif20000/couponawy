@@ -25,23 +25,36 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh session — do not remove or move this
+  // Refresh session — do not remove or move this.
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
 
-  if (
-    !user &&
-    pathname.startsWith("/admin") &&
-    pathname !== "/admin/login"
-  ) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+  if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
+    if (!user) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+
+    // Authorization check: verify the logged-in user has the admin role.
+    // NOTE: middleware is a UX backstop for page navigation. The per-action
+    // requireAdmin() calls in each server action are the authoritative gate,
+    // since server actions can be invoked independently of page navigation.
+    const { data: isAdmin } = await supabase.rpc("is_admin");
+    if (isAdmin !== true) {
+      return NextResponse.redirect(
+        new URL("/admin/login?error=forbidden", request.url)
+      );
+    }
   }
 
+  // Only redirect a confirmed admin away from the login page.
   if (user && pathname === "/admin/login") {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    const { data: isAdmin } = await supabase.rpc("is_admin");
+    if (isAdmin === true) {
+      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    }
   }
 
   return supabaseResponse;
